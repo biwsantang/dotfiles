@@ -1,0 +1,106 @@
+{
+
+  ;; :!Ca is keycode :a and prefix a with !C
+  ;; C  | left_command
+  ;; T  | left_control
+  ;; O  | left_option
+  ;; S  | left_shift
+  ;; F  | fn
+  ;; Q  | right_command
+  ;; W  | right_control
+  ;; E  | right_option
+  ;; R  | right_shift
+  ;; P  | caps_lock
+  ;; !! | command + control + optional + shift (hyper)
+  ;; code for all this:
+  ;; https://github.com/yqrashawn/GokuRakuJoudo/blob/b9b334a187379f9bc8182ad59e2cca2a1789e9c0/src/karabiner_configurator/keys.clj#L68
+  ;; FROM modifiers
+  ;; to understand better how modifiers work in karabiner
+  ;; karabiner definition of mandatory and optional
+  ;; https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/
+  ;;    | no modifier
+  ;;                  input key maps to output key exactly
+  ;;                  adding any modifier will cancel the event
+  ;; !  | mandatory
+  ;;                  specified modifier is removed in output (to event)
+  ;;                  specified modifiers must be present for event to occur
+  ;;                  adding any other modifier will cancel the event
+  ;; #  | optional (single)
+  ;;                  specified modifier is kept in output (to event)
+  ;;                  one (or none) of the specified modifiers must be present
+  ;;                  adding any other modifier will cancel the event
+  ;; ## | optional any
+  ;;                  specified modifier is removed in output (to event)
+  ;;                  specified modifiers *must* be present for event to occur
+  ;;                  adding any other modifier will add to output event
+  ;;                  (what you typically expect, additional modifiers tacked on)
+  ;;
+  ;; need to prefix C T O S F with ! or #
+  ;;
+
+  :profiles
+  {
+    :Default
+    {;; "default true means" rules default goes into this rule if no profiles specified
+      :default true
+      ;; simultaneous key press threshold
+      ;; simlayer is implemented with to_if_alone and simultaneous key press feature
+      :sim     100
+      ;; to_delayed_action_delay_milliseconds
+      ;; checkout karabiner's documentation
+      ;; https://pqrs.org/osx/karabiner/json.html
+      ;; basically it means time after which the key press is count delayed
+      :delay   500
+      ;; https://pqrs.org/osx/karabiner/json.html#to-if-alone
+      ;; to_if_alone_timeout_milliseconds
+      ;; affects to_if_alone behavior
+      ;; simlayer is implemented with to_if_alone and simultaneous key press feature
+      :alone   1000
+      ;; to_if_held_down_threshold_milliseconds
+      ;; check the doc, I don't know what does this mean.
+      ;; maybe press this many milliseconds counts a "held" ?
+      :held    500
+    }
+  }
+  :main
+  [
+    {
+      :des "main"
+      :rules
+      [
+        [:##spacebar ["spacebar" 1] nil {:afterup ["spacebar" 0] :alone :spacebar}]
+        [:caps_lock ["caps_lock" 1] nil {:afterup ["caps_lock" 0] :alone :escape}]
+        [:tab ["tab" 1] nil {:afterup ["tab" 0] :alone :tab}]
+
+        ;; spacebar - manage movement
+        :spacebar
+          [:##j :down_arrow] 
+          [:##k :up_arrow]
+          [:##h :left_arrow]
+          [:##l :right_arrow]
+
+        ;; tab - manage space
+        :tab
+          [:##j :!CSopen_bracket]
+          [:##k :!CSclose_bracket]
+          [:##h :!Tleft_arrow]
+          [:##l :!Tright_arrow]
+
+          [:##comma :!Copen_bracket]
+          [:##period :!Cclose_bracket]
+
+          [:##m :!Cw]
+
+        ;; caps_lock - special key for special action
+        :caps_lock
+          [:##q "open -b com.apple.ScreenSaver.Engine"] ;; lock and start screensaver
+
+          [:##u "open -a 'finder'"] ;; open Finder
+          [:##i "open -a 'safari'"] ;; open Safari
+
+          [:##j "open -a 'terminal'"] ;; open Terminal
+          [:##k "open -a 'vscodium'"] ;; open Codium
+      ]
+    }
+  ]
+}
