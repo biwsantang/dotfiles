@@ -68,7 +68,7 @@
       :des "main"
       :rules
       [
-        [:##spacebar ["spacebar" 1] nil {:afterup ["spacebar" 0] :alone :spacebar}]
+        [:spacebar ["spacebar" 1] nil {:afterup ["spacebar" 0] :alone :spacebar}]
         [:caps_lock ["caps_lock" 1] nil {:afterup ["caps_lock" 0] :alone :escape}]
         [:tab ["tab" 1] nil {:afterup ["tab" 0] :alone :tab}]
 
@@ -91,6 +91,8 @@
 
           [:##m :!Cw]
 
+          [:##n :!CSslash]
+
         ;; caps_lock - special key for special action
         :caps_lock
           [:##q "open -b com.apple.ScreenSaver.Engine"] ;; lock and start screensaver
@@ -100,6 +102,8 @@
 
           [:##j "open -a 'terminal'"] ;; open Terminal
           [:##k "open -a 'vscodium'"] ;; open Codium
+
+          [:##n :!COspacebar]
       ]
     }
   ]
