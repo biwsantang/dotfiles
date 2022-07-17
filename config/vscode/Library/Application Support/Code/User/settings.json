@@ -7,7 +7,6 @@
     "window.autoDetectColorScheme": true,
 
     "terminal.integrated.fontFamily": "SF Mono Powerline",
-    "workbench.activityBar.visible": false,
 
     "editor.lineNumbers": "relative",
 
@@ -165,9 +164,5 @@
     ],
     
     "vim.smartRelativeLine": true,
-    "blockman.n01LineHeight": 0,
-    "workbench.colorCustomizations": {
-        "editor.lineHighlightBackground": "#1073cf2d",
-        "editor.lineHighlightBorder": "#9fced11f"
-    },
+    
 }
