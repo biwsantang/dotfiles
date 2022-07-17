@@ -74,36 +74,26 @@
 
         ;; spacebar - manage movement
         :spacebar
-          [:##j :down_arrow] 
-          [:##k :up_arrow]
-          [:##h :left_arrow]
-          [:##l :right_arrow]
+          [:j :down_arrow] ;; down 
+          [:k :up_arrow] ;; up
+          [:h :left_arrow] ;; left
+          [:l :right_arrow] ;; right
 
         ;; tab - manage space
         :tab
-          [:##j :!CSopen_bracket]
-          [:##k :!CSclose_bracket]
-          [:##h :!Tleft_arrow]
-          [:##l :!Tright_arrow]
 
-          [:##comma :!Copen_bracket]
-          [:##period :!Cclose_bracket]
+          [:j :!Tf4] ;; next window
+          [:k :!TSf4] ;; pervious window
+          [:h :!Tleft_arrow] ;; next space (desktop)
+          [:l :!Tright_arrow] ;; pervious space (desktop)
 
-          [:##m :!Cw]
-
-          [:##n :!CSslash]
-
-        ;; caps_lock - special key for special action
+        ;; caps_lock - control
         :caps_lock
-          [:##q "open -b com.apple.ScreenSaver.Engine"] ;; lock and start screensaver
+          [:q "open -b com.apple.ScreenSaver.Engine"] ;; lock and start screensaver
 
-          [:##u "open -a 'finder'"] ;; open Finder
-          [:##i "open -a 'safari'"] ;; open Safari
+          [:n :!COspacebar] ;; raycast
 
-          [:##j "open -a 'terminal'"] ;; open Terminal
-          [:##k "open -a 'vscodium'"] ;; open Codium
-
-          [:##n :!COspacebar]
+          [:m :!CSslash] ;; help dialog
       ]
     }
   ]
