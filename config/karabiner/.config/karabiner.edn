@@ -93,6 +93,8 @@
           [:k :up_arrow] ;; up
           [:h :left_arrow] ;; left
           [:l :right_arrow] ;; right
+       
+          [{:any :key_code} "osascript -e beep"]
       ]
     }
   ]
