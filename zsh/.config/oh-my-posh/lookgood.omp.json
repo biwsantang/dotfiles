@@ -1,0 +1,118 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 2,
+  "final_space": true,
+  "blocks": [
+   {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "lightWhite",
+          "template": "<d><u>${(r:$((COLUMNS))::\u2800:)}</u></d>"
+        }
+      ]
+    },
+		{ 
+			"type": "prompt",
+			"alignment": "left",
+			"newline": true,
+			"segments": [
+				{
+					"type": "text",
+					"style": "plain",
+					"template": "\u2800"
+				}
+			]
+		},
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "green",
+          "foreground_templates": [
+            "{{ if ge .Code 2 }}yellow{{else if ge .Code 1 }}red{{ end }}"
+          ],
+          "template": " "
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "foreground": "default",
+          "template": "{{ .UserName }}@{{ .HostName }} "
+        },
+				{
+					"type": "path",
+					"style": "plain",
+					"foreground": "default",
+					"template": "<b>{{ .Location }}</b> ",
+					"properties": {
+						"style": "folder"
+					}
+				}
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "git",
+          "style": "plain",
+					"foreground": "default",
+					"templete": "{{ .HEAD }}",
+					"properties": {
+						"branch_icon": "" 
+					}
+				}
+     ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "time",
+          "style": "plain",
+					"foreground": "default",
+					"template": "  <d>{{ .CurrentDate | date .Format }}</d>",
+					"properties": {
+          "time_format": "Jan 02 2006 15:04:05"
+					}
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "lightWhite",
+          "template": "<d><s>${(r:$((COLUMNS))::\u2800:)}</s></d>"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "template": "%"
+        }
+      ]
+    }
+  ]
+}
