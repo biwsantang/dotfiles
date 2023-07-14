@@ -1,0 +1,16 @@
+format = """
+$fill
+ 🍎 $all
+    $time
+$fill
+$line_break\
+$character
+"""
+
+[fill]
+symbol = "-"
+
+[time]
+disabled = false
+style = "bold bright-black"
+format = "[$time]($style)"

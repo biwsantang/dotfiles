@@ -1,4 +1,8 @@
-eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/lookgood.omp.json)"
+#eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/lookgood.omp.json)"
+
+export STARSHIP_CONFIG=~/.config/starship/lookgood.toml
+
+eval "$(starship init zsh)"
 
 alias cl="clear"
 

@@ -12,7 +12,7 @@
           "type": "text",
           "style": "plain",
           "foreground": "lightWhite",
-          "template": "<d><u>${(r:$((COLUMNS))::\u2800:)}</u></d>"
+          "template": "<d>${(r:$((COLUMNS))::─:)}</d>"
         }
       ]
     },
@@ -46,13 +46,19 @@
           "type": "session",
           "style": "plain",
           "foreground": "default",
-          "template": "{{ .UserName }}@{{ .HostName }} "
+          "template": "{{ .UserName }}@{{ .HostName }}"
         },
+				{
+					"type": "text",
+					"style": "plain",
+					"foreground": "default",
+					"template": " • "
+				},
 				{
 					"type": "path",
 					"style": "plain",
-					"foreground": "default",
-					"template": "<b>{{ .Location }}</b> ",
+					"foreground": "blue",
+					"template": "<b>{{ .Path }}</b> ",
 					"properties": {
 						"style": "folder"
 					}
@@ -99,7 +105,7 @@
           "type": "text",
           "style": "plain",
           "foreground": "lightWhite",
-          "template": "<d><u>${(r:$((COLUMNS))::\u2800:)}</u></d>"
+          "template": "<d>${(r:$((COLUMNS))::─:)}</d>"
         }
       ]
     },
