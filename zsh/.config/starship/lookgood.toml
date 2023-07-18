@@ -1,16 +1,31 @@
 format = """
 $fill
- 🍎 $all
-    $time
+ $os$all
+    ${custom.TZdate}$time
 $fill
-$line_break\
 $character
 """
 
+[os]
+disabled = false
+
 [fill]
-symbol = "-"
+symbol = "."
 
 [time]
 disabled = false
 style = "bold bright-black"
 format = "[$time]($style)"
+
+[hostname]
+ssh_symbol = "🌏 "
+
+[git_branch]
+symbol = "🚃 "
+
+[line_break]
+disabled = true
+
+[custom.TZdate]
+command = "date +'%a %d %b'"
+when = true
