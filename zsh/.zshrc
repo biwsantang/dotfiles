@@ -1,5 +1,5 @@
-source ~/.config/zsh/alias.sh
+source ~/.config/zsh/alias.zsh
 
-source ~/.config/zsh/prompt.sh
+source ~/.config/zsh/prompt.zsh
 
 eval "$(github-copilot-cli alias -- "$0")"
