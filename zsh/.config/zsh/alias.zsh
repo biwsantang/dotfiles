@@ -8,9 +8,12 @@ alias cat="bat"
 alias mkdir="mkdir -p"
 alias cp="cp -r"
 
-alias vim="nvim"
+alias nvim="tmux_nvim"
 
-function fh() {
+alias cb="cd .."
+alias ch="cd ~"
+
+function hs() {
 	print -z $( ([ -n "$ZSH_NAME" ] && history -100) | fzf --tac --no-sort | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
 }
 
@@ -19,3 +22,12 @@ function t() {
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
 }
+
+function tmux_nvim() {
+    if [[ -n $TMUX ]]; then
+        tmux new-window -c "${PWD}" "command nvim $@"
+    else
+        command nvim $@
+    fi
+}
+

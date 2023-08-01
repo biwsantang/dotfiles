@@ -1,21 +1,9 @@
 format = """
-$fill
- $os$all
-    ${custom.TZdate}$time
-$fill
+$os$username$hostname$all
+- ${custom.TZdate}$time
+
 $character
 """
-
-[os]
-disabled = false
-
-[fill]
-symbol = "."
-
-[time]
-disabled = false
-style = "bold bright-black"
-format = "[$time]($style)"
 
 [hostname]
 ssh_symbol = "🌏 "
@@ -26,6 +14,22 @@ symbol = "🚃 "
 [line_break]
 disabled = true
 
+[directory]
+truncation_length = 0
+style = "bold #3B00A8 bg:#DBC7FF"
+
+[battery]
+disabled = true
+
+[time]
+disabled = false
+style = "italic bright-black"
+format = "[$time]($style)"
+
 [custom.TZdate]
+style = "italic bright-black"
 command = "date +'%a %d %b'"
 when = true
+
+[character]
+format = "👉 "
