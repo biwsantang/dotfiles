@@ -1,5 +1,7 @@
 syntax on
 
+set termguicolors
+
 set number
 set relativenumber
 
