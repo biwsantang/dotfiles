@@ -1,1 +1,10 @@
 .DS_Store
+
+zsh/.config/ppsspp
+zsh/.config/iterm2
+zsh/.config/karabiner
+zsh/.config/karabiner.edn
+zsh/.config/linearmouse
+zsh/.config/yarn
+
+nvim/.config/nvim/plugin/
