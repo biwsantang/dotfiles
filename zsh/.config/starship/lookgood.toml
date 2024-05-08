@@ -23,11 +23,11 @@ disabled = true
 
 [time]
 disabled = false
-style = "italic bright-black"
+style = "italic"
 format = "[$time]($style)"
 
 [custom.TZdate]
-style = "italic bright-black"
+style = "italic"
 command = "date +'%a %d %b'"
 when = true
 
