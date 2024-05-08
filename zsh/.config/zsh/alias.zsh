@@ -4,6 +4,7 @@ alias ls="exa"
 alias ll="ls -lahF"
 
 if command -v bat &> /dev/null
+then
 	alias cat="bat"
 fi
 
