@@ -3,7 +3,9 @@ alias c="clear"
 alias ls="exa"
 alias ll="ls -lahF"
 
-alias cat="bat"
+if command -v bat &> /dev/null
+	alias cat="bat"
+fi
 
 alias mkdir="mkdir -p"
 alias cp="cp -r"
