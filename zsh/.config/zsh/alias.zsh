@@ -1,7 +1,10 @@
 alias c="clear"
 
-alias ls="exa"
-alias ll="ls -lahF"
+if command -v exa &> /dev/null
+then
+	alias ls="exa"
+	alias ll="ls -lahF"
+fi
 
 if command -v bat &> /dev/null
 then
