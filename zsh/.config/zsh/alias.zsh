@@ -5,6 +5,7 @@ alias ll="ls -lahF"
 
 if command -v bat &> /dev/null
 then
+	export BAT_THEME="ansi"
 	alias cat="bat"
 fi
 
