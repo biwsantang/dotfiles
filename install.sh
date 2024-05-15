@@ -2,7 +2,7 @@
 
 # Variables
 dir=$HOME/.dotfiles                    # dotfiles directory
-packages="nvim zsh"           # list of packages to stow
+packages="nvim zsh yabai"           # list of packages to stow
 source_line="for file in ~/.config/*.zsh; do source \$file; done"
 
 # Install Homebrew if it's not already installed
@@ -36,3 +36,10 @@ cd $dir
 for package in $packages; do
     stow $package
 done
+
+if ! grep -Fxq "$source_line" ~/.zshrc
+then
+	echo "$source_line" >> ~/.zshrc
+else
+	echo "Source line already exists in .zshrc, skipping..."
+fi
