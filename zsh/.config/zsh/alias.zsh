@@ -1,8 +1,8 @@
 alias c="clear"
 
-if command -v exa &> /dev/null
+if command -v eza &> /dev/null
 then
-	alias ls="exa"
+	alias ls="eza"
 	alias ll="ls -lahF"
 fi
 
