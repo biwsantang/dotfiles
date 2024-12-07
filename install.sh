@@ -1,45 +1,22 @@
 #!/bin/bash
 
-# Variables
-dir=$HOME/.dotfiles                    # dotfiles directory
-packages="nvim zsh yabai"           # list of packages to stow
-source_line="for file in ~/.config/*.zsh; do source \$file; done"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install Homebrew if it's not already installed
-if ! command -v brew &> /dev/null
-then
-    echo "Homebrew could not be found, installing now..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
+brew install stow
 
-# Install packages from Brewfile
-if [[ -f "$dir/Brewfile" ]]; then
-    echo "Installing packages from Brewfile..."
-    brew bundle --file="$dir/Brewfile"
-else
-    echo "Brewfile not found. Skipping..."
-fi
+brew install git \
+    starship \
+    jq \
+    neovim \
+    fzf \
+    eza \
+    tmux \
+    forgit
 
-# Install stow
-if brew ls --versions stow > /dev/null; then
-    echo "Stow is already installed, skipping installation..."
-else
-    echo "Stow is not installed, installing now..."
-    brew install stow
-fi
+stow nvim
+stow zsh
 
-# Change to the dotfiles directory
-echo "Changing to the $dir directory"
-cd $dir
+echo "source ~/.config/zsh/alias.sh" >> ~/.zshrc
+echo "source ~/.config/zsh/rc.sh" >> ~/.zshrc
 
-# Stow packages
-for package in $packages; do
-    stow $package
-done
-
-if ! grep -Fxq "$source_line" ~/.zshrc
-then
-	echo "$source_line" >> ~/.zshrc
-else
-	echo "Source line already exists in .zshrc, skipping..."
-fi
+echo "source ~/.config/starship/prompt.sh" >> ~/.zshrc

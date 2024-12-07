@@ -1,15 +1,9 @@
 alias c="clear"
 
-if command -v eza &> /dev/null
-then
-	alias ls="eza"
-	alias ll="ls -lahF"
-fi
+alias ls="eza"
+alias ll="ls -lahF"
 
-if command -v bat &> /dev/null
-then
-	alias cat="bat"
-fi
+alias cat="bat"
 
 alias mkdir="mkdir -p"
 alias cp="cp -r"
@@ -36,4 +30,3 @@ function tmux_nvim() {
         command nvim $@
     fi
 }
-

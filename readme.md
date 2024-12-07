@@ -1,2 +1,2 @@
-## Biwsantang's Dotfiles
+# Biwsantang's Dotfiles
 
