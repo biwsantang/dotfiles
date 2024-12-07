@@ -3,6 +3,7 @@ alias c="clear"
 alias ls="eza"
 alias ll="ls -lahF"
 
+export BAT_THEME="ansi"
 alias cat="bat"
 
 alias mkdir="mkdir -p"
