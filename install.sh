@@ -95,10 +95,10 @@ add_source_if_not_exists() {
 }
 
 source_lines=(
-    "source ~/.config/zsh/alias.sh"
-    "source ~/.config/zsh/rc.sh"
-    "source ~/.config/zsh/prompt.sh"
-    "source ~/.config/zplug/plugin.sh"
+    "source ~/.config/zsh/alias.zsh"
+    "source ~/.config/zsh/rc.zsh"
+    "source ~/.config/zsh/prompt.zsh"
+    "source ~/.config/zplug/plugin.zsh"
 )
 
 for line in "${source_lines[@]}"; do
