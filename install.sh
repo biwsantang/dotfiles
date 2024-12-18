@@ -57,7 +57,7 @@ packages=(
 )
 
 for pkg in "${packages[@]}"; do
-    if ! dpkg -l "$pkg" &> /dev/null; then
+    if ! dpkg -s "$pkg" &> /dev/null; then
         sudo apt install -y "$pkg"
     else
         echo "$pkg is already installed. Skipping."
