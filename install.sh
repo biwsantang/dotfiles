@@ -53,6 +53,7 @@ packages=(
     fzf
     eza
     tmux
+    bat
 )
 
 for pkg in "${packages[@]}"; do
@@ -87,6 +88,13 @@ fi
 
 stow nvim
 stow zsh
+
+if [ ! -d "$HOME/.local/share/coder-server"]; then
+    rm "$HOME/.local/share/code-server/User/settings.json"
+    stow vscode -t "$HOME/.local/share/code-server"
+else
+    echo "Not found Code-server. Skiped"
+fi
 
 add_source_if_not_exists() {
     if ! grep -q "$1" ~/.zshrc; then
