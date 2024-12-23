@@ -101,7 +101,40 @@ fi
 stow nvim
 stow zsh
 
-if [ ! -d "$HOME/.local/share/coder-server"]; then
+code_extension=(
+    "asvetliakov.vscode-neovim|https://asvetliakov.gallery.vsassets.io/_apis/public/gallery/publisher/asvetliakov/extension/vscode-neovim/1.18.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"
+)
+
+
+
+if [ -d "$HOME/.local/share/code-server" ]; then
+    for ENTRY in "${code_extension[@]}"; do
+        # Split the entry into name and URL
+        NAME="${ENTRY%%|*}"
+        URL="${ENTRY##*|}"
+
+        # Check if the extension is already installed
+        if code --list-extensions | grep -r "$NAME"; then
+            echo "Extension '$NAME' is already installed. Skipping..."
+            continue
+        fi
+
+        # Create a temporary file
+        TEMP_FILE="${mktemp}.vsix"
+
+        echo "Downloading $URL for extension '$NAME'..."
+        # Download the file
+        curl -L -o "$TEMP_FILE" "$URL"
+
+        echo "Installing extension '$NAME'..."
+        # Install the extension
+        code-server --install-extension "$TEMP_FILE"
+
+        # Clean up the temporary file
+        rm "$TEMP_FILE"
+
+        echo "Extension '$NAME' installed successfully."
+    done
     rm "$HOME/.local/share/code-server/User/settings.json"
     stow vscode -t "$HOME/.local/share/code-server"
 else

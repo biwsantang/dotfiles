@@ -150,5 +150,8 @@
             "before": ["L"],
             "after": ["i"]
         },
-    ]
+    ],
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
 }
