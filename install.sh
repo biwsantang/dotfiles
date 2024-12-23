@@ -44,6 +44,18 @@ sudo apt update
 
 # check install apt package if it not already installed
 
+beta_repos=(
+    neovim-ppa/unstable
+)
+
+for repo in "${beta_repos[@]}"; do
+    if ! grep -r "$repo" /etc/apt/ &> /dev/null; then
+        sudo apt add-apt-repository "ppa:$pkg"
+    else
+        echo "$repo is already added. Skipping."
+    fi
+done
+
 packages=(
     zsh
     stow
