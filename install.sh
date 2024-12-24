@@ -48,7 +48,7 @@ beta_repos=(
 
 for repo in "${beta_repos[@]}"; do
     if ! grep -r "$repo" /etc/apt/ &> /dev/null; then
-        sudo apt add-apt-repository "ppa:$pkg"
+        sudo add-apt-repository -y "ppa:$pkg"
     else
         echo "$repo is already added. Skipping."
     fi
