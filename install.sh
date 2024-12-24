@@ -114,7 +114,7 @@ if [ -d "$HOME/.local/share/code-server" ]; then
         URL="${ENTRY##*|}"
 
         # Check if the extension is already installed
-        if code --list-extensions | grep -r "$NAME"; then
+        if code-server --list-extensions | grep -r "$NAME"; then
             echo "Extension '$NAME' is already installed. Skipping..."
             continue
         fi
