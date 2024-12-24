@@ -40,8 +40,6 @@ else
     git pull origin "$REPO_BRANCH" || exit
 fi
 
-sudo apt update
-
 # check install apt package if it not already installed
 
 beta_repos=(
@@ -55,6 +53,8 @@ for repo in "${beta_repos[@]}"; do
         echo "$repo is already added. Skipping."
     fi
 done
+
+sudo apt update
 
 packages=(
     zsh
