@@ -15,11 +15,11 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     # Ensure git is installed first
     if ! command -v git &> /dev/null; then
         sudo apt update
-        sudo apt install -y git
+        sudo apt install -y git || { echo "Failed to install git. Exiting."; exit 1; }
     fi
     
     # Clone the repository
-    git clone -b "$REPO_BRANCH" "$REPO_URL" "$DOTFILES_DIR" || exit
+    git clone -b "$REPO_BRANCH" "$REPO_URL" "$DOTFILES_DIR" || { echo "Failed to clone repository. Exiting."; exit 1; }
 else
     # Check if the existing directory is the correct repository
     cd "$DOTFILES_DIR" || {
@@ -35,9 +35,9 @@ else
     fi
     
     # Fetch and update the repository
-    git fetch origin "$REPO_BRANCH" || exit
-    git checkout "$REPO_BRANCH" || exit
-    git pull origin "$REPO_BRANCH" || exit
+    git fetch origin "$REPO_BRANCH" || { echo "Failed to fetch repository. Exiting."; exit 1; }
+    git checkout "$REPO_BRANCH" || { echo "Failed to checkout branch. Exiting."; exit 1; }
+    git pull origin "$REPO_BRANCH" || { echo "Failed to pull repository. Exiting."; exit 1; }
 fi
 
 # check install apt package if it not already installed
@@ -48,13 +48,13 @@ beta_repos=(
 
 for repo in "${beta_repos[@]}"; do
     if ! grep -r "$repo" /etc/apt/ &> /dev/null; then
-        sudo add-apt-repository -y "ppa:$repo"
+        sudo add-apt-repository -y "ppa:$repo" || { echo "Failed to add repository $repo. Exiting."; exit 1; }
     else
         echo "$repo is already added. Skipping."
     fi
 done
 
-sudo apt update
+sudo apt update || { echo "Failed to update package list. Exiting."; exit 1; }
 
 packages=(
     zsh
@@ -70,7 +70,7 @@ packages=(
 
 for pkg in "${packages[@]}"; do
     if ! dpkg -s "$pkg" &> /dev/null; then
-        sudo apt install -y "$pkg"
+        sudo apt install -y "$pkg" || { echo "Failed to install $pkg. Exiting."; exit 1; }
     else
         echo "$pkg is already installed. Skipping."
     fi
@@ -78,68 +78,68 @@ done
 
 # check if zplug is already installed
 if [ ! -d "$HOME/.zplug" ]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh || { echo "Failed to install zplug. Exiting."; exit 1; }
 else
     echo "zplug is already installed. Skipping."
 fi
 
 # check if starship is already installed
 if ! command -v starship &> /dev/null; then
-    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    curl -sS https://starship.rs/install.sh | sh -s -- -y || { echo "Failed to install Starship prompt. Exiting."; exit 1; }
 else
     echo "Starship prompt is already installed. Skipping."
 fi
 
 if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]; then
     # Change the default login shell to zsh
-    sudo chsh -s "$(which zsh)" "$USER"
+    sudo chsh -s "$(which zsh)" "$USER" || { echo "Failed to change default login shell to zsh. Exiting."; exit 1; }
     echo "Changed default login shell to zsh"
 else
     echo "Default login shell is already zsh. Skipping."
 fi
 
-stow nvim
-stow zsh
+stow nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
+stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
 
-code_extension=(
-    "asvetliakov.vscode-neovim|https://asvetliakov.gallery.vsassets.io/_apis/public/gallery/publisher/asvetliakov/extension/vscode-neovim/1.18.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"
-)
+# disabled code-server config install due to change to use vscode-web instead
 
+#code_extension=(
+#     "asvetliakov.vscode-neovim|https://asvetliakov.gallery.vsassets.io/_apis/public/gallery/publisher/asvetliakov/extension/vscode-neovim/1.18.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"
+# )
 
+# if [ -d "$HOME/.local/share/code-server" ]; then
+#     for ENTRY in "${code_extension[@]}"; do
+#         # Split the entry into name and URL
+#         NAME="${ENTRY%%|*}"
+#         URL="${ENTRY##*|}"
 
-if [ -d "$HOME/.local/share/code-server" ]; then
-    for ENTRY in "${code_extension[@]}"; do
-        # Split the entry into name and URL
-        NAME="${ENTRY%%|*}"
-        URL="${ENTRY##*|}"
+#         # Check if the extension is already installed
+#         if code --list-extensions | grep -r "$NAME"; then
+#             echo "Extension '$NAME' is already installed. Skipping..."
+#             continue
+#         fi
 
-        # Check if the extension is already installed
-        if code-server --list-extensions | grep -r "$NAME"; then
-            echo "Extension '$NAME' is already installed. Skipping..."
-            continue
-        fi
+#         # Create a temporary file
+#         TEMP_FILE="${mktemp}.vsix"
 
-        # Create a temporary file
-        TEMP_FILE="${mktemp}.vsix"
+#         echo "Downloading $URL for extension '$NAME'..."
+#         # Download the file
+#         curl -L -o "$TEMP_FILE" "$URL"
 
-        echo "Downloading $URL for extension '$NAME'..."
-        # Download the file
-        curl -L -o "$TEMP_FILE" "$URL"
+#         echo "Installing extension '$NAME'..."
+#         # Install the extension
+#         code --install-extension "$TEMP_FILE"
 
-        echo "Installing extension '$NAME'..."
-        # Install the extension
-        code-server --install-extension "$TEMP_FILE"
+#         # Clean up the temporary file
+#         rm "$TEMP_FILE"
 
-        # Clean up the temporary file
-        rm "$TEMP_FILE"
-
-        echo "Extension '$NAME' installed successfully."
-    done
-    rm "$HOME/.local/share/code-server/User/settings.json"
-    stow vscode -t "$HOME/.local/share/code-server"
-else
-    echo "Not found Code-server. Skiped"
-fi
+#         echo "Extension '$NAME' installed successfully."
+#     done
+#     rm "$HOME/.local/share/code-server/User/settings.json"
+#     stow vscode -t "$HOME/.local/share/code-server"
+# else
+#     echo "Not found Code-server. Skiped"
+# fi
 
 add_source_if_not_exists() {
     if ! grep -q "$1" ~/.zshrc; then
