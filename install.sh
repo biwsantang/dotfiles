@@ -1,8 +1,8 @@
 #/bin/bash
 
-# check if this Ubuntu
-if [ ! -f /etc/os-release ] || ! grep -q "Ubuntu" /etc/os-release; then
-    echo "This script is designed for Ubuntu. Exiting."
+# check if this Ubuntu or macOS
+if { [ ! -f /etc/os-release ] || ! grep -q "Ubuntu" /etc/os-release; } && [[ "$OSTYPE" != "darwin"* ]]; then
+    echo "This script is designed for Ubuntu or macOS. Exiting."
     exit 1
 fi
 
@@ -43,34 +43,60 @@ fi
 
 # check install apt package if it not already installed
 
-# Check if aptfile exists
-APTFILE="$DOTFILES_DIR/aptfile"
-echo "Checking for aptfile at: $APTFILE"  # Debug statement
-ls -l "$APTFILE"  # Debug statement to list the file details
-if [ ! -f "$APTFILE" ]; then
-    echo "Error: aptfile not found in $DOTFILES_DIR"
-    exit 1
-fi
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Install Homebrew
+    if ! command -v brew &> /dev/null; then
+        echo "Homebrew not found. Installing..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
 
-# Download aptfile binary to /tmp
-curl -o /tmp/aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile || { echo "Failed to download aptfile. Exiting."; exit 1; }
-chmod +x /tmp/aptfile || { echo "Failed to make aptfile executable. Exiting."; exit 1; }
-
-# Use aptfile to install packages
-sudo /tmp/aptfile "$APTFILE" || { echo "Failed to install packages using aptfile. Exiting."; exit 1; }
-
-# check if zplug is already installed
-if [ ! -d "$USER_HOME/.zplug" ]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh || { echo "Failed to install zplug. Exiting."; exit 1; }
+    # Install packages from Brewfile
+    echo "Installing packages from Brewfile..."
+    brew bundle --file="$DOTFILES_DIR/brewfile"
+    
+    # Install Starship via Homebrew
+    if ! command -v starship &> /dev/null; then
+        brew install starship || { echo "Failed to install Starship prompt via Homebrew. Exiting."; exit 1; }
+    else
+        echo "Starship prompt is already installed. Skipping."
+    fi
+    
+    # Install zplug via Homebrew
+    if [ ! -d "$USER_HOME/.zplug" ]; then
+        brew install zplug || { echo "Failed to install zplug via Homebrew. Exiting."; exit 1; }
+    else
+        echo "zplug is already installed. Skipping."
+    fi
 else
-    echo "zplug is already installed. Skipping."
-fi
+    # Check if aptfile exists
+    APTFILE="$DOTFILES_DIR/aptfile"
+    echo "Checking for aptfile at: $APTFILE"  # Debug statement
+    ls -l "$APTFILE"  # Debug statement to list the file details
+    if [ ! -f "$APTFILE" ]; then
+        echo "Error: aptfile not found in $DOTFILES_DIR"
+        exit 1
+    fi
 
-# check if starship is already installed
-if ! command -v starship &> /dev/null; then
-    curl -sS https://starship.rs/install.sh | sh -s -- -y || { echo "Failed to install Starship prompt. Exiting."; exit 1; }
-else
-    echo "Starship prompt is already installed. Skipping."
+    # Download aptfile binary to /tmp
+    curl -o /tmp/aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile || { echo "Failed to download aptfile. Exiting."; exit 1; }
+    chmod +x /tmp/aptfile || { echo "Failed to make aptfile executable. Exiting."; exit 1; }
+
+    # Use aptfile to install packages
+    sudo /tmp/aptfile "$APTFILE" || { echo "Failed to install packages using aptfile. Exiting."; exit 1; }
+    
+    # check if starship is already installed
+    if ! command -v starship &> /dev/null; then
+        curl -sS https://starship.rs/install.sh | sh -s -- -y || { echo "Failed to install Starship prompt. Exiting."; exit 1; }
+    else
+        echo "Starship prompt is already installed. Skipping."
+    fi
+    
+    # check if zplug is already installed
+    if [ ! -d "$USER_HOME/.zplug" ]; then
+        curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh || { echo "Failed to install zplug. Exiting."; exit 1; }
+    else
+        echo "zplug is already installed. Skipping."
+    fi
 fi
 
 if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]; then
