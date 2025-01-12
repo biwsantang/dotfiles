@@ -8,10 +8,11 @@ fi
 
 REPO_URL="https://github.com/biwsantang/dotfiles.git"
 REPO_BRANCH="ubuntu"
-DOTFILES_DIR="$HOME/.dotfiles"
+USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
+DOTFILES_DIR="$USER_HOME/.dotfiles"
 
 # Check if dotfiles directory exists and is the correct repository
-if [ ! -d "$DOTFILES_DIR" ]; then
+if [ ! -d "$DOTFILES_DIR" ] || [ -z "$(ls -A "$DOTFILES_DIR")" ]; then
     # Ensure git is installed first
     if ! command -v git &> /dev/null; then
         sudo apt update
@@ -30,7 +31,7 @@ else
     
     # Verify the remote URL matches the expected repository
     if ! git remote get-url origin | grep -q "$REPO_URL"; then
-        echo "Error: ~/.dotfiles contains a different repository"
+        echo "Error: $USER_HOME/.dotfiles contains a different repository"
         exit 1
     fi
     
@@ -42,42 +43,24 @@ fi
 
 # check install apt package if it not already installed
 
-beta_repos=(
-    neovim-ppa/unstable
-)
+# Check if aptfile exists
+APTFILE="$DOTFILES_DIR/aptfile"
+echo "Checking for aptfile at: $APTFILE"  # Debug statement
+ls -l "$APTFILE"  # Debug statement to list the file details
+if [ ! -f "$APTFILE" ]; then
+    echo "Error: aptfile not found in $DOTFILES_DIR"
+    exit 1
+fi
 
-for repo in "${beta_repos[@]}"; do
-    if ! grep -r "$repo" /etc/apt/ &> /dev/null; then
-        sudo add-apt-repository -y "ppa:$repo" || { echo "Failed to add repository $repo. Exiting."; exit 1; }
-    else
-        echo "$repo is already added. Skipping."
-    fi
-done
+# Download aptfile binary to /tmp
+curl -o /tmp/aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile || { echo "Failed to download aptfile. Exiting."; exit 1; }
+chmod +x /tmp/aptfile || { echo "Failed to make aptfile executable. Exiting."; exit 1; }
 
-sudo apt update || { echo "Failed to update package list. Exiting."; exit 1; }
-
-packages=(
-    zsh
-    stow
-    git
-    jq
-    neovim
-    fzf
-    eza
-    tmux
-    bat
-)
-
-for pkg in "${packages[@]}"; do
-    if ! dpkg -s "$pkg" &> /dev/null; then
-        sudo apt install -y "$pkg" || { echo "Failed to install $pkg. Exiting."; exit 1; }
-    else
-        echo "$pkg is already installed. Skipping."
-    fi
-done
+# Use aptfile to install packages
+sudo /tmp/aptfile "$APTFILE" || { echo "Failed to install packages using aptfile. Exiting."; exit 1; }
 
 # check if zplug is already installed
-if [ ! -d "$HOME/.zplug" ]; then
+if [ ! -d "$USER_HOME/.zplug" ]; then
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh || { echo "Failed to install zplug. Exiting."; exit 1; }
 else
     echo "zplug is already installed. Skipping."
@@ -107,7 +90,7 @@ stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
 #     "asvetliakov.vscode-neovim|https://asvetliakov.gallery.vsassets.io/_apis/public/gallery/publisher/asvetliakov/extension/vscode-neovim/1.18.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"
 # )
 
-# if [ -d "$HOME/.local/share/code-server" ]; then
+# if [ -d "$USER_HOME/.local/share/code-server" ]; then
 #     for ENTRY in "${code_extension[@]}"; do
 #         # Split the entry into name and URL
 #         NAME="${ENTRY%%|*}"
@@ -135,27 +118,27 @@ stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
 
 #         echo "Extension '$NAME' installed successfully."
 #     done
-#     rm "$HOME/.local/share/code-server/User/settings.json"
-#     stow vscode -t "$HOME/.local/share/code-server"
+#     rm "$USER_HOME/.local/share/code-server/User/settings.json"
+#     stow vscode -t "$USER_HOME/.local/share/code-server"
 # else
 #     echo "Not found Code-server. Skiped"
 # fi
 
 add_source_if_not_exists() {
-    if ! grep -q "$1" ~/.zshrc; then
-        echo "$1" >> ~/.zshrc
+    if ! grep -q "$1" $USER_HOME/.zshrc; then
+        echo "$1" >> $USER_HOME/.zshrc
     fi
 }
 
 source_lines=(
-    "source ~/.config/zsh/alias.zsh"
-    "source ~/.config/zsh/rc.zsh"
-    "source ~/.config/zsh/prompt.zsh"
-    "source ~/.config/zplug/plugin.zsh"
+    "source $USER_HOME/.config/zsh/alias.zsh"
+    "source $USER_HOME/.config/zsh/rc.zsh"
+    "source $USER_HOME/.config/zsh/prompt.zsh"
+    "source $USER_HOME/.config/zplug/plugin.zsh"
 )
 
 for line in "${source_lines[@]}"; do
-    if ! grep -q "$line" ~/.zshrc; then
-        echo "$line" >> ~/.zshrc
+    if ! grep -q "$line" $USER_HOME/.zshrc; then
+        echo "$line" >> $USER_HOME/.zshrc
     fi
 done
