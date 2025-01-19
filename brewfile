@@ -1,0 +1,15 @@
+# tap a repository
+tap "neovim/neovim"
+
+# install some packages
+brew "zsh"
+brew "stow"
+brew "git"
+brew "jq"
+brew "neovim"
+brew "fzf"
+brew "eza"
+brew "tmux"
+brew "bat"
+brew "starship"
+brew "zplug"

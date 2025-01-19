@@ -1,0 +1,157 @@
+{
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["n"],
+            "after": ["j"]
+        },
+        {
+            "before": ["N"],
+            "after": ["J"]
+        },
+        {
+            "before": ["e"],
+            "after": ["k"]
+        },
+        {
+            "before": ["E"],
+            "after": ["K"]
+        },
+        {
+            "before": ["i"],
+            "after": ["l"]
+        },
+        {
+            "before": ["I"],
+            "after": ["L"]
+        },
+        {
+            "before": ["j"],
+            "after": ["e"]
+        },
+        {
+            "before": ["J"],
+            "after": ["E"]
+        },
+        {
+            "before": ["k"],
+            "after": ["n"]
+        },
+        {
+            "before": ["K"],
+            "after": ["n"]
+        },
+        {
+            "before": ["l"],
+            "after": ["i"]
+        },
+        {
+            "before": ["L"],
+            "after": ["i"]
+        },
+        ],
+    
+        "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": ["n"],
+            "after": ["j"]
+        },
+        {
+            "before": ["N"],
+            "after": ["J"]
+        },
+        {
+            "before": ["e"],
+            "after": ["k"]
+        },
+        {
+            "before": ["E"],
+            "after": ["K"]
+        },
+        {
+            "before": ["i"],
+            "after": ["l"]
+        },
+        {
+            "before": ["I"],
+            "after": ["L"]
+        },
+        {
+            "before": ["j"],
+            "after": ["e"]
+        },
+        {
+            "before": ["J"],
+            "after": ["E"]
+        },
+        {
+            "before": ["k"],
+            "after": ["n"]
+        },
+        {
+            "before": ["K"],
+            "after": ["n"]
+        },
+        {
+            "before": ["l"],
+            "after": ["i"]
+        },
+        {
+            "before": ["L"],
+            "after": ["i"]
+        },
+        ],
+    
+        "vim.operatorPendingModeKeyBindingsNonRecursive": [
+        {
+            "before": ["n"],
+            "after": ["j"]
+        },
+        {
+            "before": ["N"],
+            "after": ["J"]
+        },
+        {
+            "before": ["e"],
+            "after": ["k"]
+        },
+        {
+            "before": ["E"],
+            "after": ["K"]
+        },
+        {
+            "before": ["i"],
+            "after": ["l"]
+        },
+        {
+            "before": ["I"],
+            "after": ["L"]
+        },
+        {
+            "before": ["j"],
+            "after": ["e"]
+        },
+        {
+            "before": ["J"],
+            "after": ["E"]
+        },
+        {
+            "before": ["k"],
+            "after": ["n"]
+        },
+        {
+            "before": ["K"],
+            "after": ["n"]
+        },
+        {
+            "before": ["l"],
+            "after": ["i"]
+        },
+        {
+            "before": ["L"],
+            "after": ["i"]
+        },
+    ],
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+}

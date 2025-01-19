@@ -4,7 +4,7 @@ alias ls="eza"
 alias ll="ls -lahF"
 
 export BAT_THEME="ansi"
-alias cat="bat"
+alias cat="batcat"
 
 alias mkdir="mkdir -p"
 alias cp="cp -r"
