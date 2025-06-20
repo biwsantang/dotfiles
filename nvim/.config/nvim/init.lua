@@ -8,25 +8,25 @@ local is_vscode = vim.g.vscode ~= nil
 -- ====================
 
 -- Enable syntax highlighting
-vim.cmd('syntax on')
+vim.cmd('syntax on')  -- This enables syntax highlighting for various file types
 
 -- Enable true color support
-vim.opt.termguicolors = true
+vim.opt.termguicolors = true  -- This ensures that Neovim uses true colors in the terminal
 
 -- Line numbers
-vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.number = true  -- Show absolute line numbers
+vim.opt.relativenumber = true  -- Show relative line numbers
 
 -- Indentation settings
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.autoindent = true
+vim.opt.tabstop = 2  -- Number of spaces that a <Tab> in the file counts for
+vim.opt.shiftwidth = 2  -- Number of spaces to use for each step of (auto)indent
+vim.opt.autoindent = true  -- Copy indent from current line when starting a new line
 
 -- Search settings
-vim.opt.hlsearch = true
+vim.opt.hlsearch = true  -- Highlight all matches of the previous search pattern
 
 -- Show ruler
-vim.opt.ruler = true
+vim.opt.ruler = true  -- Show the cursor position all the time
 
 -- ====================
 -- Core keymaps (Active in both environments)
@@ -45,8 +45,33 @@ vim.keymap.set({'n', 'v'}, 'dl', 'di', { noremap = true })
 vim.keymap.set({'n', 'v'}, 'di', 'dl', { noremap = true })
 
 -- ====================
--- Plugin loading
+-- VSCode-specific keybindings (only active when running in VSCode)
+-- ====================
+if is_vscode then
+  -- Set leader key (if not already set elsewhere)
+  -- vim.g.mapleader = " "
+  
+  -- Copilot keybindings for VSCode
+  vim.keymap.set('n', '<Leader>gc', function()
+    vim.fn.VSCodeNotify('workbench.panel.chat')
+  end)
+  
+  vim.keymap.set('n', '<Leader>ge', function()
+    vim.fn.VSCodeNotify('workbench.action.chat.openEditSession')
+  end)
+end
+
+-- ====================
+-- Non-VSCode-specific keybindings (only active when not running in VSCode)
 -- ====================
 if not is_vscode then
-  require('config.lazy')
+  -- Example keymaps
+  -- vim.keymap.set('n', '<Leader>w', ':w<CR>', { noremap = true, silent = true })  -- Save file
+  -- vim.keymap.set('n', '<Leader>q', ':q<CR>', { noremap = true, silent = true })  -- Quit
+  -- vim.keymap.set('n', '<Leader>h', ':nohlsearch<CR>', { noremap = true, silent = true })  -- Clear search highlight
 end
+
+-- ====================
+-- Plugin loading
+-- ====================
+require('config.lazy')

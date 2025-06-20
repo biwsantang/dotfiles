@@ -1,6 +1,15 @@
-return {{
+local utils = require("core.utils")
+
+return {
+  {
     'williamboman/mason.nvim',
-    dependencies = {'hrsh7th/cmp-nvim-lsp', 'hrsh7th/nvim-cmp', 'neovim/nvim-lspconfig', 'williamboman/mason-lspconfig.nvim'},
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/nvim-cmp',
+      'neovim/nvim-lspconfig',
+      'williamboman/mason-lspconfig.nvim'
+    },
+    enabled = utils.not_in_vscode,
     config = function()
         -- LSP capabilities setup
         local lspconfig_defaults = require('lspconfig').util.default_config
@@ -8,6 +17,7 @@ return {{
             require('cmp_nvim_lsp').default_capabilities())
 
         -- LSP servers setup
+				require('mason').setup({})
         require('mason-lspconfig').setup_handlers({function(server_name)
             require('lspconfig')[server_name].setup({})
         end})
@@ -31,4 +41,21 @@ return {{
             end
         })
     end
-}, {'williamboman/mason-lspconfig.nvim'}, {'neovim/nvim-lspconfig'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/nvim-cmp'}}
+  },
+  {
+    'neovim/nvim-lspconfig',
+    enabled = utils.not_in_vscode
+  },
+  {
+    'williamboman/mason-lspconfig.nvim',
+    enabled = utils.not_in_vscode
+  },
+  {
+    'hrsh7th/cmp-nvim-lsp',
+    enabled = utils.not_in_vscode
+  },
+  {
+    'hrsh7th/nvim-cmp',
+    enabled = utils.not_in_vscode
+  }
+}

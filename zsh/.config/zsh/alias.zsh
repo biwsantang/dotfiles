@@ -4,12 +4,13 @@ alias ls="eza"
 alias ll="ls -lahF"
 
 export BAT_THEME="ansi"
-alias cat="batcat"
+# alias cat="batcat"
+alias cat="bat"
 
 alias mkdir="mkdir -p"
 alias cp="cp -r"
 
-alias nvim="tmux_nvim"
+#alias nvim="tmux_nvim"
 
 alias cb="cd .."
 alias ch="cd ~"
@@ -24,10 +25,13 @@ function t() {
 	tmux new-session -A -s $X
 }
 
-function tmux_nvim() {
-    if [[ -n $TMUX ]]; then
-        tmux new-window -c "${PWD}" "command nvim $@"
-    else
-        command nvim $@
-    fi
-}
+#function tmux_nvim() {
+#    if [[ -n $TMUX ]]; then
+#        tmux new-window -c "${PWD}" "command nvim $@"
+#    else
+#        command nvim $@
+#    fi
+# }
+
+export EDITOR="/opt/homebrew/bin/nvim"
+export VISUAL="/opt/homebrew/bin/nvim"

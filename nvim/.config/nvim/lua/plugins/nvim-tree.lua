@@ -1,12 +1,17 @@
+local utils = require("core.utils")
+
 return {{
     'nvim-tree/nvim-web-devicons',
-    lazy = true
+    lazy = true,
+    enabled = utils.not_in_vscode
 }, {
     'b0o/nvim-tree-preview.lua',
     dependencies = {'nvim-lua/plenary.nvim'},
-    lazy = true
+    lazy = true,
+    enabled = utils.not_in_vscode
 }, {
     'nvim-tree/nvim-tree.lua',
+    enabled = utils.not_in_vscode,
     config = function()
         local function my_on_attach(bufnr)
             local api = require 'nvim-tree.api'

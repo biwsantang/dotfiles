@@ -1,19 +1,20 @@
+local utils = require("core.utils")
+
 return {
-	{
-		"nvim-lua/plenary.nvim",
-		lazy = true,
-	},
 	{
 		"nvim-treesitter/nvim-treesitter",
 		lazy = true,
+		enabled = utils.not_in_vscode,
 	},
 	{
 		"github/copilot.vim",
 		lazy = true,
+		enabled = utils.not_in_vscode,
 	},
 	{
 		"olimorris/codecompanion.nvim",
 		lazy = false,
+		enabled = utils.not_in_vscode,
 		config = function()
 			require("codecompanion").setup()
 			-- Add CodeCompanion keymaps
