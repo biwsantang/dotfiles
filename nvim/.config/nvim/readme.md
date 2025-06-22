@@ -1,4 +1,150 @@
-# This is my personal nvim configuration
+# My Neovim Configuration
 
-<leader>ff = find files via telescope
+This is my personal Neovim configuration optimized for Colemak-DH keyboard layout with a rich set of plugins and features.
 
+## Basic Settings
+
+```vim
+set termguicolors     " Enable true color support
+set number            " Show line numbers
+set relativenumber    " Show relative line numbers for easy navigation
+set tabstop=2         " Number of spaces for a tab
+set shiftwidth=2      " Number of spaces for each indentation level
+set autoindent        " Enable auto indentation
+set hlsearch          " Highlight search results
+set ruler             " Show cursor position
+```
+
+## Core Keybindings
+
+### Navigation Keys (Colemak-DH Optimized)
+| Key | Action | Original Vim Key |
+|-----|--------|-----------------|
+| `n` | Move down | `j` |
+| `e` | Move up | `k` |
+| `i` | Move right | `l` |
+| `j` | Jump to end of word | `e` |
+| `k` | Find next search match | `n` |
+| `l` | Enter insert mode | `i` |
+
+### Change/Delete Operations
+| Key | Action |
+|-----|--------|
+| `cl` | Change inner (remapped from `ci`) |
+| `ci` | Change line (remapped from `cl`) |
+| `dl` | Delete inner (remapped from `di`) |
+| `di` | Delete line (remapped from `dl`) |
+
+## Plugin Keymaps
+
+### LSP (Language Server Protocol)
+| Key | Action |
+|-----|--------|
+| `gd` | Go to definition |
+| `gD` | Go to declaration |
+| `gi` | Go to implementation |
+| `go` | Go to type definition |
+| `gr` | Find references |
+| `gs` | Show signature help |
+| `<F2>` | Rename symbol |
+| `<F3>` | Format code |
+| `<F4>` | Code actions |
+
+### Telescope
+| Key | Action |
+|-----|--------|
+| `<leader>ff` | Find files |
+
+### Nvim-Tree
+| Key | Action |
+|-----|--------|
+| `<leader>e` | Toggle file explorer and focus |
+| `<leader>E` | Close file explorer |
+| `o` | Open file |
+| `O` | Open file (no window picker) |
+| `P` | Preview file (watch mode) |
+
+### CodeCompanion
+| Key | Action |
+|-----|--------|
+| `<C-a>` | Show CodeCompanion actions |
+| `<LocalLeader>a` | Toggle CodeCompanion chat |
+| `ga` | Add selection to chat (visual mode) |
+
+### Window Management
+| Key | Action |
+|-----|--------|
+| `<leader>wn` | Pick window |
+
+### VSCode Integration
+| Key | Action |
+|-----|--------|
+| `<Leader>gc` | Open VSCode chat panel |
+| `<Leader>ge` | Open VSCode edit session |
+
+## Installed Plugins
+
+1. **LSP Support**
+   - mason.nvim (LSP package manager)
+   - nvim-lspconfig (LSP configuration)
+   - nvim-cmp (Autocompletion)
+
+2. **File Navigation**
+   - telescope.nvim (Fuzzy finder)
+   - nvim-tree.lua (File explorer)
+   - nvim-tree-preview (File preview)
+
+3. **Git Integration**
+   - diffview.nvim (Git diff viewer)
+
+4. **AI Integration**
+   - codecompanion.nvim (AI coding assistant)
+   - avante.nvim (Copilot integration)
+   - github/copilot.vim
+
+5. **UI Enhancement**
+   - lightline.vim (Status line)
+   - nvim-web-devicons (File icons)
+   - nvim-window (Window picker)
+
+6. **Theme and Colors**
+   - dracula.nvim
+   - github-nvim-theme
+   - auto-dark-mode.nvim (Auto theme switching)
+
+7. **Markdown Support**
+   - render-markdown.nvim
+
+## Features
+
+- **Smart Theme Switching**: Automatically switches between light and dark themes
+- **LSP Integration**: Full language server support with auto-completion
+- **File Icons**: Enhanced visual file identification
+- **Git Integration**: Advanced diff viewing capabilities
+- **AI Assistance**: Multiple AI coding assistants integrated
+- **Markdown Preview**: Built-in markdown rendering
+- **Window Management**: Easy window navigation and management
+- **VSCode Compatibility**: Special features when running in VSCode
+
+## Usage Tips
+
+1. **Basic Navigation**:
+   - Use Colemak-DH optimized movement keys
+   - Use relative line numbers for quick jumps
+
+2. **Code Navigation**:
+   - Use LSP features for smart code navigation
+   - Use Telescope for fuzzy finding files and text
+
+3. **File Management**:
+   - Use nvim-tree for file exploration
+   - Preview files before opening them
+
+4. **AI Assistance**:
+   - Use CodeCompanion for AI-powered coding help
+   - Leverage Copilot for code suggestions
+
+5. **Git Workflow**:
+   - Use Diffview for clear git diff visualization
+
+Note: Some features are disabled when running in VSCode to prevent conflicts with VSCode's native functionality.
