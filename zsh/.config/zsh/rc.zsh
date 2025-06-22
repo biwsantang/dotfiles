@@ -1,7 +1,12 @@
+# Only rebuild completion cache once per day
 autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 zstyle ':completion:*' menu select
 zmodload zsh/complist
-compinit -i
 _comp_options+=(globdots)
 
 autoload edit-command-line; zle -N edit-command-line
