@@ -1,9 +1,9 @@
 # Only rebuild completion cache once per day
 autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-  compinit
+  [[ -n "$ZSH_DISABLE_COMPFIX" ]] && compinit -u || compinit
 else
-  compinit -C
+  [[ -n "$ZSH_DISABLE_COMPFIX" ]] && compinit -C -u || compinit -C
 fi
 zstyle ':completion:*' menu select
 zmodload zsh/complist
