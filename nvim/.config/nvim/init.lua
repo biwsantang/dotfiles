@@ -51,14 +51,7 @@ if is_vscode then
   -- Set leader key (if not already set elsewhere)
   -- vim.g.mapleader = " "
   
-  -- Copilot keybindings for VSCode
-  vim.keymap.set('n', '<Leader>gc', function()
-    vim.fn.VSCodeNotify('workbench.panel.chat')
-  end)
-  
-  vim.keymap.set('n', '<Leader>ge', function()
-    vim.fn.VSCodeNotify('workbench.action.chat.openEditSession')
-  end)
+  -- VSCode specific keybindings can be added here
 end
 
 -- ====================

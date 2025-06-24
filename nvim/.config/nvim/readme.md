@@ -64,23 +64,24 @@ set ruler             " Show cursor position
 | `O` | Open file (no window picker) |
 | `P` | Preview file (watch mode) |
 
-### CodeCompanion
-| Key | Action |
-|-----|--------|
-| `<C-a>` | Show CodeCompanion actions |
-| `<LocalLeader>a` | Toggle CodeCompanion chat |
-| `ga` | Add selection to chat (visual mode) |
-
 ### Window Management
 | Key | Action |
 |-----|--------|
 | `<leader>wn` | Pick window |
 
-### VSCode Integration
+### Claude Code
 | Key | Action |
 |-----|--------|
-| `<Leader>gc` | Open VSCode chat panel |
-| `<Leader>ge` | Open VSCode edit session |
+| `<leader>ac` | Toggle Claude |
+| `<leader>af` | Focus Claude |
+| `<leader>ar` | Resume Claude |
+| `<leader>aC` | Continue Claude |
+| `<leader>ab` | Add buffer to Claude |
+| `<leader>as` | Send selection to Claude (visual mode) |
+| `<leader>aa` | Accept diff changes |
+| `<leader>ad` | Deny diff changes |
+
+use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 
 ## Installed Plugins
 
@@ -97,23 +98,21 @@ set ruler             " Show cursor position
 3. **Git Integration**
    - diffview.nvim (Git diff viewer)
 
-4. **AI Integration**
-   - codecompanion.nvim (AI coding assistant)
-   - avante.nvim (Copilot integration)
-   - github/copilot.vim
-
-5. **UI Enhancement**
+4. **UI Enhancement**
    - lightline.vim (Status line)
    - nvim-web-devicons (File icons)
    - nvim-window (Window picker)
 
-6. **Theme and Colors**
+5. **Theme and Colors**
    - dracula.nvim
    - github-nvim-theme
    - auto-dark-mode.nvim (Auto theme switching)
 
-7. **Markdown Support**
+6. **Markdown Support**
    - render-markdown.nvim
+
+7. **AI Integration**
+   - claudecode.nvim (Claude Code integration)
 
 ## Features
 
@@ -121,7 +120,6 @@ set ruler             " Show cursor position
 - **LSP Integration**: Full language server support with auto-completion
 - **File Icons**: Enhanced visual file identification
 - **Git Integration**: Advanced diff viewing capabilities
-- **AI Assistance**: Multiple AI coding assistants integrated
 - **Markdown Preview**: Built-in markdown rendering
 - **Window Management**: Easy window navigation and management
 - **VSCode Compatibility**: Special features when running in VSCode
@@ -140,11 +138,7 @@ set ruler             " Show cursor position
    - Use nvim-tree for file exploration
    - Preview files before opening them
 
-4. **AI Assistance**:
-   - Use CodeCompanion for AI-powered coding help
-   - Leverage Copilot for code suggestions
-
-5. **Git Workflow**:
+4. **Git Workflow**:
    - Use Diffview for clear git diff visualization
 
 Note: Some features are disabled when running in VSCode to prevent conflicts with VSCode's native functionality.
