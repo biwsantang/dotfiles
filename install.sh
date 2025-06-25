@@ -109,6 +109,7 @@ fi
 
 stow nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
 stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
+stow ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
 
 # disabled code-server config install due to change to use vscode-web instead
 
