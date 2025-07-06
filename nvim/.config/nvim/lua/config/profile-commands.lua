@@ -75,3 +75,5 @@ vim.keymap.set("n", "<leader>pm", "<cmd>ProfileRestart minimal<CR>", { desc = "R
 vim.keymap.set("n", "<leader>pd", "<cmd>ProfileRestart dev<CR>", { desc = "Restart with dev profile" })
 vim.keymap.set("n", "<leader>pf", "<cmd>ProfileRestart full<CR>", { desc = "Restart with full profile" })
 vim.keymap.set("n", "<leader>pi", "<cmd>ProfileInfo<CR>", { desc = "Show profile info" })
+
+-- Note: VSCode profile is auto-detected, no manual switching needed

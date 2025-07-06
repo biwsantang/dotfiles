@@ -31,10 +31,19 @@ M.profiles = {
     "claudecode",
     "zellij-nav",
   },
+  
+  vscode = {
+    "colorschemes",
+  },
 }
 
 -- Get current profile from environment variable or default
 function M.get_current_profile()
+  -- Auto-detect VSCode
+  if vim.g.vscode then
+    return "vscode"
+  end
+  
   local profile = os.getenv("NVIM_PROFILE") or "dev"
   if not M.profiles[profile] then
     vim.notify("Profile '" .. profile .. "' not found, using 'dev'", vim.log.levels.WARN)
