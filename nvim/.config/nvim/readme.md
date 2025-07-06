@@ -124,6 +124,37 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 - **Window Management**: Easy window navigation and management
 - **VSCode Compatibility**: Special features when running in VSCode
 
+## Profile System
+
+This configuration supports profile-based plugin loading for faster startup times:
+
+### Available Profiles
+- **minimal** (2 plugins): Basic setup with colorschemes and lightline
+- **dev** (7 plugins): Development setup with LSP, treesitter, and core tools
+- **full** (12 plugins): Complete setup with all plugins enabled
+
+### Usage
+
+**Start with specific profile:**
+```bash
+NVIM_PROFILE=minimal nvim
+NVIM_PROFILE=dev nvim
+NVIM_PROFILE=full nvim
+```
+
+**Profile commands:**
+- `:ProfileInfo` - Show current profile information
+- `:ProfileSet <profile>` - Set profile (requires restart)
+- `:ProfileRestart <profile>` - Restart with different profile
+
+**Profile keymaps:**
+- `<leader>pm` - Restart with minimal profile
+- `<leader>pd` - Restart with dev profile
+- `<leader>pf` - Restart with full profile
+- `<leader>pi` - Show profile info
+
+Default profile is `dev` if no `NVIM_PROFILE` environment variable is set.
+
 ## Usage Tips
 
 1. **Basic Navigation**:
@@ -132,7 +163,7 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 
 2. **Code Navigation**:
    - Use LSP features for smart code navigation
-   - Use Telescope for fuzzy finding files and text
+   - Use FZF-Lua for fuzzy finding files and text
 
 3. **File Management**:
    - Use nvim-tree for file exploration
@@ -140,5 +171,10 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 
 4. **Git Workflow**:
    - Use Diffview for clear git diff visualization
+
+5. **Performance**:
+   - Use minimal profile for quick edits
+   - Use dev profile for regular coding
+   - Use full profile when you need all features
 
 Note: Some features are disabled when running in VSCode to prevent conflicts with VSCode's native functionality.

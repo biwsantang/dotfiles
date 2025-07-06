@@ -68,3 +68,8 @@ end
 -- Plugin loading
 -- ====================
 require('config.lazy')
+
+-- ====================
+-- Profile system
+-- ====================
+require('config.profile-commands')
