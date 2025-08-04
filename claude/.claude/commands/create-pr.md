@@ -28,7 +28,8 @@ Or with options:
 6. Analyzes the commit diff from the determined base branch
 7. Creates a comprehensive PR summary based on all commits and changes
 8. Writes the PR body to a temporary file
-9. Uses `gh pr create --body-file` to create the pull request with the generated description
+9. **If no PR exists**: Uses `gh pr create --body-file` to create the pull request with the generated description
+10. **If PR already exists**: Uses `gh pr edit --body-file <temp-file> --title "<updated-title>"` to update the existing PR with the latest changes
 
 ## Best Practices for Pull Requests
 
@@ -104,8 +105,29 @@ The command automatically determines the target base branch:
 - If PR template exists, uses it as the structure and fills in the relevant sections
 - If no template exists, generates PR body using the default structure below
 - Writes the PR body content to a temporary file
-- Uses `gh pr create --title "<generated-title>" --body-file <temp-file>` for proper formatting and special characters
-- Cleans up temporary file after PR creation
+- **New PR**: Uses `gh pr create --title "<generated-title>" --body-file <temp-file>` for proper formatting and special characters
+- **Existing PR**: Uses `gh pr edit --body-file <temp-file> --title "<updated-title>"` to update the PR with latest changes
+- Cleans up temporary file after PR creation/update
+
+## Common Scenarios and Error Handling
+
+### Scenario 1: First Time Creating PR
+- Command creates a new PR using `gh pr create`
+- Generates title and body based on commit analysis
+
+### Scenario 2: PR Already Exists
+- **Issue**: `GraphQL: A pull request already exists for <branch>. (createPullRequest)`
+- **Solution**: Command automatically detects existing PR and switches to update mode
+- Uses `gh pr edit --body-file <temp-file> --title "<updated-title>"` to update the existing PR
+- Updates both title and description to reflect latest changes
+
+### Scenario 3: Uncommitted Changes
+- **Issue**: Working directory has uncommitted changes
+- **Solution**: Command stops and prompts user to commit changes first
+
+### Scenario 4: Branch Not Pushed
+- **Issue**: Current branch doesn't exist on remote
+- **Solution**: Command pushes branch with `git push -u origin <branch>`
 
 ## Important Notes
 
@@ -119,3 +141,4 @@ The command automatically determines the target base branch:
 - Always reviews the full commit history to ensure the PR description is comprehensive
 - Uses conventional commit prefixes in the title when appropriate
 - Automatically adds the Claude Code attribution footer
+- **Handles existing PRs gracefully**: If a PR already exists for the branch, the command updates it instead of failing
