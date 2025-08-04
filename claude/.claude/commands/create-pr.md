@@ -17,16 +17,18 @@ Or with options:
 
 ## What This Command Does
 
-1. Checks the current git status to verify there are no uncommitted changes
-2. If there are uncommitted changes, tells the user to commit them first
-3. Verifies the current branch is pushed to remote (pushes if needed)
-4. Intelligently determines the appropriate base branch:
+1. Fetches latest changes from origin with `git fetch origin`
+2. Checks the current git status to verify there are no uncommitted changes
+3. If there are uncommitted changes, tells the user to commit them first
+4. Verifies the current branch is pushed to remote (pushes if needed)
+5. Intelligently determines the appropriate base branch:
    - Feature branches → `develop` (if it exists) or `main`
    - `develop` branch → `main`
    - Other branches → `main` (unless specified)
-5. Analyzes the commit history from the determined base branch
-6. Creates a comprehensive PR summary based on all commits and changes
-7. Uses `gh pr create` to create the pull request with proper title and description
+6. Analyzes the commit diff from the determined base branch
+7. Creates a comprehensive PR summary based on all commits and changes
+8. Writes the PR body to a temporary file
+9. Uses `gh pr create --body-file` to create the pull request with the generated description
 
 ## Best Practices for Pull Requests
 
@@ -78,11 +80,20 @@ The command automatically determines the target base branch:
 - **Other branches**: Target `main` unless `--base` is specified
 - **Override**: Use `--base <branch>` to specify a different target
 
+## Implementation Details
+
+- Fetches origin to ensure up-to-date comparison with base branch
+- Uses `git diff <base-branch>...` to analyze all changes in the current branch compared to the target base branch
+- Generates PR body content and writes to a temporary file
+- Uses `gh pr create --body-file <temp-file>` for proper formatting and special characters
+- Cleans up temporary file after PR creation
+
 ## Important Notes
 
 - **Prerequisites**: All changes must be committed and pushed before creating a PR
 - If there are uncommitted changes, the command will stop and ask you to commit them first
 - If the branch isn't pushed to remote, it will push with the `-u` flag
+- Always fetches origin first to ensure base branch comparison is current
 - The command analyzes ALL commits in the current branch since it diverged from the base branch
 - Smart base branch detection follows common Git Flow patterns
 - The PR description includes both a summary of changes and a test plan
