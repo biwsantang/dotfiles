@@ -1,5 +1,3 @@
-local utils = require("core.utils")
-
 return {
   -- add dracula
   { "Mofiqul/dracula.nvim" },
@@ -7,7 +5,6 @@ return {
   'projekt0n/github-nvim-theme',
   name = 'github-theme',
   lazy = false,
-  enabled = utils.not_in_vscode,
   config = function()
     require('github-theme').setup({
       options = {

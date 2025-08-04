@@ -1,9 +1,6 @@
-local utils = require("core.utils")
-
 return {
   {
     "coder/claudecode.nvim",
-    cond = utils.not_in_vscode,
     config = function()
       require("claudecode").setup({})
       

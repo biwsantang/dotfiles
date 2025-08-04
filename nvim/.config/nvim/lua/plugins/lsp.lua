@@ -1,5 +1,3 @@
-local utils = require("core.utils")
-
 return {
   {
     'williamboman/mason.nvim',
@@ -9,7 +7,6 @@ return {
       'neovim/nvim-lspconfig',
       'williamboman/mason-lspconfig.nvim'
     },
-    enabled = utils.not_in_vscode,
     config = function()
         -- LSP capabilities setup
         local lspconfig_defaults = require('lspconfig').util.default_config
@@ -43,19 +40,15 @@ return {
     end
   },
   {
-    'neovim/nvim-lspconfig',
-    enabled = utils.not_in_vscode
+    'neovim/nvim-lspconfig'
   },
   {
-    'williamboman/mason-lspconfig.nvim',
-    enabled = utils.not_in_vscode
+    'williamboman/mason-lspconfig.nvim'
   },
   {
-    'hrsh7th/cmp-nvim-lsp',
-    enabled = utils.not_in_vscode
+    'hrsh7th/cmp-nvim-lsp'
   },
   {
-    'hrsh7th/nvim-cmp',
-    enabled = utils.not_in_vscode
+    'hrsh7th/nvim-cmp'
   }
 }

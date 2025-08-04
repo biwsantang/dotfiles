@@ -1,10 +1,7 @@
-local utils = require("core.utils")
-
 return {
   {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    enabled = utils.not_in_vscode,
     config = function()
       require('fzf-lua').setup{
         files = {

@@ -1,10 +1,7 @@
-local utils = require("core.utils")
-
 return {
     {
         "swaits/zellij-nav.nvim",
         lazy = true,
-        enabled = utils.not_in_vscode,
         event = "VeryLazy",
         keys = {
             { "<c-h>", "<cmd>ZellijNavigateLeft<cr>",  { silent = true, desc = "navigate left"  } },
