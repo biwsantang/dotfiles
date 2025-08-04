@@ -48,13 +48,26 @@ The command creates PRs using this priority:
 **Title**: Brief description of the main change
 **Body**:
 ```
-## Summary
-- Bullet point 1: Key change description
-- Bullet point 2: Additional important change
-- Bullet point 3: Other notable modifications
+## Description
+Describe the changes made and why they were made.
 
-## Test plan
-[Checklist of steps for testing the pull request]
+## Related Issue(s)
+Link or list the issue(s) this PR addresses (e.g., Closes #123).
+
+## Type of change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## How has this been tested?
+Describe the testing performed to ensure the changes are working as expected.
+
+## Checklist for Reviewers
+- [ ] Code follows project style guidelines.
+- [ ] Tests cover the new functionality or bug fixes.
+- [ ] Documentation is updated if necessary.
+- [ ] Changes do not introduce new security vulnerabilities.
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 ```
