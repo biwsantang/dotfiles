@@ -15,6 +15,29 @@ set hlsearch          " Highlight search results
 set ruler             " Show cursor position
 ```
 
+## Keyboard Layout Switching
+
+This configuration supports switching between **Colemak-DH** and **QWERTY** keyboard layouts on the fly. This is useful when:
+- Connecting from mobile devices (which typically use QWERTY)
+- Switching between physical keyboards with different layouts
+- Sharing your screen with someone who uses a different layout
+
+### Layout Commands
+| Command | Description |
+|---------|-------------|
+| `:KeyboardQwerty` | Switch to QWERTY layout |
+| `:KeyboardColemak` | Switch to Colemak layout |
+| `:KeyboardToggle` | Toggle between layouts |
+| `:KeyboardStatus` | Show current layout |
+
+### Layout Keybindings
+| Key | Action |
+|-----|--------|
+| `<leader>kq` | Switch to QWERTY |
+| `<leader>kc` | Switch to Colemak |
+| `<leader>kt` | Toggle layout |
+| `<leader>ks` | Show current layout |
+
 ## Core Keybindings
 
 ### Navigation Keys (Colemak-DH Optimized)
@@ -34,6 +57,8 @@ set ruler             " Show cursor position
 | `ci` | Change line (remapped from `cl`) |
 | `dl` | Delete inner (remapped from `di`) |
 | `di` | Delete line (remapped from `dl`) |
+
+**Note:** These remappings are active when using Colemak layout. Switch to QWERTY layout to use standard Vim keybindings.
 
 ## Plugin Keymaps
 

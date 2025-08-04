@@ -29,20 +29,33 @@ vim.opt.hlsearch = true  -- Highlight all matches of the previous search pattern
 vim.opt.ruler = true  -- Show the cursor position all the time
 
 -- ====================
--- Core keymaps (Active in both environments)
+-- Keyboard Layout Management
 -- ====================
-vim.keymap.set({'n', 'v'}, 'n', 'j', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'e', 'k', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'i', 'l', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'j', 'e', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'k', 'n', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'l', 'i', { noremap = true })
+local keyboard_layout = require('config.keyboard-layout')
+keyboard_layout.setup() -- Initialize with Colemak by default
 
-vim.keymap.set({'n', 'v'}, 'cl', 'ci', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'ci', 'cl', { noremap = true })
+-- Commands for switching keyboard layouts
+vim.api.nvim_create_user_command('KeyboardColemak', function()
+  keyboard_layout.switch_to_colemak()
+end, { desc = 'Switch to Colemak keyboard layout' })
 
-vim.keymap.set({'n', 'v'}, 'dl', 'di', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'di', 'dl', { noremap = true })
+vim.api.nvim_create_user_command('KeyboardQwerty', function()
+  keyboard_layout.switch_to_qwerty()
+end, { desc = 'Switch to QWERTY keyboard layout' })
+
+vim.api.nvim_create_user_command('KeyboardToggle', function()
+  keyboard_layout.toggle_layout()
+end, { desc = 'Toggle between Colemak and QWERTY layouts' })
+
+vim.api.nvim_create_user_command('KeyboardStatus', function()
+  vim.notify('Current keyboard layout: ' .. keyboard_layout.get_current_layout(), vim.log.levels.INFO)
+end, { desc = 'Show current keyboard layout' })
+
+-- Optional: Add keybindings for quick switching
+vim.keymap.set('n', '<leader>kc', '<cmd>KeyboardColemak<CR>', { desc = 'Switch to Colemak' })
+vim.keymap.set('n', '<leader>kq', '<cmd>KeyboardQwerty<CR>', { desc = 'Switch to QWERTY' })
+vim.keymap.set('n', '<leader>kt', '<cmd>KeyboardToggle<CR>', { desc = 'Toggle keyboard layout' })
+vim.keymap.set('n', '<leader>ks', '<cmd>KeyboardStatus<CR>', { desc = 'Show keyboard layout' })
 
 -- ====================
 -- VSCode-specific keybindings (only active when running in VSCode)
