@@ -1,0 +1,3 @@
+# Ignore everything in .claude directory except CLAUDE.md, hooks directory, and settings.json
+# This will ignore all files that are NOT CLAUDE.md, hooks/, or settings.json
+^/\.claude/(?!(CLAUDE\.md$|hooks(/.*)?$|settings\.json$)).*
