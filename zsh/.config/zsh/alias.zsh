@@ -18,6 +18,7 @@ alias ch="cd ~"
 alias cc="claude"
 alias ccb="claude --dangerously-skip-permissions"
 alias ccc="claude --dangerously-skip-permissions '/commit'"
+alias ccpr="claude --dangerously-skip-permissions '/pr'"
 
 function hs() {
 	print -z $( ([ -n "$ZSH_NAME" ] && history -100) | fzf --tac --no-sort | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
