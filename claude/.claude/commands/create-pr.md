@@ -40,7 +40,10 @@ Or with options:
 
 ## Pull Request Structure
 
-The command creates PRs with this format:
+The command creates PRs using this priority:
+
+1. **If `.github/pull_request_template.md` exists**: Uses the template structure and fills in relevant sections
+2. **If no template exists**: Uses the default format below:
 
 **Title**: Brief description of the main change
 **Body**:
@@ -83,9 +86,12 @@ The command automatically determines the target base branch:
 ## Implementation Details
 
 - Fetches origin to ensure up-to-date comparison with base branch
+- Checks for existing PR template at `.github/pull_request_template.md`
 - Uses `git diff <base-branch>...` to analyze all changes in the current branch compared to the target base branch
-- Generates PR body content and writes to a temporary file
-- Uses `gh pr create --body-file <temp-file>` for proper formatting and special characters
+- If PR template exists, uses it as the structure and fills in the relevant sections
+- If no template exists, generates PR body using the default structure below
+- Writes the PR body content to a temporary file
+- Uses `gh pr create --title "<generated-title>" --body-file <temp-file>` for proper formatting and special characters
 - Cleans up temporary file after PR creation
 
 ## Important Notes
