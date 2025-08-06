@@ -1,5 +1,8 @@
 # Fish configuration - converted from Zsh setup
 
+# Source .fishprofile shell environment variables
+source $HOME/.fishprofile
+
 # Environment variables from .zshrc
 set -gx PATH $PATH /Users/biwsantang/.cache/lm-studio/bin
 set -gx PATH /Users/biwsantang/.bun/bin $PATH
@@ -86,4 +89,10 @@ if status is-interactive
 
     # Enable completion with underline for valid paths
     set -g fish_color_valid_path --underline
+
+    # Check if our Terminal emulator is Ghostty
+		if [ "$TERM" = "xterm-ghostty" ]
+				# Launch zellij
+				eval (zellij setup --generate-auto-start fish | string collect)
+		end
 end
