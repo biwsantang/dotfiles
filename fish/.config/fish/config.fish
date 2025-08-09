@@ -42,7 +42,11 @@ if status is-interactive
     alias cc="claude"
     alias ccb="claude --dangerously-skip-permissions"
     alias ccc="claude --dangerously-skip-permissions '/commit'"
-    alias ccpr="claude --dangerously-skip-permissions '/pr'"
+    
+    # Claude PR function
+    function ccpr
+        claude --dangerously-skip-permissions "/pr $argv"
+    end
 
     # Functions (converted from Zsh)
 
