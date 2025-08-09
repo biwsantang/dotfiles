@@ -1,6 +1,6 @@
 format = """
 $os$username$hostname$all
-- ${custom.TZdate}$time
+- $time
 
 $character
 """
@@ -26,10 +26,11 @@ disabled = false
 style = "italic"
 format = "[$time]($style)"
 
-[custom.TZdate]
-style = "italic"
-command = "date +'%a %d %b'"
-when = true
+# disable due to slow performence
+#[custom.TZdate]
+#style = "italic"
+#command = "date +'%a %d %b'"
+#when = true
 
 [character]
 format = "👉 "
