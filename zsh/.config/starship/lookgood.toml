@@ -33,4 +33,5 @@ format = "[$time]($style)"
 #when = true
 
 [character]
-format = "👉 "
+success_symbol = "👉 "
+error_symbol = "👎 "
