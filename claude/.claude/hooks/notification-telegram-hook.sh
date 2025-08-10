@@ -19,9 +19,9 @@ CWD=$(echo "$INPUT" | jq -r '.cwd // "Unknown directory"')
 SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // "Unknown session"')
 
 # Only send notification when Claude is waiting for input
-if [[ "$MESSAGE" != "Claude is waiting for your input" ]]; then
-    exit 0
-fi
+# if [[ "$MESSAGE" != "Claude is waiting for your input" ]]; then
+#    exit 0
+# fi
 
 # Get the latest Claude response from the transcript
 LATEST_CLAUDE_RESPONSE="No response available"
