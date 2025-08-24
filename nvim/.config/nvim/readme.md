@@ -108,6 +108,17 @@ This configuration supports switching between **Colemak-DH** and **QWERTY** keyb
 
 use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 
+### Comment.nvim
+| Key | Action |
+|-----|--------|
+| `gcc` | Toggle line comment |
+| `gbc` | Toggle block comment |
+| `gc` + motion | Comment region (e.g., `gcap` for paragraph) |
+| `gb` + motion | Block comment region |
+| `gcO` | Add comment above current line |
+| `gco` | Add comment below current line |
+| `gcA` | Add comment at end of line |
+
 ## Installed Plugins
 
 1. **LSP Support**
@@ -139,6 +150,10 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 7. **AI Integration**
    - claudecode.nvim (Claude Code integration)
 
+8. **Code Editing**
+   - Comment.nvim (Smart code commenting)
+   - nvim-ts-context-commentstring (Context-aware comments for embedded languages)
+
 ## Features
 
 - **Smart Theme Switching**: Automatically switches between light and dark themes
@@ -155,8 +170,8 @@ This configuration supports profile-based plugin loading for faster startup time
 
 ### Available Profiles
 - **minimal** (2 plugins): Basic setup with colorschemes and lightline
-- **dev** (7 plugins): Development setup with LSP, treesitter, and core tools
-- **full** (12 plugins): Complete setup with all plugins enabled
+- **dev** (8 plugins): Development setup with LSP, treesitter, commenting, and core tools
+- **full** (13 plugins): Complete setup with all plugins enabled
 
 ### Usage
 

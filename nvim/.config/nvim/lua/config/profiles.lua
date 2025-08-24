@@ -15,6 +15,7 @@ M.profiles = {
     "fzf-lua",
     "nvim-tree",
     "plenary",
+    "comment",
   },
   
   full = {
@@ -30,6 +31,7 @@ M.profiles = {
     "nvim-window",
     "claudecode",
     "zellij-nav",
+    "comment",
   },
   
   vscode = {
