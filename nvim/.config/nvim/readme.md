@@ -119,6 +119,56 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 | `gco` | Add comment below current line |
 | `gcA` | Add comment at end of line |
 
+### Treesitter Text Objects
+| Key | Action | Description |
+|-----|--------|-------------|
+| `vaf` | Select outer function | Select entire function including signature |
+| `vif` | Select inner function | Select function body only |
+| `vac` | Select outer class | Select entire class |
+| `vic` | Select inner class | Select class body only |
+| `vaa` | Select outer parameter | Select parameter including comma |
+| `via` | Select inner parameter | Select parameter value only |
+| `vab` | Select outer block | Select code block with braces/brackets |
+| `vib` | Select inner block | Select code block content only |
+| `vai` | Select outer conditional | Select entire if/else block |
+| `vii` | Select inner conditional | Select conditional body only |
+| `val` | Select outer loop | Select entire loop |
+| `vil` | Select inner loop | Select loop body only |
+
+### Treesitter Navigation
+| Key | Action |
+|-----|--------|
+| `]f` | Go to next function start |
+| `]F` | Go to next function end |
+| `[f` | Go to previous function start |
+| `[F` | Go to previous function end |
+| `]c` | Go to next class start |
+| `]C` | Go to next class end |
+| `[c` | Go to previous class start |
+| `[C` | Go to previous class end |
+| `]a` | Go to next parameter |
+| `[a` | Go to previous parameter |
+| `]i` | Go to next conditional |
+| `[i` | Go to previous conditional |
+| `;` | Repeat last text object movement |
+| `,` | Repeat last movement (opposite direction) |
+
+### Treesitter Swap & Peek
+| Key | Action |
+|-----|--------|
+| `<leader>sa` | Swap parameter with next |
+| `<leader>sA` | Swap parameter with previous |
+| `<leader>sf` | Swap function with next |
+| `<leader>sF` | Swap function with previous |
+| `<leader>df` | Peek function definition |
+| `<leader>dF` | Peek class definition |
+
+### Incremental Selection
+| Key | Action |
+|-----|--------|
+| `<C-space>` | Start selection/expand to next node |
+| `<BS>` | Shrink selection to previous node |
+
 ## Installed Plugins
 
 1. **LSP Support**
@@ -131,30 +181,34 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
    - nvim-tree.lua (File explorer)
    - nvim-tree-preview (File preview)
 
-3. **Git Integration**
+3. **Syntax & Text Objects**
+   - nvim-treesitter (Advanced syntax highlighting)
+   - nvim-treesitter-textobjects (Smart text objects based on code structure)
+
+4. **Git Integration**
    - diffview.nvim (Git diff viewer)
 
-4. **UI Enhancement**
+5. **UI Enhancement**
    - lightline.vim (Status line)
    - nvim-web-devicons (File icons)
    - nvim-window (Window picker)
 
-5. **Theme and Colors**
+6. **Theme and Colors**
    - dracula.nvim
    - github-nvim-theme
    - auto-dark-mode.nvim (Auto theme switching)
 
-6. **Markdown Support**
+7. **Markdown Support**
    - render-markdown.nvim
 
-7. **AI Integration**
+8. **AI Integration**
    - claudecode.nvim (Claude Code integration)
 
-8. **Code Editing**
+9. **Code Editing**
    - Comment.nvim (Smart code commenting)
    - nvim-ts-context-commentstring (Context-aware comments for embedded languages)
 
-9. **UI/UX Enhancement**
+10. **UI/UX Enhancement**
    - which-key.nvim (Displays available keybindings in popup)
 
 ## Features
