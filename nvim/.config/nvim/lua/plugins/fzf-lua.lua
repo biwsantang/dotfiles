@@ -17,6 +17,8 @@ return {
       vim.keymap.set({ 'n', 'v' }, '<Leader>fa', function()
         fzf.files({ fd_opts = "--color=never --type f --hidden --follow --no-ignore" })
       end, { noremap = true, silent = true })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fr', fzf.live_grep, { noremap = true, silent = true })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fb', fzf.buffers, { noremap = true, silent = true })
     end,
   }
 }

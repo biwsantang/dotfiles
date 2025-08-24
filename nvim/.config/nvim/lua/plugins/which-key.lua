@@ -12,10 +12,14 @@ return {
       -- Simple setup with defaults
       wk.setup({})
       
-      -- Register basic groups
+      -- Register basic groups and mappings
       wk.add({
         { "<leader>", group = "Leader" },
         { "<leader>f", group = "Find" },
+        { "<leader>ff", desc = "Find files" },
+        { "<leader>fa", desc = "Find all files (including hidden)" },
+        { "<leader>fr", desc = "Ripgrep text search" },
+        { "<leader>fb", desc = "Find buffers" },
         { "<leader>k", group = "Keyboard" },
         { "<leader>p", group = "Profile" },
         { "<leader>a", group = "AI/Claude" },
