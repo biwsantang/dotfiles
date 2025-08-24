@@ -154,6 +154,9 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
    - Comment.nvim (Smart code commenting)
    - nvim-ts-context-commentstring (Context-aware comments for embedded languages)
 
+9. **UI/UX Enhancement**
+   - which-key.nvim (Displays available keybindings in popup)
+
 ## Features
 
 - **Smart Theme Switching**: Automatically switches between light and dark themes
@@ -163,6 +166,7 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 - **Markdown Preview**: Built-in markdown rendering
 - **Window Management**: Easy window navigation and management
 - **VSCode Compatibility**: Special features when running in VSCode
+- **Interactive Key Hints**: which-key popup shows available keybindings as you type
 
 ## Profile System
 
@@ -170,8 +174,8 @@ This configuration supports profile-based plugin loading for faster startup time
 
 ### Available Profiles
 - **minimal** (2 plugins): Basic setup with colorschemes and lightline
-- **dev** (8 plugins): Development setup with LSP, treesitter, commenting, and core tools
-- **full** (13 plugins): Complete setup with all plugins enabled
+- **dev** (9 plugins): Development setup with LSP, treesitter, commenting, which-key, and core tools
+- **full** (14 plugins): Complete setup with all plugins enabled
 
 ### Usage
 

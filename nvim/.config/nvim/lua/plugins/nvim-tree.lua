@@ -7,6 +7,11 @@ return {{
     lazy = true
 }, {
     'nvim-tree/nvim-tree.lua',
+    cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeClose", "NvimTreeFocus" },
+    keys = {
+        { "<leader>e", desc = "Toggle file explorer" },
+        { "<leader>E", desc = "Close file explorer" },
+    },
     config = function()
         local function my_on_attach(bufnr)
             local api = require 'nvim-tree.api'
@@ -60,15 +65,17 @@ return {{
         end
 
         -- Add nvim-tree keymaps
-        vim.keymap.set("n", "<Leader>e", toggle_tree_and_focus, {
+        vim.keymap.set("n", "<leader>e", toggle_tree_and_focus, {
             noremap = true,
-            silent = true
+            silent = true,
+            desc = "Toggle file explorer"
         })
-        vim.keymap.set("n", "<Leader>E", function()
+        vim.keymap.set("n", "<leader>E", function()
             require("nvim-tree.api").tree.close()
         end, {
             noremap = true,
-            silent = true
+            silent = true,
+            desc = "Close file explorer"
         })
     end,
     dependencies = {'nvim-tree/nvim-web-devicons', 'b0o/nvim-tree-preview.lua', 'nvim-lua/plenary.nvim'},

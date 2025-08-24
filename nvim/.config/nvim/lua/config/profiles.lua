@@ -16,6 +16,7 @@ M.profiles = {
     "nvim-tree",
     "plenary",
     "comment",
+    "which-key",
   },
   
   full = {
@@ -32,6 +33,7 @@ M.profiles = {
     "claudecode",
     "zellij-nav",
     "comment",
+    "which-key",
   },
   
   vscode = {

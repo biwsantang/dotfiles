@@ -3,6 +3,10 @@
 -- Check if running in VSCode
 local is_vscode = vim.g.vscode ~= nil
 
+-- Set leader key early (before plugins load)
+vim.g.mapleader = " "  -- Using space as leader key
+vim.g.maplocalleader = " "
+
 -- ====================
 -- Settings (Active in both environments)
 -- ====================
