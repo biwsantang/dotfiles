@@ -5,6 +5,7 @@ M.profiles = {
   minimal = {
     "colorschemes",
     "lightline",
+		"true-zen",
   },
   
   dev = {
@@ -17,6 +18,7 @@ M.profiles = {
     "plenary",
     "comment",
     "which-key",
+		"true-zen",
   },
   
   full = {
@@ -34,6 +36,7 @@ M.profiles = {
     "zellij-nav",
     "comment",
     "which-key",
+		"true-zen",
   },
   
   vscode = {

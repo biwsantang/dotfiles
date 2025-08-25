@@ -169,6 +169,14 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 | `<C-space>` | Start selection/expand to next node |
 | `<BS>` | Shrink selection to previous node |
 
+### True Zen (Distraction-Free Writing)
+| Key | Action |
+|-----|--------|
+| `<leader>za` | Toggle Ataraxis mode (zen mode with padding) |
+| `<leader>zf` | Toggle Focus mode (focus on current split) |
+| `<leader>zm` | Toggle Minimalist mode (hide UI elements) |
+| `<leader>zn` | Toggle Narrow mode (focus on selection) |
+
 ## Installed Plugins
 
 1. **LSP Support**
@@ -210,6 +218,9 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 
 10. **UI/UX Enhancement**
    - which-key.nvim (Displays available keybindings in popup)
+
+11. **Writing & Focus**
+   - true-zen.nvim (Distraction-free writing modes)
 
 ## Features
 

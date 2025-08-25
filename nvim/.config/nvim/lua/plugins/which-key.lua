@@ -24,6 +24,11 @@ return {
         { "<leader>p", group = "Profile" },
         { "<leader>a", group = "AI/Claude" },
         { "<leader>w", group = "Window" },
+        { "<leader>z", group = "Zen Mode" },
+        { "<leader>za", desc = "True Zen Ataraxis" },
+        { "<leader>zf", desc = "True Zen Focus" },
+        { "<leader>zm", desc = "True Zen Minimalist" },
+        { "<leader>zn", desc = "True Zen Narrow" },
       })
     end,
   },
