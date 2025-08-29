@@ -19,6 +19,7 @@ M.profiles = {
     "comment",
     "which-key",
 		"true-zen",
+		"hop",
   },
   
   full = {
