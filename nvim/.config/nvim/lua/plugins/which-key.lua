@@ -65,19 +65,12 @@ return {
         { ";", desc = "Repeat last movement forward" },
         { ",", desc = "Repeat last movement backward" },
         
-        -- Hop.nvim mappings
-        { "s", desc = "Hop Code Patterns", mode = { "n", "x", "o" } },
-        { "S", desc = "Hop Treesitter Nodes", mode = { "n" } },
-        { "f", desc = "Hop forward to char", mode = { "n", "x", "o" } },
-        { "F", desc = "Hop backward to char", mode = { "n", "x", "o" } },
-        { "t", desc = "Hop before char forward", mode = { "n", "x", "o" } },
-        { "T", desc = "Hop before char backward", mode = { "n", "x", "o" } },
-        { "<leader>h", group = "Hop" },
-        { "<leader>hw", desc = "Hop to word" },
-        { "<leader>hl", desc = "Hop to line" },
-        { "<leader>hp", desc = "Hop to pattern" },
-        { "<leader>hh", desc = "Hop to 2 chars" },
-        { "<leader>ha", desc = "Hop anywhere" },
+        -- Leap.nvim mappings
+        { "s", desc = "Leap to Treesitter Nodes", mode = { "n", "x", "o" } },
+        { "S", desc = "Leap Bidirectional", mode = { "n", "x", "o" } },
+        { "gs", desc = "Leap to Windows", mode = { "n", "x", "o" } },
+        { "R", desc = "Leap Treesitter Select", mode = { "x", "o" } },
+        { "g;", desc = "Repeat Last Leap", mode = { "n", "x", "o" } },
       })
     end,
   },
