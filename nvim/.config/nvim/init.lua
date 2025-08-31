@@ -90,3 +90,8 @@ require('config.lazy')
 -- Profile system
 -- ====================
 require('config.profile-commands')
+
+-- ====================
+-- Reload system
+-- ====================
+require('config.reload')

@@ -75,6 +75,13 @@ return {
         { "gs", desc = "Leap to Windows", mode = { "n", "x", "o" } },
         { "R", desc = "Leap Treesitter Select", mode = { "x", "o" } },
         { "g;", desc = "Repeat Last Leap", mode = { "n", "x", "o" } },
+        
+        -- Reload mappings
+        { "<leader>r", group = "Reload" },
+        { "<leader>rr", desc = "Reload entire config" },
+        { "<leader>rs", desc = "Source current file" },
+        { "<leader>rp", desc = "Reload plugin" },
+        { "<leader>rf", desc = "Reload current file as module" },
       })
     end,
   },
