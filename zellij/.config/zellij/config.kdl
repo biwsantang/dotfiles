@@ -261,6 +261,7 @@ plugins {
         watch_triggers "fzf|zoxide|atuin|atac"
         watch_interval "1.0"
     }
+    zjstatus location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm"
 }
 
 // Plugins to load in the background when a new session starts
@@ -274,12 +275,12 @@ load_plugins {
 //   - true
 //   - false (Default)
 // 
-// simplified_ui true
+simplified_ui false
  
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-// theme "dracula"
+theme "catppuccin-mocha"
  
 // Choose the base input mode of zellij.
 // Default: normal
@@ -298,17 +299,17 @@ default_shell "fish"
 // The name of the default layout to load on startup
 // Default: "default"
 // 
-// default_layout "compact"
+default_layout "default"
  
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 // 
-// layout_dir "/tmp"
+// layout_dir "layouts"
  
 // The folder in which Zellij will look for themes
 // (Requires restart)
 // 
-// theme_dir "/tmp"
+// theme_dir "themes"
  
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
@@ -324,7 +325,14 @@ default_shell "fish"
 //   - true (default, enabled)
 //   - false
 // 
-// pane_frames false
+pane_frames true
+
+// Use rounded corners for pane frames
+// Options:
+//   - true
+//   - false (default)
+//
+rounded_corners true
  
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
@@ -350,7 +358,7 @@ default_shell "fish"
 // Valid values: positive integers
 // Default value: 10000
 // 
-// scroll_buffer_size 10000
+scroll_buffer_size 20000
  
 // Provide a command to execute when copying text. The text will be piped to
 // the stdin of the program to perform the copy. This can be used with
@@ -360,9 +368,9 @@ default_shell "fish"
 //
 // copy_command "xclip -selection clipboard" // x11
 // copy_command "wl-copy"                    // wayland
-// copy_command "pbcopy"                     // osx
+copy_command "pbcopy"                     // osx
 // 
-// copy_command "pbcopy"
+copy_command "pbcopy"
  
 // Choose the destination for copied text
 // Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
@@ -427,7 +435,7 @@ default_shell "fish"
 // (Requires restart)
 // Default: true
 // 
-// styled_underlines false
+styled_underlines true
  
 // How often in seconds sessions are serialized
 // 
@@ -445,3 +453,19 @@ default_shell "fish"
 // Default: true (if the host terminal supports it)
 // 
 // support_kitty_keyboard_protocol false
+
+themes {
+    catppuccin-mocha {
+        bg "#1e1e2e"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
+    }
+}
