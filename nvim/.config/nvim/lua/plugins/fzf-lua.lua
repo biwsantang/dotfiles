@@ -30,6 +30,89 @@ return {
       end, { noremap = true, silent = true })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fr', fzf.live_grep, { noremap = true, silent = true })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fb', fzf.buffers, { noremap = true, silent = true })
+      
+      -- Treesitter integration
+      vim.keymap.set({ 'n', 'v' }, '<Leader>ft', fzf.treesitter, { desc = "FZF Treesitter symbols" })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fs', fzf.lsp_document_symbols, { desc = "FZF Document symbols" })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fS', fzf.lsp_workspace_symbols, { desc = "FZF Workspace symbols" })
+      
+      -- Custom treesitter search with query
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fq', function()
+        -- Get all treesitter symbols in current buffer
+        local parser = vim.treesitter.get_parser()
+        if not parser then
+          vim.notify("No treesitter parser available", vim.log.levels.WARN)
+          return
+        end
+        
+        local tree = parser:parse()[1]
+        if not tree then return end
+        
+        local root = tree:root()
+        local symbols = {}
+        local bufnr = vim.api.nvim_get_current_buf()
+        local filetype = vim.bo.filetype
+        
+        -- Traverse tree and collect all named nodes
+        local function traverse(node, depth)
+          if node:named() then
+            local start_row, start_col = node:start()
+            local end_row, end_col = node:end_()
+            local node_type = node:type()
+            
+            -- Get the text of the node (first line only for display)
+            local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, start_row + 1, false)
+            local text = lines[1] or ""
+            text = text:sub(start_col + 1):gsub("^%s+", ""):sub(1, 50)
+            
+            -- Create entry for fzf
+            local entry = string.format("%s:%d:%d: [%s] %s", 
+              vim.fn.expand("%:t"), 
+              start_row + 1, 
+              start_col + 1,
+              node_type,
+              text
+            )
+            
+            table.insert(symbols, {
+              entry = entry,
+              row = start_row + 1,
+              col = start_col + 1,
+              type = node_type,
+              text = text,
+            })
+          end
+          
+          for child in node:iter_children() do
+            traverse(child, (depth or 0) + 1)
+          end
+        end
+        
+        traverse(root, 0)
+        
+        -- Create fzf entries
+        local entries = {}
+        for _, symbol in ipairs(symbols) do
+          table.insert(entries, symbol.entry)
+        end
+        
+        -- Show fzf with treesitter symbols
+        fzf.fzf_exec(entries, {
+          prompt = "Treesitter Symbols> ",
+          preview = "bat --color=always --style=numbers,changes --line-range {2}:+20 " .. vim.fn.expand("%:p"),
+          actions = {
+            ['default'] = function(selected)
+              if selected and selected[1] then
+                -- Parse the selected line
+                local row, col = selected[1]:match(":(%d+):(%d+):")
+                if row and col then
+                  vim.api.nvim_win_set_cursor(0, {tonumber(row), tonumber(col) - 1})
+                end
+              end
+            end
+          }
+        })
+      end, { desc = "FZF Treesitter query (all nodes)" })
     end,
   }
 }
