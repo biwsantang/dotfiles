@@ -82,6 +82,12 @@ return {
         { "<leader>rs", desc = "Source current file" },
         { "<leader>rp", desc = "Reload plugin" },
         { "<leader>rf", desc = "Reload current file as module" },
+        
+        -- Special yank for AI
+        { "<leader>y", group = "Yank special" },
+        { "<leader>yc", desc = "Yank with context for AI", mode = { "n", "v" } },
+        { "<leader>yf", desc = "Yank function with context" },
+        { "<leader>yg", desc = "Yank with git blame", mode = { "n", "v" } },
       })
     end,
   },

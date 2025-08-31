@@ -95,3 +95,8 @@ require('config.profile-commands')
 -- Reload system
 -- ====================
 require('config.reload')
+
+-- ====================
+-- Clipboard integration
+-- ====================
+require('config.clipboard').setup()
