@@ -14,8 +14,11 @@ return {
             require('cmp_nvim_lsp').default_capabilities())
 
         -- LSP servers setup
-				require('mason').setup({})
+        require('mason').setup({})
         require('mason-lspconfig').setup({
+            -- Disable automatic installation and setup
+            automatic_installation = false,
+            automatic_setup = false,
             handlers = {
                 function(server_name)
                     require('lspconfig')[server_name].setup({})

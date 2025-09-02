@@ -4,7 +4,9 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require('fzf-lua').setup{
-        global_git_icons = false,
+        defaults = {
+          git_icons = false,  -- Updated from deprecated global_git_icons
+        },
         file_ignore_patterns = {
           "node_modules",
           ".git",
