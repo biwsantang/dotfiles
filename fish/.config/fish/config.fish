@@ -43,9 +43,18 @@ if status is-interactive
     alias ccb="claude --dangerously-skip-permissions"
     alias ccc="claude --dangerously-skip-permissions '/commit'"
     
+    # SSH with compatible terminal when needed
+    alias sshc="TERM=xterm-256color command ssh"
+    
     # Claude PR function
     function ccpr
         claude --dangerously-skip-permissions "/pr $argv"
+    end
+    
+    # Install Ghostty terminfo on remote server
+    # Usage: install-ghostty-on user@hostname
+    function install-ghostty-on
+        infocmp -x xterm-ghostty | ssh $argv -- tic -x -
     end
 
     # Functions (converted from Zsh)
