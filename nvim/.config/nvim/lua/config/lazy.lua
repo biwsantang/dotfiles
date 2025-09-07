@@ -26,9 +26,9 @@ for _, plugin_name in ipairs(enabled_plugins) do
   table.insert(plugin_specs, { import = "plugins." .. plugin_name })
 end
 
--- Show current profile info
+-- Show current profile info (silently)
 local profile_info = profiles.get_profile_info()
-vim.notify("Loading profile: " .. profile_info.current .. " (" .. profile_info.count .. " plugins)", vim.log.levels.INFO)
+-- Profile info available for debugging: profile_info.current .. " (" .. profile_info.count .. " plugins)"
 
 require("lazy").setup({
 	spec = plugin_specs,
