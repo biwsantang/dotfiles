@@ -1,30 +1,21 @@
 return {
   {
     'williamboman/mason.nvim',
+    config = function()
+        require('mason').setup({})
+    end
+  },
+  {
+    'neovim/nvim-lspconfig',
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/nvim-cmp',
-      'neovim/nvim-lspconfig',
-      'williamboman/mason-lspconfig.nvim'
+      'williamboman/mason.nvim',
     },
     config = function()
         -- LSP capabilities setup
         local lspconfig_defaults = require('lspconfig').util.default_config
         lspconfig_defaults.capabilities = vim.tbl_deep_extend('force', lspconfig_defaults.capabilities,
             require('cmp_nvim_lsp').default_capabilities())
-
-        -- LSP servers setup
-        require('mason').setup({})
-        require('mason-lspconfig').setup({
-            -- Disable automatic installation and setup
-            automatic_installation = false,
-            automatic_setup = false,
-            handlers = {
-                function(server_name)
-                    require('lspconfig')[server_name].setup({})
-                end
-            }
-        })
 
         -- LSP keybindings
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -45,12 +36,6 @@ return {
             end
         })
     end
-  },
-  {
-    'neovim/nvim-lspconfig'
-  },
-  {
-    'williamboman/mason-lspconfig.nvim'
   },
   {
     'hrsh7th/cmp-nvim-lsp'
