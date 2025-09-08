@@ -3,14 +3,27 @@ layout {
         children
         pane size=1 borderless=false {
             plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
-                format_left   "{mode}#[fg=black]{tabs}"
+                format_left   "{mode} {command_username} on 🌏 {command_hostname} with #[fg=black]{tabs}"
                 format_center ""
                 format_right  "#[fg=#6867AF,bold]  {datetime}#[fg=cyan]↖ "
                 format_space  "#[fg=yellow] "
                 hide_frame_for_single_pane "false"
                 border_enabled  "false"
-                mode_normal  "#[fg=yellow]  "
-                mode_locked  "#[fg=red]  "
+                
+                // Hostname command
+                command_hostname_command "hostname -s"
+                command_hostname_format "#[fg=cyan]{stdout}"
+                command_hostname_interval "0"
+                command_hostname_rendermode "static"
+                
+                // Username command
+                command_username_command "whoami"
+                command_username_format "#[fg=green]{stdout}"
+                command_username_interval "0"
+                command_username_rendermode "static"
+                
+                mode_normal  "#[fg=yellow]"
+                mode_locked  "#[fg=red]"
                 mode_tmux    "#[bg=cyan]"
 
                 // formatting for inactive tabs
