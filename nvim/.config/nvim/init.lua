@@ -32,6 +32,19 @@ vim.opt.hlsearch = true  -- Highlight all matches of the previous search pattern
 -- Show ruler
 vim.opt.ruler = true  -- Show the cursor position all the time
 
+-- Faster hover (reduce delay for CursorHold events)
+vim.opt.updatetime = 1000  -- 1 second delay for auto-hover
+
+-- Global LSP floating window borders
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or 'rounded'
+  opts.max_width = opts.max_width or 60
+  opts.max_height = opts.max_height or 15
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
+
 -- ====================
 -- Keyboard Layout Management
 -- ====================

@@ -69,11 +69,18 @@ return {
         { ";", desc = "Repeat last movement forward" },
         { ",", desc = "Repeat last movement backward" },
         
+        -- LSP mappings
+        { "K", desc = "LSP Hover" },
+        { "gd", desc = "Go to Definition" },
+        { "gD", desc = "Go to Declaration" },
+        { "gi", desc = "Go to Implementation" },
+        { "go", desc = "Go to Type Definition" },
+        { "gr", desc = "Go to References" },
+        { "gs", desc = "Signature Help" },
+        
         -- Leap.nvim mappings
         { "s", desc = "Leap to Treesitter Nodes", mode = { "n", "x", "o" } },
         { "S", desc = "Leap Bidirectional", mode = { "n", "x", "o" } },
-        { "gs", desc = "Leap to Windows", mode = { "n", "x", "o" } },
-        { "R", desc = "Leap Treesitter Select", mode = { "x", "o" } },
         { "g;", desc = "Repeat Last Leap", mode = { "n", "x", "o" } },
         
         -- Reload mappings
