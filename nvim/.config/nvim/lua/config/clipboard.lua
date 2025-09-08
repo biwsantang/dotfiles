@@ -21,14 +21,31 @@ function M.setup()
   
   -- Special yank with context for AI chats
   vim.keymap.set("v", "<leader>yc", function()
-    -- Get the selected text
-    local start_pos = vim.fn.getpos("'<")
-    local end_pos = vim.fn.getpos("'>")
-    local start_line = start_pos[2]
-    local end_line = end_pos[2]
+    -- First, yank the selection to get it in the register
+    vim.cmd('normal! "vy')
     
-    -- Get the lines
-    local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+    -- Get the selected text lines by using vim.fn.getpos and proper range
+    local start_line = vim.fn.line("'<")
+    local end_line = vim.fn.line("'>")
+    local start_col = vim.fn.col("'<")
+    local end_col = vim.fn.col("'>")
+    
+    -- Get the lines including partial line selections
+    local lines = {}
+    for i = start_line, end_line do
+      local line = vim.fn.getline(i)
+      if i == start_line and i == end_line then
+        -- Single line selection
+        line = string.sub(line, start_col, end_col)
+      elseif i == start_line then
+        -- First line of multi-line selection
+        line = string.sub(line, start_col)
+      elseif i == end_line then
+        -- Last line of multi-line selection
+        line = string.sub(line, 1, end_col)
+      end
+      table.insert(lines, line)
+    end
     
     -- Get file path and info
     local filepath = vim.fn.expand("%:p")
