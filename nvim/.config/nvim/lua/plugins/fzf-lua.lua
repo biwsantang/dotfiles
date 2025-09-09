@@ -57,7 +57,29 @@ return {
           
           if vim.api.nvim_buf_is_valid(bufnr) then
             local bufname = vim.api.nvim_buf_get_name(bufnr)
-            if bufname ~= "" then
+            local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
+            local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+            
+            -- Skip non-file buffers (tree panes, terminal, quickfix, etc.)
+            local skip_filetypes = { 'NvimTree', 'neo-tree', 'nerdtree', 'CHADtree', 'fern', 'dirvish', 'netrw' }
+            local skip_buftypes = { 'terminal', 'quickfix', 'nofile', 'help', 'prompt' }
+            
+            local should_skip = false
+            for _, ft in ipairs(skip_filetypes) do
+              if filetype == ft then
+                should_skip = true
+                break
+              end
+            end
+            for _, bt in ipairs(skip_buftypes) do
+              if buftype == bt then
+                should_skip = true
+                break
+              end
+            end
+            
+            -- Only include actual file buffers
+            if bufname ~= "" and not should_skip and vim.fn.filereadable(bufname) == 1 then
               local filename = vim.fn.fnamemodify(bufname, ":~:.")
               local line = jump.lnum
               local col = jump.col + 1
