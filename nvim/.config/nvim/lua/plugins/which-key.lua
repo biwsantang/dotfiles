@@ -24,6 +24,7 @@ return {
         { "<leader>fs", desc = "FZF Document symbols" },
         { "<leader>fS", desc = "FZF Workspace symbols" },
         { "<leader>fq", desc = "FZF Treesitter query (all nodes)" },
+        { "<leader>fj", desc = "FZF Jump list" },
         { "<leader>k", group = "Keyboard" },
         { "<leader>p", group = "Profile" },
         { "<leader>a", group = "AI/Claude" },

@@ -11,8 +11,8 @@ vim.g.maplocalleader = " "
 -- Settings (Active in both environments)
 -- ====================
 
--- Enable syntax highlighting
-vim.cmd('syntax on')  -- This enables syntax highlighting for various file types
+-- Enable syntax highlighting (enabled by default in Neovim)
+vim.opt.syntax = 'on'  -- This ensures syntax highlighting is enabled
 
 -- Enable true color support
 vim.opt.termguicolors = true  -- This ensures that Neovim uses true colors in the terminal

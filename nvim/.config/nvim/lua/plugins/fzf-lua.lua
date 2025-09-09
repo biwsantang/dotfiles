@@ -38,6 +38,71 @@ return {
       vim.keymap.set({ 'n', 'v' }, '<Leader>fs', fzf.lsp_document_symbols, { desc = "FZF Document symbols" })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fS', fzf.lsp_workspace_symbols, { desc = "FZF Workspace symbols" })
       
+      -- Jump list with FZF
+      vim.keymap.set('n', '<Leader>fj', function()
+        local jumplist = vim.fn.getjumplist()
+        local jumps = jumplist[1]
+        
+        if #jumps == 0 then
+          vim.notify("Jump list is empty", vim.log.levels.INFO)
+          return
+        end
+        
+        local entries = {}
+        
+        -- Process jumps in reverse order (most recent first)
+        for i = #jumps, 1, -1 do
+          local jump = jumps[i]
+          local bufnr = jump.bufnr
+          
+          if vim.api.nvim_buf_is_valid(bufnr) then
+            local bufname = vim.api.nvim_buf_get_name(bufnr)
+            if bufname ~= "" then
+              local filename = vim.fn.fnamemodify(bufname, ":~:.")
+              local line = jump.lnum
+              local col = jump.col + 1
+              
+              -- Try to get the line content
+              local line_content = ""
+              if vim.api.nvim_buf_is_loaded(bufnr) then
+                local lines = vim.api.nvim_buf_get_lines(bufnr, line - 1, line, false)
+                if lines[1] then
+                  line_content = lines[1]:gsub("^%s+", ""):sub(1, 80)
+                end
+              end
+              
+              -- Format: filename:line:col: content
+              local entry = string.format("%s:%d:%d: %s", filename, line, col, line_content)
+              table.insert(entries, entry)
+            end
+          end
+        end
+        
+        if #entries == 0 then
+          vim.notify("No valid jumps in jump list", vim.log.levels.INFO)
+          return
+        end
+        
+        -- Use fzf-lua's built-in file preview
+        fzf.fzf_exec(entries, {
+          prompt = "Jump List> ",
+          previewer = "builtin",
+          actions = {
+            ['default'] = function(selected)
+              if selected and selected[1] then
+                -- Parse filename:line:col format
+                local filename, line, col = selected[1]:match("^([^:]+):(%d+):(%d+):")
+                if filename and line and col then
+                  -- Open file and jump to position
+                  vim.cmd("edit " .. vim.fn.fnameescape(filename))
+                  vim.api.nvim_win_set_cursor(0, {tonumber(line), tonumber(col) - 1})
+                end
+              end
+            end
+          }
+        })
+      end, { desc = "FZF Jump list" })
+      
       -- Custom treesitter search with query
       vim.keymap.set({ 'n', 'v' }, '<Leader>fq', function()
         -- Get all treesitter symbols in current buffer
