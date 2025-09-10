@@ -103,8 +103,8 @@ if status is-interactive
     # Enable completion with underline for valid paths
     set -g fish_color_valid_path --underline
 
-    # Check if our Terminal emulator is Ghostty
-		if [ "$TERM" = "xterm-ghostty" ]
+    # Check if zellij is available and launch it
+		if command -v zellij >/dev/null 2>&1
 				# Launch zellij
 				eval (zellij setup --generate-auto-start fish | string collect)
 		end
