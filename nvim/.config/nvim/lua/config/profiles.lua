@@ -52,10 +52,10 @@ function M.get_current_profile()
     return "vscode"
   end
   
-  local profile = os.getenv("NVIM_PROFILE") or "dev"
+  local profile = os.getenv("NVIM_PROFILE") or "full"
   if not M.profiles[profile] then
-    vim.notify("Profile '" .. profile .. "' not found, using 'dev'", vim.log.levels.WARN)
-    profile = "dev"
+    vim.notify("Profile '" .. profile .. "' not found, using 'full'", vim.log.levels.WARN)
+    profile = "full"
   end
   return profile
 end

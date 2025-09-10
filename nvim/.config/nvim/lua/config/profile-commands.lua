@@ -60,7 +60,7 @@ vim.api.nvim_create_user_command("ProfileRestart", function(opts)
   vim.env.NVIM_PROFILE = profile
   vim.notify("Restarting with profile: " .. profile, vim.log.levels.INFO)
   vim.defer_fn(function()
-    vim.cmd("qa")
+    vim.cmd("qa!")
   end, 500)
 end, {
   nargs = 1,
