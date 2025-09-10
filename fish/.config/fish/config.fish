@@ -103,9 +103,10 @@ if status is-interactive
     # Enable completion with underline for valid paths
     set -g fish_color_valid_path --underline
 
-    # Check if zellij is available and launch it (for interactive sessions or SSH)
-		if command -v zellij >/dev/null 2>&1; and not set -q ZELLIJ
-				# Launch zellij
-				eval (zellij setup --generate-auto-start fish | string collect)
-		end
+end
+
+# Check if zellij is available and launch it (for interactive sessions or SSH)
+if command -v zellij >/dev/null 2>&1; and not set -q ZELLIJ
+    # Launch zellij
+    eval (zellij setup --generate-auto-start fish | string collect)
 end
