@@ -20,6 +20,7 @@ M.profiles = {
     "which-key",
 		"true-zen",
 		"leap",
+    "gitsigns",
   },
   
   full = {
@@ -38,6 +39,7 @@ M.profiles = {
     "comment",
     "which-key",
 		"true-zen",
+    "gitsigns",
   },
   
   vscode = {
