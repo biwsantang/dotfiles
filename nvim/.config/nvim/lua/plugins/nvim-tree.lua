@@ -40,6 +40,15 @@ return {{
             vim.keymap.set('n', 'O', api.node.open.no_window_picker, opts('Rename: Omit Filename'))
 
             vim.keymap.set('n', 'P', preview.watch, opts('Preview (Watch)'))
+            vim.keymap.set('n', '<Esc>', preview.unwatch, opts('Close Preview'))
+            vim.keymap.set('n', 'p', function()
+                local ok, node = pcall(api.tree.get_node_under_cursor)
+                if ok and node then
+                    if node.type == 'file' then
+                        preview.node(node, { toggle_focus = false })
+                    end
+                end
+            end, opts('Preview'))
 
             return on_attach
         end
@@ -69,6 +78,13 @@ return {{
         -- Add nvim-tree keymaps - simple toggle for floating window
         vim.keymap.set("n", "<leader>e", function()
             require("nvim-tree.api").tree.toggle()
+            -- Auto-enable preview watch mode when opening nvim-tree
+            vim.defer_fn(function()
+                local view = require("nvim-tree.view")
+                if view.is_visible() then
+                    require("nvim-tree-preview").watch()
+                end
+            end, 100)
         end, {
             noremap = true,
             silent = true,
