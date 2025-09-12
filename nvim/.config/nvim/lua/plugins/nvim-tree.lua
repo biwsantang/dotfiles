@@ -10,7 +10,6 @@ return {{
     cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeClose", "NvimTreeFocus" },
     keys = {
         { "<leader>e", desc = "Toggle file explorer" },
-        { "<leader>E", desc = "Close file explorer" },
     },
     config = function()
         local function my_on_attach(bufnr)
@@ -46,36 +45,34 @@ return {{
         end
 
         require('nvim-tree').setup({
-            on_attach = my_on_attach
+            on_attach = my_on_attach,
+            view = {
+                float = {
+                    enable = true,
+                    open_win_config = {
+                        relative = "editor",
+                        border = "rounded",
+                        width = 50,
+                        height = 25,
+                        row = 5,
+                        col = 10,
+                    },
+                },
+            },
+            update_focused_file = {
+                enable = true,
+                update_root = false,
+                ignore_list = {},
+            },
+            sync_root_with_cwd = true,
         })
-        -- Add toggle function
-        local function toggle_tree_and_focus()
-            local api = require('nvim-tree.api')
-            local view = require('nvim-tree.view')
-
-            if view.is_visible() then
-                if view.get_winnr() == vim.api.nvim_get_current_win() then
-                    vim.cmd('wincmd l')
-                else
-                    api.tree.focus()
-                end
-            else
-                api.tree.open()
-            end
-        end
-
-        -- Add nvim-tree keymaps
-        vim.keymap.set("n", "<leader>e", toggle_tree_and_focus, {
-            noremap = true,
-            silent = true,
-            desc = "Toggle file explorer"
-        })
-        vim.keymap.set("n", "<leader>E", function()
-            require("nvim-tree.api").tree.close()
+        -- Add nvim-tree keymaps - simple toggle for floating window
+        vim.keymap.set("n", "<leader>e", function()
+            require("nvim-tree.api").tree.toggle()
         end, {
             noremap = true,
             silent = true,
-            desc = "Close file explorer"
+            desc = "Toggle file explorer"
         })
     end,
     dependencies = {'nvim-tree/nvim-web-devicons', 'b0o/nvim-tree-preview.lua', 'nvim-lua/plenary.nvim'},
