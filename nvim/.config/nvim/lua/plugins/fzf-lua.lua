@@ -31,6 +31,9 @@ return {
         fzf.files({ fd_opts = "--color=never --type f --hidden --follow --no-ignore" })
       end, { noremap = true, silent = true })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fr', fzf.live_grep, { noremap = true, silent = true })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>fR', function()
+        fzf.live_grep({ rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --word-regexp --glob '!.git/*' --glob '!node_modules/*' --glob '!.next/*' --glob '!dist/*' --glob '!build/*' -e" })
+      end, { noremap = true, silent = true, desc = "Live grep exact word match" })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fb', fzf.buffers, { noremap = true, silent = true })
       
       -- Treesitter integration
