@@ -37,7 +37,12 @@ return {{
             })
 
             vim.keymap.set('n', 'o', api.node.open.edit, opts('Open'))
-            vim.keymap.set('n', 'O', api.node.open.no_window_picker, opts('Rename: Omit Filename'))
+            vim.keymap.set('n', 'O', api.node.open.no_window_picker, opts('Open: No Window Picker'))
+            vim.keymap.set('n', 't', api.node.open.tab, opts('Open: New Tab'))
+            vim.keymap.set('n', 'T', function()
+                api.node.open.tab()
+                vim.cmd('tabprev')
+            end, opts('Open: New Tab (Background)'))
 
             vim.keymap.set('n', 'P', preview.watch, opts('Preview (Watch)'))
             vim.keymap.set('n', '<Esc>', preview.unwatch, opts('Close Preview'))
