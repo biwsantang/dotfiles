@@ -4,13 +4,13 @@ local M = {}
 M.profiles = {
   minimal = {
     "colorschemes",
-    "lightline",
+    "lualine",
 		"true-zen",
   },
   
   dev = {
     "colorschemes",
-    "lightline",
+    "lualine",
     "lsp",
     "treesitter",
     "fzf-lua",
@@ -25,7 +25,7 @@ M.profiles = {
   
   full = {
     "colorschemes",
-    "lightline",
+    "lualine",
     "lsp",
     "treesitter",
     "fzf-lua",

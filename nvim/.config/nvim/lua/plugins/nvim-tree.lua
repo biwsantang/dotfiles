@@ -45,8 +45,15 @@ return {{
                 api.tree.close()
             end, opts('Open: No Window Picker'))
             vim.keymap.set('n', '<CR>', function()
-                api.node.open.edit()
-                api.tree.close()
+                local node = api.tree.get_node_under_cursor()
+                if node then
+                    if node.type == 'directory' then
+                        api.node.open.edit()  -- Expand/collapse folder, don't close tree
+                    else
+                        api.node.open.edit()  -- Open file and close tree
+                        api.tree.close()
+                    end
+                end
             end, opts('Open'))
             vim.keymap.set('n', 't', function()
                 api.node.open.tab()
