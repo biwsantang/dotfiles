@@ -8,14 +8,13 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
       'williamboman/mason.nvim',
     },
     config = function()
-        -- LSP capabilities setup
+        -- LSP capabilities setup for blink.cmp
         local lspconfig_defaults = require('lspconfig').util.default_config
         lspconfig_defaults.capabilities = vim.tbl_deep_extend('force', lspconfig_defaults.capabilities,
-            require('cmp_nvim_lsp').default_capabilities())
+            vim.lsp.protocol.make_client_capabilities())
 
         -- Setup language servers
         local lspconfig = require('lspconfig')
@@ -65,24 +64,6 @@ return {
                 vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
             end
         })
-    end
-  },
-  {
-    'hrsh7th/cmp-nvim-lsp'
-  },
-  {
-    'hrsh7th/nvim-cmp',
-    config = function()
-      local cmp = require('cmp')
-      cmp.setup({
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-        })
-      })
     end
   }
 }
