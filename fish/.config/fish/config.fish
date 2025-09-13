@@ -41,7 +41,14 @@ if status is-interactive
     alias ch="cd ~"
     alias cc="claude"
     alias ccb="claude --dangerously-skip-permissions"
-    alias ccc="claude --dangerously-skip-permissions '/commit'"
+    # Use floating pane in zellij, regular command otherwise
+    function ccc
+        if set -q ZELLIJ
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions '/commit'
+        else
+            claude --dangerously-skip-permissions '/commit'
+        end
+    end
     
     # SSH with compatible terminal when needed
     alias sshc="TERM=xterm-256color command ssh"
@@ -105,6 +112,7 @@ if status is-interactive
 
     # Check if zellij is available and launch it
     if command -v zellij >/dev/null 2>&1; and not set -q ZELLIJ
+				alias	abcd="claude"
         # Launch zellij
         eval (zellij setup --generate-auto-start fish | string collect)
     end
