@@ -36,10 +36,24 @@ return {{
                 buffer = bufnr
             })
 
-            vim.keymap.set('n', 'o', api.node.open.edit, opts('Open'))
-            vim.keymap.set('n', 'O', api.node.open.no_window_picker, opts('Open: No Window Picker'))
-            vim.keymap.set('n', 't', api.node.open.tab, opts('Open: New Tab'))
+            vim.keymap.set('n', 'o', function()
+                api.node.open.edit()
+                api.tree.close()
+            end, opts('Open'))
+            vim.keymap.set('n', 'O', function()
+                api.node.open.no_window_picker()
+                api.tree.close()
+            end, opts('Open: No Window Picker'))
+            vim.keymap.set('n', '<CR>', function()
+                api.node.open.edit()
+                api.tree.close()
+            end, opts('Open'))
+            vim.keymap.set('n', 't', function()
+                api.node.open.tab()
+                api.tree.close()
+            end, opts('Open: New Tab'))
             vim.keymap.set('n', 'T', function()
+                -- Open in new tab and return to nvim-tree (don't close)
                 api.node.open.tab()
                 vim.cmd('tabprev')
             end, opts('Open: New Tab (Background)'))
@@ -63,6 +77,7 @@ return {{
             view = {
                 float = {
                     enable = true,
+                    quit_on_focus_loss = false,  -- Keep floating window open when losing focus
                     open_win_config = {
                         relative = "editor",
                         border = "rounded",
@@ -71,6 +86,11 @@ return {{
                         row = 5,
                         col = 10,
                     },
+                },
+            },
+            actions = {
+                open_file = {
+                    quit_on_open = false,  -- Don't close tree when opening files
                 },
             },
             update_focused_file = {
