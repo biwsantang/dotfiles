@@ -35,11 +35,12 @@ return {
         fzf.live_grep({ rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --word-regexp --glob '!.git/*' --glob '!node_modules/*' --glob '!.next/*' --glob '!dist/*' --glob '!build/*' -e" })
       end, { noremap = true, silent = true, desc = "Live grep exact word match" })
       vim.keymap.set({ 'n', 'v' }, '<Leader>fb', fzf.buffers, { noremap = true, silent = true })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>ft', fzf.tabs, { noremap = true, silent = true, desc = "FZF Tabs" })
       
       -- Treesitter integration
-      vim.keymap.set({ 'n', 'v' }, '<Leader>ft', fzf.treesitter, { desc = "FZF Treesitter symbols" })
-      vim.keymap.set({ 'n', 'v' }, '<Leader>fs', fzf.lsp_document_symbols, { desc = "FZF Document symbols" })
-      vim.keymap.set({ 'n', 'v' }, '<Leader>fS', fzf.lsp_workspace_symbols, { desc = "FZF Workspace symbols" })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>f3t', fzf.treesitter, { desc = "FZF Treesitter symbols" })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>f3s', fzf.lsp_document_symbols, { desc = "FZF Document symbols" })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>f3S', fzf.lsp_workspace_symbols, { desc = "FZF Workspace symbols" })
       
       -- Jump list with FZF
       vim.keymap.set('n', '<Leader>fj', function()
