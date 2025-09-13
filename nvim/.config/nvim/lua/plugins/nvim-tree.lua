@@ -106,6 +106,9 @@ return {{
                 ignore_list = {},
             },
             sync_root_with_cwd = true,
+            git = {
+                ignore = false,  -- Show files that are in .gitignore
+            },
         })
         -- Add nvim-tree keymaps - simple toggle for floating window
         vim.keymap.set("n", "<leader>e", function()
