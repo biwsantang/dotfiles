@@ -116,7 +116,6 @@ if status is-interactive
 
     # Check if zellij is available and launch it
     if command -v zellij >/dev/null 2>&1; and not set -q ZELLIJ
-				alias	abcd="claude"
         # Launch zellij
         eval (zellij setup --generate-auto-start fish | string collect)
     end
