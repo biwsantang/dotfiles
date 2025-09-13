@@ -55,7 +55,11 @@ if status is-interactive
     
     # Claude PR function
     function ccpr
-        claude --dangerously-skip-permissions "/pr $argv"
+        if set -q ZELLIJ
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/pr $argv"
+        else
+            claude --dangerously-skip-permissions "/pr $argv"
+        end
     end
     
     # Install Ghostty terminfo on remote server
