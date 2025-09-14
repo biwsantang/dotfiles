@@ -3,6 +3,7 @@ tap "neovim/neovim"
 
 # install some packages
 brew "zsh"
+brew "fish"
 brew "stow"
 brew "git"
 brew "jq"
@@ -13,3 +14,9 @@ brew "tmux"
 brew "bat"
 brew "starship"
 brew "zplug"
+brew "zellij"
+brew "ripgrep"
+brew "bun"
+
+# casks
+cask "ghostty"

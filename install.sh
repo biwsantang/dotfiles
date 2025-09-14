@@ -97,6 +97,23 @@ else
     else
         echo "zplug is already installed. Skipping."
     fi
+    
+    # Install zellij on Ubuntu (not available via apt)
+    if ! command -v zellij &> /dev/null; then
+        echo "Installing zellij..."
+        bash <(curl -L zellij.dev/launch) || { echo "Failed to install zellij. Exiting."; exit 1; }
+    else
+        echo "zellij is already installed. Skipping."
+    fi
+    
+    # Install bun on Ubuntu
+    if ! command -v bun &> /dev/null; then
+        echo "Installing bun..."
+        curl -fsSL https://bun.sh/install | bash || { echo "Failed to install bun. Exiting."; exit 1; }
+        export PATH="$HOME/.bun/bin:$PATH"
+    else
+        echo "bun is already installed. Skipping."
+    fi
 fi
 
 if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]; then
@@ -107,66 +124,37 @@ else
     echo "Default login shell is already zsh. Skipping."
 fi
 
+# Install Claude Code via bun
+if ! command -v claude &> /dev/null; then
+    echo "Installing Claude Code..."
+    bun install -g @anthropic-ai/claude-code || { echo "Failed to install Claude Code. Exiting."; exit 1; }
+else
+    echo "Claude Code is already installed. Skipping."
+fi
+
+# Stow common terminal configurations
 stow nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
 stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
-stow ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
-stow claude || { echo "Failed to stow claude. Exiting."; exit 1; }
+stow zellij || { echo "Failed to stow zellij. Exiting."; exit 1; }
+stow fish || { echo "Failed to stow fish. Exiting."; exit 1; }
 
-# disabled code-server config install due to change to use vscode-web instead
+# Stow macOS-specific GUI applications
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    stow ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
+    stow claude || { echo "Failed to stow claude. Exiting."; exit 1; }
+fi
 
-#code_extension=(
-#     "asvetliakov.vscode-neovim|https://asvetliakov.gallery.vsassets.io/_apis/public/gallery/publisher/asvetliakov/extension/vscode-neovim/1.18.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage"
-# )
 
-# if [ -d "$USER_HOME/.local/share/code-server" ]; then
-#     for ENTRY in "${code_extension[@]}"; do
-#         # Split the entry into name and URL
-#         NAME="${ENTRY%%|*}"
-#         URL="${ENTRY##*|}"
+# Setup zsh configuration sourcing
+zsh_config_block="# Source all zsh configuration files
+for config in ~/.config/zsh/*.zsh; do
+    [ -r \"\$config\" ] && source \"\$config\"
+done"
 
-#         # Check if the extension is already installed
-#         if code --list-extensions | grep -r "$NAME"; then
-#             echo "Extension '$NAME' is already installed. Skipping..."
-#             continue
-#         fi
-
-#         # Create a temporary file
-#         TEMP_FILE="${mktemp}.vsix"
-
-#         echo "Downloading $URL for extension '$NAME'..."
-#         # Download the file
-#         curl -L -o "$TEMP_FILE" "$URL"
-
-#         echo "Installing extension '$NAME'..."
-#         # Install the extension
-#         code --install-extension "$TEMP_FILE"
-
-#         # Clean up the temporary file
-#         rm "$TEMP_FILE"
-
-#         echo "Extension '$NAME' installed successfully."
-#     done
-#     rm "$USER_HOME/.local/share/code-server/User/settings.json"
-#     stow vscode -t "$USER_HOME/.local/share/code-server"
-# else
-#     echo "Not found Code-server. Skiped"
-# fi
-
-add_source_if_not_exists() {
-    if ! grep -q "$1" $USER_HOME/.zshrc; then
-        echo "$1" >> $USER_HOME/.zshrc
-    fi
-}
-
-source_lines=(
-    "source $USER_HOME/.config/zsh/alias.zsh"
-    "source $USER_HOME/.config/zsh/rc.zsh"
-    "source $USER_HOME/.config/zsh/prompt.zsh"
-    "source $USER_HOME/.config/zplug/plugin.zsh"
-)
-
-for line in "${source_lines[@]}"; do
-    if ! grep -q "$line" $USER_HOME/.zshrc; then
-        echo "$line" >> $USER_HOME/.zshrc
-    fi
-done
+# Check if the zsh config block is already in .zshrc
+if ! grep -q "for config in ~/.config/zsh/\*.zsh" "$USER_HOME/.zshrc"; then
+    echo "$zsh_config_block" >> "$USER_HOME/.zshrc"
+    echo "Added zsh configuration sourcing to .zshrc"
+else
+    echo "zsh configuration sourcing already exists in .zshrc. Skipping."
+fi
