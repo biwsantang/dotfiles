@@ -88,11 +88,13 @@ else
         echo "Installing bun..."
         curl -fsSL https://bun.sh/install | bash || { echo "Failed to install bun. Exiting."; exit 1; }
         export PATH="$HOME/.bun/bin:$PATH"
+        echo "bun installation completed, PATH updated"
     else
         echo "bun is already installed. Skipping."
     fi
 fi
 
+echo "Checking default shell..."
 if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]; then
     # Change the default login shell to zsh
     sudo chsh -s "$(which zsh)" "$USER" || { echo "Failed to change default login shell to zsh. Exiting."; exit 1; }
@@ -100,6 +102,7 @@ if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]; then
 else
     echo "Default login shell is already zsh. Skipping."
 fi
+echo "Shell configuration completed."
 
 # Install Claude Code via bun
 if ! command -v claude &> /dev/null; then
@@ -110,18 +113,28 @@ else
 fi
 
 # Change to dotfiles directory for stow operations
+echo "Changing to dotfiles directory: $DOTFILES_DIR"
 cd "$DOTFILES_DIR" || { echo "Failed to change to dotfiles directory. Exiting."; exit 1; }
+echo "Current directory: $(pwd)"
 
 # Stow common terminal configurations
-stow nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
-stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
-stow zellij || { echo "Failed to stow zellij. Exiting."; exit 1; }
-stow fish || { echo "Failed to stow fish. Exiting."; exit 1; }
+echo "Starting stow operations..."
+echo "Stowing nvim..."
+stow -v -t $HOME nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
+echo "Stowing zsh..."
+stow -v -t $HOME zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
+echo "Stowing zellij..."
+stow -v -t $HOME zellij || { echo "Failed to stow zellij. Exiting."; exit 1; }
+echo "Stowing fish..."
+stow -v -t $HOME fish || { echo "Failed to stow fish. Exiting."; exit 1; }
+echo "Stow operations completed."
 
 # Stow macOS-specific GUI applications
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    stow ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
-    stow claude || { echo "Failed to stow claude. Exiting."; exit 1; }
+    echo "Stowing macOS-specific configurations..."
+    stow -v -t $HOME ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
+    stow -v -t $HOME claude || { echo "Failed to stow claude. Exiting."; exit 1; }
+    echo "macOS configurations stowed successfully."
 fi
 
 
