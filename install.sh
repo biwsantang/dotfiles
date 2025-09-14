@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # check if this Ubuntu or macOS
 if { [ ! -f /etc/os-release ] || ! grep -q "Ubuntu" /etc/os-release; } && [[ "$OSTYPE" != "darwin"* ]]; then
