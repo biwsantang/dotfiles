@@ -138,6 +138,9 @@ else
     echo "Claude Code is already installed. Skipping."
 fi
 
+# Change to dotfiles directory for stow operations
+cd "$DOTFILES_DIR" || { echo "Failed to change to dotfiles directory. Exiting."; exit 1; }
+
 # Stow common terminal configurations
 stow nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
 stow zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
