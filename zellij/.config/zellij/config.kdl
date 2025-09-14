@@ -4,6 +4,11 @@ default_layout "default"
 default_shell "fish"
 auto_layout true
 
+options {
+    // Store the last 1000 lines for each pane
+    scroll_buffer_size 1000
+}
+
 ui {
     pane_frames {
         rounded_corners true
