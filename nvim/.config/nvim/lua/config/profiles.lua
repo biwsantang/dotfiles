@@ -35,7 +35,6 @@ M.profiles = {
     "plenary",
     "diffview",
     "render-markdown",
-    "nvim-window",
     "claudecode",
     "zellij-nav",
     "comment",

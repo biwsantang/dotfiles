@@ -6,6 +6,83 @@ return {{
     dependencies = {'nvim-lua/plenary.nvim'},
     lazy = true
 }, {
+    's1n7ax/nvim-window-picker',
+    name = 'window-picker',
+    event = 'VeryLazy',
+    version = '2.*',
+    config = function()
+        require'window-picker'.setup({
+            hint = 'statusline-winbar',
+            selection_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            show_prompt = true,
+            filter_rules = {
+                include_current_win = false,
+                autoselect_one = true,
+                -- filter using buffer options
+                bo = {
+                    -- if the file type is one of following, the window will be ignored
+                    filetype = { 'NvimTree', 'neo-tree', 'notify', 'quickfix', 'aerial', 'fidget' },
+                    -- if the buffer type is one of following, the window will be ignored
+                    buftype = { 'terminal', 'quickfix', 'nofile' },
+                },
+                -- filter using window options
+                wo = {},
+                -- if the file path contains one of following names, the window will be ignored
+                file_path_contains = {},
+                -- if the file name contains one of following names, the window will be ignored
+                file_name_contains = {},
+            },
+            highlights = {
+                statusline = {
+                    focused = {
+                        fg = '#ededed',
+                        bg = '#e35e4f',
+                        bold = true,
+                    },
+                    unfocused = {
+                        fg = '#ededed',
+                        bg = '#44cc41',
+                        bold = true,
+                    },
+                },
+                winbar = {
+                    focused = {
+                        fg = '#ededed',
+                        bg = '#e35e4f',
+                        bold = true,
+                    },
+                    unfocused = {
+                        fg = '#ededed',
+                        bg = '#44cc41',
+                        bold = true,
+                    },
+                },
+            },
+        })
+        
+        -- Standalone window picker keybinding
+        vim.keymap.set('n', '<leader>wp', function()
+            local picked = require('window-picker').pick_window()
+            if picked and picked ~= vim.api.nvim_get_current_win() then
+                vim.api.nvim_set_current_win(picked)
+            end
+        end, { desc = 'Pick window' })
+        
+        -- Also add a keybinding to swap windows
+        vim.keymap.set('n', '<leader>ws', function()
+            local picked = require('window-picker').pick_window({
+                hint = 'statusline-winbar',
+                prompt_message = 'Pick window to swap with:',
+            })
+            if picked and picked ~= vim.api.nvim_get_current_win() then
+                local current_buf = vim.api.nvim_get_current_buf()
+                local target_buf = vim.api.nvim_win_get_buf(picked)
+                vim.api.nvim_win_set_buf(vim.api.nvim_get_current_win(), target_buf)
+                vim.api.nvim_win_set_buf(picked, current_buf)
+            end
+        end, { desc = 'Swap windows' })
+    end,
+}, {
     'nvim-tree/nvim-tree.lua',
     cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeClose", "NvimTreeFocus" },
     keys = {
@@ -37,24 +114,40 @@ return {{
             })
 
             vim.keymap.set('n', 'o', function()
-                api.node.open.edit()
-                api.tree.close()
-            end, opts('Open'))
+                -- Open with window picker
+                local ok, picked_window_id = pcall(require('window-picker').pick_window)
+                if ok and picked_window_id then
+                    vim.api.nvim_set_current_win(picked_window_id)
+                    api.node.open.edit()
+                    api.tree.close()
+                else
+                    -- Fallback if picker fails or is cancelled
+                    api.node.open.edit()
+                    api.tree.close()
+                end
+            end, opts('Open with Window Picker'))
             vim.keymap.set('n', 'O', function()
-                api.node.open.no_window_picker()
-                api.tree.close()
-            end, opts('Open: No Window Picker'))
+                local node = api.tree.get_node_under_cursor()
+                if node and node.type == 'file' then
+                    local filepath = node.absolute_path
+                    api.tree.close()
+                    vim.cmd('rightbelow vsplit ' .. vim.fn.fnameescape(filepath))
+                elseif node and node.type == 'directory' then
+                    api.node.open.edit()
+                end
+            end, opts('Open in Right Split'))
             vim.keymap.set('n', '<CR>', function()
                 local node = api.tree.get_node_under_cursor()
                 if node then
                     if node.type == 'directory' then
                         api.node.open.edit()  -- Expand/collapse folder, don't close tree
                     else
-                        api.node.open.edit()  -- Open file and close tree
+                        -- Open file without window picker (direct open)
+                        api.node.open.no_window_picker()
                         api.tree.close()
                     end
                 end
-            end, opts('Open'))
+            end, opts('Open (no picker)'))
             vim.keymap.set('n', 't', function()
                 api.node.open.tab()
                 api.tree.close()

@@ -37,6 +37,8 @@ return {
         { "<leader>as", desc = "Send selection to Claude", mode = "v" },
         { "<leader>aa", desc = "Accept diff" },
         { "<leader>w", group = "Window" },
+        { "<leader>wp", desc = "Pick window" },
+        { "<leader>ws", desc = "Swap windows" },
         { "<leader>z", group = "Zen Mode" },
         { "<leader>za", desc = "True Zen Ataraxis" },
         { "<leader>zf", desc = "True Zen Focus" },
