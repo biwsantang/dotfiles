@@ -101,7 +101,13 @@ else
     # Install zellij on Ubuntu (not available via apt)
     if ! command -v zellij &> /dev/null; then
         echo "Installing zellij..."
-        bash <(curl -L zellij.dev/launch) || { echo "Failed to install zellij. Exiting."; exit 1; }
+        # Download and install zellij binary directly to avoid TTY issues
+        ZELLIJ_VERSION="v0.43.1"
+        curl -L "https://github.com/zellij-org/zellij/releases/download/$ZELLIJ_VERSION/zellij-x86_64-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz || { echo "Failed to download zellij. Exiting."; exit 1; }
+        tar -xzf /tmp/zellij.tar.gz -C /tmp || { echo "Failed to extract zellij. Exiting."; exit 1; }
+        sudo mv /tmp/zellij /usr/local/bin/ || { echo "Failed to move zellij to /usr/local/bin. Exiting."; exit 1; }
+        rm /tmp/zellij.tar.gz
+        echo "zellij installed successfully"
     else
         echo "zellij is already installed. Skipping."
     fi
