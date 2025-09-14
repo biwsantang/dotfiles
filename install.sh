@@ -151,3 +151,9 @@ if ! grep -q "for config in ~/.config/zsh/\*.zsh" "$USER_HOME/.zshrc"; then
 else
     echo "zsh configuration sourcing already exists in .zshrc. Skipping."
 fi
+
+echo ""
+echo "🎉 Dotfiles installation completed successfully!"
+echo "All configurations have been installed and stowed."
+echo "Please restart your shell or run 'source ~/.zshrc' to apply changes."
+exit 0
