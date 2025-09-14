@@ -6,40 +6,11 @@ if { [ ! -f /etc/os-release ] || ! grep -q "Ubuntu" /etc/os-release; } && [[ "$O
     exit 1
 fi
 
-REPO_URL="https://github.com/biwsantang/dotfiles.git"
-REPO_BRANCH="ubuntu"
 USER_HOME=$(eval echo ~${SUDO_USER:-$USER})
-DOTFILES_DIR="$USER_HOME/.dotfiles"
 
-# Check if dotfiles directory exists and is the correct repository
-if [ ! -d "$DOTFILES_DIR" ] || [ -z "$(ls -A "$DOTFILES_DIR")" ]; then
-    # Ensure git is installed first
-    if ! command -v git &> /dev/null; then
-        sudo apt update
-        sudo apt install -y git || { echo "Failed to install git. Exiting."; exit 1; }
-    fi
-    
-    # Clone the repository
-    git clone -b "$REPO_BRANCH" "$REPO_URL" "$DOTFILES_DIR" || { echo "Failed to clone repository. Exiting."; exit 1; }
-else
-    # Check if the existing directory is the correct repository
-    cd "$DOTFILES_DIR" || {
-        echo "Error: Could not change to dotfiles directory"
-        echo "Please check if the directory exists and you have permissions"
-        exit 1
-    }
-    
-    # Verify the remote URL matches the expected repository
-    if ! git remote get-url origin | grep -q "$REPO_URL"; then
-        echo "Error: $USER_HOME/.dotfiles contains a different repository"
-        exit 1
-    fi
-    
-    # Fetch and update the repository
-    git fetch origin "$REPO_BRANCH" || { echo "Failed to fetch repository. Exiting."; exit 1; }
-    git checkout "$REPO_BRANCH" || { echo "Failed to checkout branch. Exiting."; exit 1; }
-    git pull origin "$REPO_BRANCH" || { echo "Failed to pull repository. Exiting."; exit 1; }
-fi
+# Use the directory where this script is located as dotfiles directory
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "Using dotfiles directory: $DOTFILES_DIR"
 
 # check install apt package if it not already installed
 
