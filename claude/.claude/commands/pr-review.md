@@ -205,6 +205,8 @@ After analyzing the PR, the command explains what it plans to do and asks for co
 Review Analysis Complete
    Found 3 issues requiring attention and 2 suggestions for improvement across 5 files.
    
+   [DETAILED_FINDINGS_LIST]
+   
    Based on the issues found, I recommend requesting changes before this can be merged.
    
    I'll submit a review with:
