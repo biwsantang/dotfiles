@@ -32,12 +32,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         echo "Starship prompt is already installed. Skipping."
     fi
     
-    # Install zplug via Homebrew
-    if [ ! -d "$USER_HOME/.zplug" ]; then
-        brew install zplug || { echo "Failed to install zplug via Homebrew. Exiting."; exit 1; }
-    else
-        echo "zplug is already installed. Skipping."
-    fi
 else
     # Check if aptfile exists
     APTFILE="$DOTFILES_DIR/aptfile"
@@ -60,13 +54,6 @@ else
         curl -sS https://starship.rs/install.sh | sh -s -- -y || { echo "Failed to install Starship prompt. Exiting."; exit 1; }
     else
         echo "Starship prompt is already installed. Skipping."
-    fi
-    
-    # check if zplug is already installed
-    if [ ! -d "$USER_HOME/.zplug" ]; then
-        curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh || { echo "Failed to install zplug. Exiting."; exit 1; }
-    else
-        echo "zplug is already installed. Skipping."
     fi
     
     # Install zellij on Ubuntu (not available via apt)
