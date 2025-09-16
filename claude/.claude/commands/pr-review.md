@@ -32,7 +32,7 @@ Or review a specific PR URL:
 
 The following optimizations significantly improve command execution speed:
 
-- **Parallel operations** - Run `gh pr view`, `gh pr diff`, and file analysis concurrently
+- **Parallel operations** - Run `gh pr view`, `gh pr diff`, existing reviews, and file analysis concurrently
 - **Efficient diff parsing** - Analyze changes by file type and focus areas
 - **Stream reviews** - Submit review comments efficiently using `gh api` with JSON payload
 - **Cache PR data** - Avoid redundant API calls during analysis
@@ -50,12 +50,14 @@ flowchart TD
     F --> F1[Fetch PR details with gh pr view]
     F --> F2[Get PR diff with gh pr diff]
     F --> F3[Get PR files with gh pr view --json files]
+    F --> F4[Get existing reviews with gh pr view --json reviews]
     F1 --> G[Wait for all parallel operations]
     F2 --> G
     F3 --> G
-    G --> H[Analyze PR content]
+    F4 --> G
+    G --> H[Analyze PR content and existing reviews]
     H --> H1[Review code changes]
-    H1 --> H2[Check for potential issues]
+    H1 --> H2[Check for potential issues not already identified]
     H2 --> H3[Identify improvement opportunities]
     H3 --> I[Generate review summary]
     I --> J{Submit review?}
@@ -70,6 +72,7 @@ flowchart TD
     style F1 fill:#DDA0DD
     style F2 fill:#DDA0DD  
     style F3 fill:#DDA0DD
+    style F4 fill:#DDA0DD
     style H1 fill:#90EE90
     style H2 fill:#90EE90
     style K fill:#FFB6C1
@@ -288,10 +291,11 @@ Review focus areas by file type:
 
 ## Implementation Details
 
-- Uses `gh pr view --json` to get structured PR data including files, commits, and metadata
+- Uses `gh pr view --json` to get structured PR data including files, commits, metadata, and existing reviews
 - Analyzes `gh pr diff` output to understand specific code changes
 - Performs static analysis on changed files based on file extensions
 - Generates contextual comments based on the type of changes and project patterns
+- **Avoids duplication**: Reviews existing comments and reviews to avoid repeating already identified issues
 - **Submit reviews**: Uses `gh api` with GitHub's Reviews API to submit reviews with precise line comments
 - **Interactive review submission**: Prompts user to choose between `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` before submitting
 - **Line-specific comments**: Places comments at exact file positions using the `position` field
