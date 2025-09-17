@@ -21,36 +21,98 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 
-    # Install packages from Brewfile
-    echo "Installing packages from Brewfile..."
-    brew bundle --file="$DOTFILES_DIR/brewfile"
+    # Define packages for macOS
+    BREW_PACKAGES=(
+        "zsh"
+        "fish"
+        "stow"
+        "git"
+        "jq"
+        "neovim"
+        "fzf"
+        "eza"
+        "tmux"
+        "bat"
+        "starship"
+        "zellij"
+        "ripgrep"
+        "node"
+        "bun"
+    )
     
-    # Install Starship via Homebrew
-    if ! command -v starship &> /dev/null; then
-        brew install starship || { echo "Failed to install Starship prompt via Homebrew. Exiting."; exit 1; }
-    else
-        echo "Starship prompt is already installed. Skipping."
-    fi
+    BREW_CASKS=(
+        "ghostty"
+    )
+    
+    # Add neovim tap
+    echo "Adding neovim tap..."
+    brew tap neovim/neovim 2>/dev/null || true
+    
+    # Install brew packages
+    echo "Installing Homebrew packages..."
+    for package in "${BREW_PACKAGES[@]}"; do
+        if ! brew list --formula | grep -q "^${package}\$"; then
+            echo "Installing $package..."
+            brew install "$package" || echo "Warning: Failed to install $package"
+        else
+            echo "$package is already installed. Skipping."
+        fi
+    done
+    
+    # Install casks
+    echo "Installing Homebrew casks..."
+    for cask in "${BREW_CASKS[@]}"; do
+        if ! brew list --cask | grep -q "^${cask}\$"; then
+            echo "Installing $cask..."
+            brew install --cask "$cask" || echo "Warning: Failed to install $cask"
+        else
+            echo "$cask is already installed. Skipping."
+        fi
+    done
     
 else
-    # Check if aptfile exists
-    APTFILE="$DOTFILES_DIR/aptfile"
-    echo "Checking for aptfile at: $APTFILE"  # Debug statement
-    ls -l "$APTFILE"  # Debug statement to list the file details
-    if [ ! -f "$APTFILE" ]; then
-        echo "Error: aptfile not found in $DOTFILES_DIR"
-        exit 1
-    fi
-
-    # Download aptfile binary to /tmp
-    curl -o /tmp/aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile || { echo "Failed to download aptfile. Exiting."; exit 1; }
-    chmod +x /tmp/aptfile || { echo "Failed to make aptfile executable. Exiting."; exit 1; }
-
-    # Use aptfile to install packages
-    sudo /tmp/aptfile "$APTFILE" || { echo "Failed to install packages using aptfile. Exiting."; exit 1; }
+    # Define packages for Ubuntu
+    APT_PACKAGES=(
+        "zsh"
+        "fish"
+        "stow"
+        "git"
+        "jq"
+        "neovim"
+        "fzf"
+        "eza"
+        "tmux"
+        "bat"
+        "ripgrep"
+        "curl"
+        "wget"
+        "nodejs"
+        "npm"
+    )
     
-    # check if starship is already installed
+    # Update apt repositories
+    echo "Updating apt repositories..."
+    sudo apt-get update || { echo "Failed to update apt repositories. Exiting."; exit 1; }
+    
+    # Add neovim PPA
+    echo "Adding neovim PPA..."
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable || echo "Warning: Failed to add neovim PPA"
+    sudo apt-get update || true
+    
+    # Install apt packages
+    echo "Installing apt packages..."
+    for package in "${APT_PACKAGES[@]}"; do
+        if ! dpkg -l | grep -q "^ii  $package "; then
+            echo "Installing $package..."
+            sudo apt-get install -y "$package" || echo "Warning: Failed to install $package"
+        else
+            echo "$package is already installed. Skipping."
+        fi
+    done
+    
+    # Install starship on Ubuntu
     if ! command -v starship &> /dev/null; then
+        echo "Installing Starship prompt..."
         curl -sS https://starship.rs/install.sh | sh -s -- -y || { echo "Failed to install Starship prompt. Exiting."; exit 1; }
     else
         echo "Starship prompt is already installed. Skipping."
