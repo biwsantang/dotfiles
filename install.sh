@@ -172,6 +172,8 @@ echo "Stowing nvim..."
 stow -v -t $HOME nvim || { echo "Failed to stow nvim. Exiting."; exit 1; }
 echo "Stowing zsh..."
 stow -v -t $HOME zsh || { echo "Failed to stow zsh. Exiting."; exit 1; }
+echo "Stowing bash..."
+stow -v -t $HOME bash || { echo "Failed to stow bash. Exiting."; exit 1; }
 echo "Stowing zellij..."
 stow -v -t $HOME zellij || { echo "Failed to stow zellij. Exiting."; exit 1; }
 echo "Stowing fish..."
@@ -199,6 +201,27 @@ if ! grep -q "for config in ~/.config/zsh/\*.zsh" "$USER_HOME/.zshrc"; then
     echo "Added zsh configuration sourcing to .zshrc"
 else
     echo "zsh configuration sourcing already exists in .zshrc. Skipping."
+fi
+
+# Setup bash configuration sourcing
+bash_config_block="# Source all bash configuration files
+if [[ \$- == *i* ]]; then
+    for config in ~/.config/bash/*.bash; do
+        [ -r \"\$config\" ] && source \"\$config\"
+    done
+fi"
+
+# Check if the bash config block is already in .bashrc
+if [ -f "$USER_HOME/.bashrc" ]; then
+    if ! grep -q "for config in ~/.config/bash/\*.bash" "$USER_HOME/.bashrc"; then
+        echo "$bash_config_block" >> "$USER_HOME/.bashrc"
+        echo "Added bash configuration sourcing to .bashrc"
+    else
+        echo "bash configuration sourcing already exists in .bashrc. Skipping."
+    fi
+else
+    echo "$bash_config_block" > "$USER_HOME/.bashrc"
+    echo "Created .bashrc with bash configuration sourcing"
 fi
 
 echo ""
