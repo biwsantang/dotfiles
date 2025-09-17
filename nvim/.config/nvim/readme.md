@@ -177,6 +177,16 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 | `<leader>zm` | Toggle Minimalist mode (hide UI elements) |
 | `<leader>zn` | Toggle Narrow mode (focus on selection) |
 
+### Trouble.nvim (Diagnostics & Lists)
+| Key | Action |
+|-----|--------|
+| `<leader>xx` | Toggle diagnostics |
+| `<leader>xX` | Toggle buffer diagnostics |
+| `<leader>cs` | Toggle symbols |
+| `<leader>cl` | Toggle LSP definitions/references |
+| `<leader>xL` | Toggle location list |
+| `<leader>xQ` | Toggle quickfix list |
+
 ## Installed Plugins
 
 1. **LSP Support**
@@ -222,6 +232,9 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 11. **Writing & Focus**
    - true-zen.nvim (Distraction-free writing modes)
 
+12. **Diagnostics & Error Navigation**
+   - trouble.nvim (Pretty list for diagnostics, references, quickfix and more)
+
 ## Features
 
 - **Smart Theme Switching**: Automatically switches between light and dark themes
@@ -238,9 +251,9 @@ use `ctrl+\` then `ctrl+n` to enter normal mode in claude code
 This configuration supports profile-based plugin loading for faster startup times:
 
 ### Available Profiles
-- **minimal** (2 plugins): Basic setup with colorschemes and lightline
-- **dev** (9 plugins): Development setup with LSP, treesitter, commenting, which-key, and core tools
-- **full** (14 plugins): Complete setup with all plugins enabled
+- **minimal** (3 plugins): Basic setup with colorschemes, lightline, and true-zen
+- **dev** (15 plugins): Development setup with LSP, treesitter, commenting, which-key, trouble, and core tools
+- **full** (17 plugins): Complete setup with all plugins enabled
 
 ### Usage
 
