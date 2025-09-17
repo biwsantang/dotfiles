@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# Bash runtime configuration
 
 # Starship prompt
 eval "$(starship init bash)"
@@ -21,10 +21,4 @@ fi
 # Enable bash completion
 if [ -f "$HOMEBREW_PREFIX/etc/bash_completion" ]; then
     source "$HOMEBREW_PREFIX/etc/bash_completion"
-fi
-
-# Check if zellij is available and launch it
-if command -v zellij &>/dev/null && [ -z "$ZELLIJ" ]; then
-    # Launch zellij
-    eval "$(zellij setup --generate-auto-start bash)"
 fi

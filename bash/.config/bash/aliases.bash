@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-# Aliases
+# Bash aliases
 alias c="clear"
 alias ls="eza"
 alias ll="ls -lahF"

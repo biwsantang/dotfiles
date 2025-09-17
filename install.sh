@@ -227,5 +227,9 @@ fi
 echo ""
 echo "🎉 Dotfiles installation completed successfully!"
 echo "All configurations have been installed and stowed."
-echo "Please restart your shell or run 'source ~/.zshrc' to apply changes."
+echo ""
+echo "To apply changes, restart your shell or run:"
+echo "  • For zsh:  source ~/.zshrc"
+echo "  • For bash: source ~/.bashrc"
+echo "  • For fish: source ~/.config/fish/config.fish"
 exit 0

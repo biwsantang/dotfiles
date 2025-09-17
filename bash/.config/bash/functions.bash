@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+# Bash functions
 
 # Use floating pane in zellij, regular command otherwise
-ccc() {
+function ccc() {
     if [ -n "$ZELLIJ" ]; then
         zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions '/commit'
     else
@@ -10,7 +10,7 @@ ccc() {
 }
 
 # Claude PR function
-ccpr() {
+function ccpr() {
     if [ -n "$ZELLIJ" ]; then
         zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/pr $*"
     else
@@ -20,12 +20,12 @@ ccpr() {
 
 # Install Ghostty terminfo on remote server
 # Usage: install-ghostty-on user@hostname
-install-ghostty-on() {
+function install-ghostty-on() {
     infocmp -x xterm-ghostty | ssh "$1" -- tic -x -
 }
 
 # History search function using fzf
-hs() {
+function hs() {
     local selected=$(history | tail -100 | fzf --tac --no-sort | sed 's/^[[:space:]]*[0-9]*[[:space:]]*//')
     if [ -n "$selected" ]; then
         READLINE_LINE="$selected"
@@ -34,7 +34,7 @@ hs() {
 }
 
 # Tmux session function
-t() {
+function t() {
     local session_name="${1:-0}"
     if [ -n "$1" ]; then
         session_name="X"
@@ -43,7 +43,7 @@ t() {
 }
 
 # Edit command line in editor (Ctrl-e)
-edit_command_line() {
+function edit_command_line() {
     local tmpfile=$(mktemp)
     echo "$READLINE_LINE" > "$tmpfile"
     "$EDITOR" "$tmpfile"

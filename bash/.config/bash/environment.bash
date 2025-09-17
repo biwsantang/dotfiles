@@ -1,7 +1,4 @@
-#!/usr/bin/env bash
-
-# Source .fishprofile shell environment variables (if exists)
-[ -f "$HOME/.fishprofile" ] && source "$HOME/.fishprofile"
+# Bash environment variables
 
 # Path configuration
 export PATH="$PATH:/Users/biwsantang/.cache/lm-studio/bin"
