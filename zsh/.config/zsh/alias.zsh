@@ -14,6 +14,17 @@ alias cp="cp -r"
 
 alias cb="cd .."
 alias ch="cd ~"
+alias cg='cd $(git rev-parse --show-toplevel)'
+
+# Jira alias for current user's issues in open sprints
+jira_cu() {
+    if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+        jira issue list "$@"
+    else
+        jira issue list -q"sprint IN openSprints() and assignee = currentUser()" "$@"
+    fi
+}
+alias jira\ cu="jira_cu"
 
 alias cc="claude"
 alias ccb="claude --dangerously-skip-permissions"

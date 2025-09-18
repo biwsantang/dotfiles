@@ -51,6 +51,15 @@ if status is-interactive
         end
     end
     
+    # Jira alias for current user's issues in open sprints
+    function jira\ cu
+        if test "$argv[1]" = "-h" -o "$argv[1]" = "--help"
+            jira issue list $argv
+        else
+            jira issue list -q"sprint IN openSprints() and assignee = currentUser()" $argv
+        end
+    end
+
     # SSH with compatible terminal when needed
     alias sshc="TERM=xterm-256color command ssh"
     
