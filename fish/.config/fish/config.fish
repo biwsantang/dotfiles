@@ -39,7 +39,7 @@ if status is-interactive
     alias cp="cp -r"
     alias cb="cd .."
     alias ch="cd ~"
-		alias cg="cd $(git rev-parse --show-toplevel)"
+		alias cg='cd (git rev-parse --show-toplevel 2>/dev/null || echo ".")'
     alias cc="claude"
     alias ccb="claude --dangerously-skip-permissions"
     # Use floating pane in zellij, regular command otherwise
