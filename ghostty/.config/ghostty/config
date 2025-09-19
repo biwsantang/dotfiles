@@ -1,4 +1,4 @@
 command = /opt/homebrew/bin/fish --login --interactive
-theme = dark:catppuccin-mocha,light:xcodelight
+theme = dark:catppuccin-mocha,light:github_light
 font-size = 14
 keybind = shift+enter=text:\n
