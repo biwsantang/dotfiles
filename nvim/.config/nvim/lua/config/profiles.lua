@@ -23,6 +23,7 @@ M.profiles = {
 		"leap",
     "gitsigns",
     "trouble",
+    "indent-blankline",
   },
   
   full = {
@@ -43,6 +44,7 @@ M.profiles = {
 		"true-zen",
     "gitsigns",
     "trouble",
+    "indent-blankline",
   },
   
   vscode = {
