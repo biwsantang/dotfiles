@@ -15,5 +15,6 @@
     "type": "command",
     "command": "bunx ccusage statusline",
     "padding": 0
-  }
+  },
+  "model": "opusplan"
 }
