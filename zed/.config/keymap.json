@@ -1,0 +1,23 @@
+[
+  {
+    "context": "VimControl && !menu && vim_mode != operator",
+    "bindings": {
+      "n": "vim::Down",
+      "e": "vim::Up",
+      "i": "vim::Right",
+      "j": "vim::NextWordEnd",
+      "k": "vim::MoveToNext",
+      "l": "vim::InsertBefore"
+    }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "n": "vim::Down",
+      "e": "vim::Up",
+      "i": "vim::Right",
+      "j": "vim::NextWordEnd",
+      "k": "vim::MoveToNext"
+    }
+  }
+]
