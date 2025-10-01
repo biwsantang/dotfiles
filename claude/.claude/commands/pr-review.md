@@ -51,15 +51,17 @@ flowchart TD
     F --> F2[Get PR diff with gh pr diff]
     F --> F3[Get PR files with gh pr view --json files]
     F --> F4[Get existing reviews with gh pr view --json reviews]
+    F --> F5[Extract Jira ticket ID & fetch details via MCP]
     F1 --> G[Wait for all parallel operations]
     F2 --> G
     F3 --> G
     F4 --> G
-    G --> H[Analyze PR content and existing reviews]
-    H --> H1[Review code changes]
+    F5 --> G
+    G --> H[Analyze PR with all context including Jira details]
+    H --> H1[Review code changes against requirements]
     H1 --> H2[Check for potential issues not already identified]
     H2 --> H3[Identify improvement opportunities]
-    H3 --> I[Generate review summary]
+    H3 --> I[Generate review summary with Jira context]
     I --> J{Submit review?}
     J -->|Yes| K[Ask user for review action]
     K --> K1[User selects: APPROVE/REQUEST_CHANGES/COMMENT]
@@ -67,12 +69,14 @@ flowchart TD
     J -->|No| M[Display review summary only]
     L --> N[Success: Review submitted]
     M --> N[Success: Review completed]
-    
+
     style F fill:#87CEEB
     style F1 fill:#DDA0DD
-    style F2 fill:#DDA0DD  
+    style F2 fill:#DDA0DD
     style F3 fill:#DDA0DD
     style F4 fill:#DDA0DD
+    style F5 fill:#FFD700
+    style H fill:#90EE90
     style H1 fill:#90EE90
     style H2 fill:#90EE90
     style K fill:#FFB6C1
@@ -102,6 +106,30 @@ The command automatically finds the relevant PR:
 - **Explicit PR**: Use specified PR number or URL
 - **Current branch**: Find open PR for the current branch
 - **Error handling**: Clear message if no PR is found
+
+## Jira Integration
+
+The command automatically detects and fetches Jira ticket information to provide context-aware reviews:
+
+### Ticket Detection
+- **PR Title**: Searches for Jira ticket IDs (e.g., PROJ-123) in the PR title
+- **Branch Name**: Extracts ticket IDs from branch names (e.g., feature/PROJ-123-add-feature)
+- **PR Description**: Parses ticket references from the PR body
+
+### Jira MCP Integration
+When a Jira ticket is detected, the command:
+1. Uses the Jira MCP server to fetch ticket details
+2. Retrieves acceptance criteria, description, and requirements
+3. Incorporates ticket context into the review analysis
+4. Validates that implementation meets ticket requirements
+5. Checks if all acceptance criteria are addressed
+
+### Context-Aware Review
+With Jira ticket information, the review includes:
+- **Requirements Validation**: Ensures code changes align with ticket requirements
+- **Acceptance Criteria Check**: Verifies all criteria are met
+- **Scope Analysis**: Identifies if changes exceed or miss ticket scope
+- **Related Issues**: Considers linked tickets and dependencies
 
 ## Review Analysis Areas
 
@@ -138,10 +166,15 @@ When submitting a review with `gh api`, the command uses this structure:
 ```markdown
 ## 🔍 Code Review Summary
 
+### 🎫 Jira Context (if available)
+- **Ticket**: [PROJ-123: Ticket Title]
+- **Requirements Met**: [✅/⚠️ Status of requirements]
+- **Acceptance Criteria**: [Status of each criterion]
+
 ### ✅ Strengths
 - [Positive aspects of the PR]
 
-### ⚠️ Areas for Improvement  
+### ⚠️ Areas for Improvement
 - [Issues found with suggestions]
 
 ### 🚀 Suggestions
@@ -292,12 +325,15 @@ Review focus areas by file type:
 ## Implementation Details
 
 - Uses `gh pr view --json` to get structured PR data including files, commits, metadata, and existing reviews
+- **Jira MCP Integration**: Automatically detects Jira ticket IDs and fetches ticket details via MCP server
 - Analyzes `gh pr diff` output to understand specific code changes
 - Performs static analysis on changed files based on file extensions
+- **Context-aware analysis**: Incorporates Jira ticket requirements into code review
 - Generates contextual comments based on the type of changes and project patterns
 - **Avoids duplication**: Reviews existing comments and reviews to avoid repeating already identified issues
 - **Submit reviews**: Uses `gh api` with GitHub's Reviews API to submit reviews with precise line comments
 - **Interactive review submission**: Prompts user to choose between `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` before submitting
 - **Line-specific comments**: Places comments at exact file positions using the `position` field
+- **Requirements validation**: Checks if implementation meets Jira ticket acceptance criteria
 - Provides both summary view and detailed line-by-line analysis
 - Supports reviewing PRs from forks and cross-repository contributions
