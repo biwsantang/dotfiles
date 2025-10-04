@@ -23,3 +23,6 @@ alias jira\ cu="jira_cu"
 
 # SSH with compatible terminal when needed
 alias sshc="TERM=xterm-256color command ssh"
+
+# Keychain management
+alias unlock-keychain="security unlock-keychain ~/Library/Keychains/login.keychain-db"

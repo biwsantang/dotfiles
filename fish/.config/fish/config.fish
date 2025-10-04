@@ -78,6 +78,9 @@ if status is-interactive
         infocmp -x xterm-ghostty | ssh $argv -- tic -x -
     end
 
+    # Keychain management
+    alias unlock-keychain="security unlock-keychain ~/Library/Keychains/login.keychain-db"
+
     # Functions (converted from Zsh)
 
     # History search function

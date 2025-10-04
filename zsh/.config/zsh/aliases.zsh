@@ -6,3 +6,6 @@ alias sshc="TERM=xterm-256color ssh"
 install-ghostty-on() {
     infocmp -x xterm-ghostty | ssh "$1" -- tic -x -
 }
+
+# Keychain management
+alias unlock-keychain="security unlock-keychain ~/Library/Keychains/login.keychain-db"
