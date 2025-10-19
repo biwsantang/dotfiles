@@ -3,18 +3,18 @@
 # Use floating pane in zellij, regular command otherwise
 function ccc() {
     if [ -n "$ZELLIJ" ]; then
-        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions '/commit'
+        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku '/commit'
     else
-        claude --dangerously-skip-permissions '/commit'
+        claude --dangerously-skip-permissions --model haiku '/commit'
     fi
 }
 
 # Claude PR function
 function ccpr() {
     if [ -n "$ZELLIJ" ]; then
-        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/pr $*"
+        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku "/pr $*"
     else
-        claude --dangerously-skip-permissions "/pr $*"
+        claude --dangerously-skip-permissions --model haiku "/pr $*"
     fi
 }
 

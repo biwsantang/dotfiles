@@ -45,9 +45,9 @@ if status is-interactive
     # Use floating pane in zellij, regular command otherwise
     function ccc
         if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions '/commit'
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku '/commit'
         else
-            claude --dangerously-skip-permissions '/commit'
+            claude --dangerously-skip-permissions --model haiku '/commit'
         end
     end
     
@@ -66,9 +66,9 @@ if status is-interactive
     # Claude PR function
     function ccpr
         if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/pr $argv"
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku "/pr $argv"
         else
-            claude --dangerously-skip-permissions "/pr $argv"
+            claude --dangerously-skip-permissions --model haiku "/pr $argv"
         end
     end
     
