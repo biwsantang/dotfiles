@@ -1,210 +1,212 @@
-# Claude Command: Rebase
+---
+argument-hint: [optional: specify target branch, interactive mode, or continue/abort]
+description: Rebase current branch with conflict resolution
+model: claude-haiku-4-5-20251001
+---
 
-This command helps you perform interactive rebases with smart commit management and conflict resolution.
+# Rebase Command
+
+Use this command to perform safe, effective rebases with intelligent conflict detection and resolution.
 
 ## Usage
 
-To rebase the current branch, just type:
 ```
 /rebase
 ```
 
 Or with options:
 ```
-/rebase --onto main
 /rebase --interactive
+/rebase --onto main
 /rebase --continue
 /rebase --abort
 ```
 
-## Important Notes
+## What This Does
 
-- **Prerequisites**: Ensure all changes are committed before rebasing
-- If there are uncommitted changes, the command will stop and ask you to commit or stash them first
-- Always fetches origin first to ensure base branch comparison is current
-- The command analyzes commit history to suggest the most appropriate rebase strategy
-- Smart conflict detection and resolution suggestions
-- **Handles rebase conflicts gracefully**: Provides clear guidance for resolving conflicts step-by-step
-- Creates backup branch before destructive operations for safety
+This command activates the **Git Rebase Assistant** skill, which:
 
-## Performance Improvements
+1. Validates working directory is clean (stops if uncommitted changes)
+2. Creates automatic safety backup branch
+3. Detects appropriate base branch automatically
+4. Pre-analyzes potential conflicts before starting
+5. Provides step-by-step conflict resolution guidance
+6. Supports interactive rebase for commit cleanup
+7. Helps recover if rebase fails
 
-The following optimizations significantly improve command execution speed:
+## Features
 
-- **Parallel git operations** - Run `git status`, `git fetch`, and branch analysis concurrently
-- **Smart conflict detection** - Pre-analyze potential conflicts before starting rebase
-- **Optimized commit analysis** - Use `git log --stat` for quick overview, detailed analysis only when needed
-- **Streamlined rebase workflow** - Direct command execution without temporary files
+- **Automatic safety backups**: Creates `backup/<branch>` before rebasing
+- **Smart base detection**: Automatically targets develop or main based on branch type
+- **Conflict pre-analysis**: Warns about potential conflicts before starting
+- **Step-by-step guidance**: Clear instructions for resolving conflicts
+- **Interactive rebase support**: Squash, reorder, and edit commits
+- **Easy abort and recovery**: Restore original state if needed
+- **Force push warnings**: Alerts about implications for shared branches
 
-## What This Command Does
+## How It Works
 
-```mermaid
-flowchart TD
-    A[Start: /rebase] --> B[Parallel Operations]
-    B --> B1[Check git status]
-    B --> B2[Fetch origin updates]
-    B --> B3[Analyze current branch]
-    B1 --> C[Wait for all parallel operations]
-    B2 --> C
-    B3 --> C
-    C --> D{Uncommitted changes?}
-    D -->|Yes| E[Stop: Ask user to commit/stash first]
-    D -->|No| F[Determine target base branch]
-    E --> END[Command stopped]
-    F --> G[Create safety backup branch]
-    G --> H[Pre-analyze potential conflicts]
-    H --> I{Conflicts likely?}
-    I -->|Yes| J[Warn user and suggest strategy]
-    I -->|No| K[Execute rebase]
-    J --> L{User wants to proceed?}
-    L -->|No| END
-    L -->|Yes| K
-    K --> M{Rebase conflicts?}
-    M -->|Yes| N[Guide conflict resolution]
-    M -->|No| O[Success: Rebase completed]
-    N --> P[Provide conflict resolution steps]
-    P --> Q{Continue rebase?}
-    Q -->|Yes| R[Continue with git rebase --continue]
-    Q -->|No| S[Abort with git rebase --abort]
-    R --> M
-    S --> T[Restore from backup branch]
-    T --> END
-    
-    style B fill:#87CEEB
-    style B1 fill:#DDA0DD
-    style B2 fill:#DDA0DD
-    style B3 fill:#DDA0DD
-    style G fill:#FFB6C1
-    style H fill:#90EE90
-    style N fill:#F0E68C
-    style O fill:#90EE90
+The skill will:
+1. Validate working directory is clean (stops if uncommitted changes)
+2. Fetch latest changes from origin
+3. Create safety backup branch: `backup/<branch-name>`
+4. Detect appropriate base branch (feature/* → develop, develop → main, etc.)
+5. Pre-analyze potential conflicts and warn if detected
+6. Execute rebase (standard or interactive based on options)
+7. If conflicts occur: provide step-by-step resolution guidance
+8. Warn about force push if branch was previously pushed
+
+## Base Branch Detection
+
+The skill automatically determines the rebase target:
+- **feature/**, **fix/** branches → `develop` (if exists), else `main`
+- **develop** branch → `main`
+- **hotfix/** branches → `main`
+- **Other** branches → `main`
+- **Override**: Use `--onto <branch>` flag
+
+## Rebase Types
+
+**Standard rebase** (default):
+```
+/rebase
+```
+Updates branch with latest changes from base, maintaining commit history.
+
+**Interactive rebase**:
+```
+/rebase --interactive
+```
+Opens editor to squash, reorder, or edit commits. Great for cleaning up history before PR.
+
+**Continue/Abort**:
+```
+/rebase --continue  # After resolving conflicts
+/rebase --abort     # Cancel and restore original state
 ```
 
-## Rebase Strategy Logic
+## Common Scenarios
 
-```mermaid
-flowchart LR
-    A[Current Branch] --> B{Branch Pattern?}
-    B -->|feature/*, fix/*| C{Target Branch?}
-    B -->|develop| D[Rebase onto: main]
-    B -->|hotfix/*| E[Rebase onto: main]
-    
-    C --> C1{develop exists?}
-    C1 -->|Yes| F[Rebase onto: develop]
-    C1 -->|No| G[Rebase onto: main]
-    
-    H[--onto flag] -->|Override| I[Rebase onto: specified branch]
-    
-    F --> J[Interactive rebase for cleanup]
-    G --> J
-    D --> J
-    E --> K[Fast rebase for hotfix]
-    I --> L[Custom rebase strategy]
-    
-    style F fill:#90EE90
-    style G fill:#90EE90
-    style D fill:#87CEEB
-    style E fill:#FFB6C1
-    style I fill:#DDA0DD
+**Clean rebase**:
+```
+You: /rebase
+Claude: [Creates backup] backup/feature/auth created
+        [Fetches and analyzes] No conflicts detected
+        Rebasing feature/auth onto develop...
+        ✓ Rebase completed successfully
+        Note: Branch requires force push (use --force-with-lease)
 ```
 
-## Rebase Types and When to Use
+**Rebase with conflicts**:
+```
+You: /rebase
+Claude: [Creates backup and starts rebase]
+        ⚠️  Conflict in src/auth.js
 
-- **Interactive Rebase** (`git rebase -i`): Clean up commit history, squash commits, reorder changes
-- **Standard Rebase** (`git rebase`): Move branch to latest base without history modification
-- **Onto Rebase** (`git rebase --onto`): Move commits from one base to another specific point
-- **Continue** (`git rebase --continue`): Resume rebase after resolving conflicts
-- **Abort** (`git rebase --abort`): Cancel rebase and return to original state
+        Conflict markers explanation:
+        <<<<<<< HEAD (your changes)
+        =======
+        >>>>>>> develop (incoming changes)
 
-## Conflict Resolution Strategies
+        Resolution options:
+        1. Accept incoming (use develop's version)
+        2. Accept current (keep your version)
+        3. Manual merge (combine both)
 
-When conflicts occur during rebase:
-
-1. **Analyze conflict markers**: Understand `<<<<<<<`, `=======`, and `>>>>>>>` sections
-2. **Identify conflict types**: Code conflicts, dependency conflicts, merge conflicts
-3. **Resolution approaches**:
-   - **Accept incoming**: Take changes from target branch
-   - **Accept current**: Keep changes from current branch
-   - **Manual merge**: Combine both sets of changes intelligently
-4. **Validate resolution**: Ensure code still works after conflict resolution
-5. **Continue rebase**: Use `git rebase --continue` after resolving all conflicts
-
-## Common Scenarios and Error Handling
-
-```mermaid
-flowchart TD
-    A[Rebase Execution] --> B{Scenario Type?}
-    B -->|Clean rebase| C[Success: No conflicts]
-    B -->|Merge conflicts| D[Guide conflict resolution]
-    B -->|Uncommitted changes| E[Stop: Ask to commit/stash]
-    B -->|Detached HEAD| F[Create recovery branch]
-    B -->|Force push needed| G[Warn about shared branch]
-    
-    C --> H[Rebase completed successfully]
-    D --> I[Provide step-by-step conflict resolution]
-    I --> J[Continue or abort options]
-    E --> K[Stop: Clean working directory first]
-    F --> L[Help recover branch state]
-    G --> M[Suggest safer alternatives]
-    
-    style C fill:#90EE90
-    style H fill:#90EE90
-    style D fill:#F0E68C
-    style I fill:#F0E68C
-    style K fill:#FFB6C1
-    style M fill:#FFB6C1
+        After resolving: git add <file> && /rebase --continue
+        To abort: /rebase --abort
 ```
 
-### Scenario 1: Clean Rebase
-- No conflicts detected during rebase
-- Branch history updated successfully
-- Ready for push or further development
-
-### Scenario 2: Merge Conflicts
-- **Issue**: Conflicting changes between branches
-- **Solution**: Guide user through conflict resolution process
-- Identify conflict types and suggest resolution strategies
-- Provide commands to continue or abort rebase
-
-### Scenario 3: Uncommitted Changes
-- **Issue**: Working directory has uncommitted changes
-- **Solution**: Command stops and prompts user to commit or stash changes first
-
-### Scenario 4: Shared Branch Warning
-- **Issue**: Rebasing a branch that others might be using
-- **Solution**: Warn about force push implications and suggest alternatives
-
-## Best Practices for Rebasing
-
-- **Never rebase shared branches**: Only rebase branches that haven't been pushed or shared
-- **Create backup branches**: Always create safety backups before destructive operations
-- **Rebase before merge**: Clean up commit history before creating pull requests
-- **Interactive rebase for cleanup**: Use interactive mode to squash, reorder, or edit commits
-- **Test after rebase**: Ensure functionality still works after history modification
-- **Communicate with team**: Inform team members about rebased shared branches
-
-## Examples
-
-Good rebase scenarios:
-- `feat/user-auth` rebased onto latest `develop`
-- Interactive rebase to squash multiple small commits into logical units
-- Moving feature branch from `main` to `develop` using `--onto`
-- Cleaning up commit messages and removing debug commits
-
-Example interactive rebase plan:
+**Interactive rebase for cleanup**:
 ```
-pick a1b2c3d feat: add user authentication
-squash e4f5g6h fix: typo in auth function  
-squash h7i8j9k fix: linting issues
-pick k10l11m docs: update auth documentation
-reword n12o13p test: add auth unit tests
+You: /rebase --interactive
+Claude: Opening interactive rebase editor...
+        Suggestion: Squash commits e4f5g6h and h7i8j9k (small fixes)
+
+        pick a1b2c3d feat: add authentication
+        squash e4f5g6h fix: typo
+        squash h7i8j9k fix: linting
+        pick k10l11m docs: update auth docs
 ```
+
+## Conflict Resolution Guide
+
+When conflicts occur, the skill helps you understand:
+
+**Conflict markers**:
+```
+<<<<<<< HEAD (your current changes)
+Your code here
+=======
+Incoming code from base branch
+>>>>>>> main
+```
+
+**Resolution approaches**:
+- **Accept incoming**: Use base branch changes (your changes become obsolete)
+- **Accept current**: Keep your changes (override base branch)
+- **Manual merge**: Combine both intelligently (requires understanding both changes)
+
+**After resolving**:
+1. Edit files to resolve conflicts
+2. Stage resolved files: `git add <files>`
+3. Continue rebase: `/rebase --continue`
 
 ## Safety Features
 
-- **Automatic backup creation**: Creates `backup/<branch-name>` before rebasing
-- **Conflict pre-analysis**: Warns about potential conflicts before starting
-- **Step-by-step guidance**: Provides clear instructions during conflict resolution
-- **Easy abort option**: Simple command to cancel and restore original state
-- **Validation checks**: Ensures working directory is clean before starting
-- **Force push warnings**: Alerts about implications of rewriting shared history
+**Automatic backups**:
+- Creates `backup/<branch-name>` before any rebase
+- Restore with: `git reset --hard backup/<branch-name>`
+
+**Pre-conflict warnings**:
+- Analyzes changes before rebasing
+- Warns if conflicts likely
+- Suggests resolution strategy upfront
+
+**Easy recovery**:
+- `/rebase --abort` cancels operation
+- Backup branch preserved for manual recovery
+
+**Force push warnings**:
+- Alerts when rebased branch needs force push
+- Recommends `--force-with-lease` over `--force`
+- Warns about shared branch implications
+
+## Best Practices
+
+✅ **Do**:
+- Rebase before creating PRs (clean history)
+- Use interactive rebase to squash WIP commits
+- Create backup branches (done automatically)
+- Test after rebasing
+- Use `--force-with-lease` for force pushes
+
+⚠️  **Don't**:
+- Rebase shared/public branches (without team coordination)
+- Rebase commits already in production
+- Skip testing after rebase
+- Use `--force` (use `--force-with-lease` instead)
+
+## Examples
+
+**Update feature branch**:
+```
+/rebase
+# Updates feature/auth with latest develop changes
+```
+
+**Clean up commit history**:
+```
+/rebase --interactive
+# Squash "fix typo", "linting" into main feature commit
+```
+
+**Rebase onto specific branch**:
+```
+/rebase --onto main
+# Rebase current branch onto main instead of develop
+```
+
+---
+
+**Note**: This command leverages the Git Rebase Assistant skill located at `.claude/skills/rebase/`. The skill contains detailed instructions for safe rebasing and can also be invoked automatically by Claude when you mention wanting to rebase your branch.
