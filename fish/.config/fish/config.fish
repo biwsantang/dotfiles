@@ -7,6 +7,7 @@ source $HOME/.fishprofile
 set -gx PATH $PATH /Users/biwsantang/.cache/lm-studio/bin
 set -gx PATH /Users/biwsantang/.bun/bin $PATH
 set -gx PATH $PATH /Users/biwsantang/.local/bin
+set -gx PATH $PATH /Users/biwsantang/.cargo/bin
 
 # Editor configuration
 set -gx EDITOR "/opt/homebrew/bin/nvim"
@@ -17,7 +18,9 @@ set -gx BAT_THEME "ansi"
 
 # Starship prompt configuration
 set -gx STARSHIP_CONFIG ~/.config/starship/lookgood.toml
-starship init fish | source
+if type -q starship
+    starship init fish | source
+end
 
 # CodeEdit shell integration
 if test "$TERM_PROGRAM" = "CodeEditApp_Terminal"
@@ -45,9 +48,9 @@ if status is-interactive
     # Use floating pane in zellij, regular command otherwise
     function ccc
         if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku '/commit'
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit $argv"
         else
-            claude --dangerously-skip-permissions --model haiku '/commit'
+            claude --dangerously-skip-permissions "/commit $argv"
         end
     end
     
@@ -63,12 +66,12 @@ if status is-interactive
     # SSH with compatible terminal when needed
     alias sshc="TERM=xterm-256color command ssh"
     
-    # Claude PR function
+    # Claude PR function - commits then creates PR
     function ccpr
         if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions --model haiku "/pr $argv"
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit /pr $argv"
         else
-            claude --dangerously-skip-permissions --model haiku "/pr $argv"
+            claude --dangerously-skip-permissions "/commit /pr $argv"
         end
     end
     

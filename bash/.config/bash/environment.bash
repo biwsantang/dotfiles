@@ -4,6 +4,7 @@
 export PATH="$PATH:/Users/biwsantang/.cache/lm-studio/bin"
 export PATH="/Users/biwsantang/.bun/bin:$PATH"
 export PATH="$PATH:/Users/biwsantang/.local/bin"
+export PATH="$PATH:/Users/biwsantang/.cargo/bin"
 
 # Editor configuration
 export EDITOR="/opt/homebrew/bin/nvim"
