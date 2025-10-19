@@ -28,9 +28,11 @@ alias jira\ cu="jira_cu"
 
 alias cc="claude"
 alias ccb="claude --dangerously-skip-permissions"
-alias ccc="claude --dangerously-skip-permissions --model haiku '/commit'"
+function ccc() {
+	claude --dangerously-skip-permissions "/commit $*"
+}
 function ccpr() {
-	claude --dangerously-skip-permissions --model haiku "/pr $*"
+	claude --dangerously-skip-permissions "/commit /pr $*"
 }
 
 function hs() {
