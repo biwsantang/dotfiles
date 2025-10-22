@@ -1,23 +1,49 @@
 [
   {
-    "context": "VimControl && !menu && vim_mode != operator",
+    "context": "Editor && vim_mode == normal && !menu",
     "bindings": {
       "n": "vim::Down",
       "e": "vim::Up",
       "i": "vim::Right",
+      "h": "vim::Left",
       "j": "vim::NextWordEnd",
       "k": "vim::MoveToNext",
-      "l": "vim::InsertBefore"
+      "l": "vim::InsertBefore",
+      "shift-n": "vim::JoinLines",
+      "shift-e": "editor::Hover",
+      "shift-i": "vim::WindowBottom",
+      "shift-j": ["vim::NextWordEnd", { "ignore_punctuation": true }],
+      "shift-k": "vim::MoveToPreviousMatch",
+      "shift-l": "vim::InsertFirstNonWhitespace"
     }
   },
   {
-    "context": "vim_mode == visual",
+    "context": "Editor && vim_mode == visual && !menu",
     "bindings": {
       "n": "vim::Down",
       "e": "vim::Up",
       "i": "vim::Right",
+      "h": "vim::Left",
       "j": "vim::NextWordEnd",
-      "k": "vim::MoveToNext"
+      "k": "vim::MoveToNext",
+      "shift-n": "vim::JoinLines",
+      "shift-e": "editor::Hover",
+      "shift-i": "vim::WindowBottom",
+      "shift-j": ["vim::NextWordEnd", { "ignore_punctuation": true }],
+      "shift-k": "vim::MoveToPreviousMatch",
+      "shift-l": "vim::InsertBefore"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == operator",
+    "bindings": {
+      "l": ["vim::PushObject", { "around": false }]
+    }
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual || vim_mode == operator",
+    "bindings": {
+      "ctrl-i": "vim::Right"
     }
   }
 ]
