@@ -1,339 +1,183 @@
-# Claude Command: PR Review
+---
+description: Review pull requests with intelligent analysis and line-level commenting
+argument-hint: "[PR number/URL]"
+---
 
-This command helps you review pull requests using the GitHub CLI API with intelligent analysis and precise line-level commenting.
+# PR Review Command
 
-## Usage
+gh pr view $ARGUMENTS --json number,title,body,headRefName,baseRefName,state,isDraft,author,url,files,commits,reviews 2>/dev/null || echo "PR_NOT_FOUND"
+gh pr diff $ARGUMENTS 2>/dev/null || echo "DIFF_FAILED"
+git rev-parse --show-toplevel 2>/dev/null
+git branch --show-current 2>/dev/null
 
-To review a pull request, just type:
-```
-/pr-review
-```
+## Context
 
-Or with specific PR number:
-```
-/pr-review 123
-/pr-review --pr 456
-```
+You are performing a comprehensive code review of a GitHub pull request. The bash commands above have gathered:
 
-Or review a specific PR URL:
-```
-/pr-review https://github.com/owner/repo/pull/123
-```
+1. **PR metadata**: Number, title, description, author, state (draft/ready), base/head branches, files changed, commits, and existing reviews
+2. **PR diff**: Full diff of all changes in the PR
+3. **Repository root**: The absolute path to the git repository
+4. **Current branch**: The branch you're currently on
 
-## Important Notes
+### PR Detection Logic
 
-- **Prerequisites**: Must be in a git repository with GitHub CLI configured
-- If no PR number is specified, the command will look for an open PR for the current branch
-- The command provides comprehensive analysis including code changes, potential issues, and suggestions
-- **Smart reviewing**: Uses `gh api` to submit comprehensive reviews with precise line-level comments
-- **Handles different PR states**: Works with draft PRs, ready PRs, and already reviewed PRs
+- If `$ARGUMENTS` contains a PR number (e.g., "123") → use that specific PR
+- If `$ARGUMENTS` contains a URL (e.g., "https://github.com/owner/repo/pull/123") → use that PR
+- If `$ARGUMENTS` is empty → find the open PR for the current branch
+- If PR is not found → inform the user and suggest creating one
 
-## Performance Improvements
+### Jira Integration
 
-The following optimizations significantly improve command execution speed:
+Automatically detect and fetch Jira ticket information for context-aware reviews:
 
-- **Parallel operations** - Run `gh pr view`, `gh pr diff`, existing reviews, and file analysis concurrently
-- **Efficient diff parsing** - Analyze changes by file type and focus areas
-- **Stream reviews** - Submit review comments efficiently using `gh api` with JSON payload
-- **Cache PR data** - Avoid redundant API calls during analysis
+1. **Extract Jira ticket ID** from PR title, branch name, or description (format: PROJ-123, ABC-456, etc.)
+2. **Fetch ticket details** using available Jira MCP tools (`mcp__jira__*`)
+3. **Incorporate context** including requirements, acceptance criteria, and ticket description into the review
 
-## What This Command Does
+### Existing Reviews Consideration
 
-```mermaid
-flowchart TD
-    A[Start: /pr-review] --> B[Parse arguments]
-    B --> C{PR specified?}
-    C -->|Yes| D[Use specified PR number/URL]
-    C -->|No| E[Find PR for current branch]
-    D --> F[Parallel Operations]
-    E --> F
-    F --> F1[Fetch PR details with gh pr view]
-    F --> F2[Get PR diff with gh pr diff]
-    F --> F3[Get PR files with gh pr view --json files]
-    F --> F4[Get existing reviews with gh pr view --json reviews]
-    F --> F5[Extract Jira ticket ID & fetch details via MCP]
-    F1 --> G[Wait for all parallel operations]
-    F2 --> G
-    F3 --> G
-    F4 --> G
-    F5 --> G
-    G --> H[Analyze PR with all context including Jira details]
-    H --> H1[Review code changes against requirements]
-    H1 --> H2[Check for potential issues not already identified]
-    H2 --> H3[Identify improvement opportunities]
-    H3 --> I[Generate review summary with Jira context]
-    I --> J{Submit review?}
-    J -->|Yes| K[Ask user for review action]
-    K --> K1[User selects: APPROVE/REQUEST_CHANGES/COMMENT]
-    K1 --> L[Submit review using gh api with line comments]
-    J -->|No| M[Display review summary only]
-    L --> N[Success: Review submitted]
-    M --> N[Success: Review completed]
+- **Check existing reviews** from the PR metadata to avoid duplicating feedback
+- **Acknowledge previous comments** and focus on new issues or areas not yet addressed
+- **Build upon feedback** rather than repeating what others have already mentioned
 
-    style F fill:#87CEEB
-    style F1 fill:#DDA0DD
-    style F2 fill:#DDA0DD
-    style F3 fill:#DDA0DD
-    style F4 fill:#DDA0DD
-    style F5 fill:#FFD700
-    style H fill:#90EE90
-    style H1 fill:#90EE90
-    style H2 fill:#90EE90
-    style K fill:#FFB6C1
-    style K1 fill:#FFB6C1
-    style L fill:#90EE90
-```
+## Your task
 
-## PR Detection Logic
+Perform a comprehensive PR review following this structure:
 
-```mermaid
-flowchart LR
-    A[Input] --> B{PR specified?}
-    B -->|Number/URL| C[Use specified PR]
-    B -->|No| D[Get current branch]
-    D --> E[Search for open PR with current branch]
-    E --> F{PR found?}
-    F -->|Yes| G[Use found PR]
-    F -->|No| H[Error: No PR found for branch]
-    
-    style C fill:#90EE90
-    style G fill:#90EE90
-    style H fill:#FFB6C1
-```
+### 1. Analyze PR Context
 
-The command automatically finds the relevant PR:
+- **Purpose**: Understand what the PR is trying to accomplish from title and description
+- **Jira ticket** (if found): Review requirements, acceptance criteria, and acceptance of done
+- **Scope**: Identify the files and areas being modified
+- **Existing feedback**: Note issues already identified in previous reviews
 
-- **Explicit PR**: Use specified PR number or URL
-- **Current branch**: Find open PR for the current branch
-- **Error handling**: Clear message if no PR is found
+### 2. Review Code Changes
 
-## Jira Integration
+Perform detailed analysis across these areas:
 
-The command automatically detects and fetches Jira ticket information to provide context-aware reviews:
+**Code Quality**
+- Style consistency and naming conventions
+- Best practices for the language/framework used
+- Code complexity and maintainability
+- Documentation and comments adequacy
 
-### Ticket Detection
-- **PR Title**: Searches for Jira ticket IDs (e.g., PROJ-123) in the PR title
-- **Branch Name**: Extracts ticket IDs from branch names (e.g., feature/PROJ-123-add-feature)
-- **PR Description**: Parses ticket references from the PR body
+**Security**
+- Common vulnerability patterns (SQL injection, XSS, CSRF, etc.)
+- Input validation and sanitization
+- Authentication and authorization checks
+- Hardcoded secrets or sensitive data exposure
 
-### Jira MCP Integration
-When a Jira ticket is detected, the command:
-1. Uses the Jira MCP server to fetch ticket details
-2. Retrieves acceptance criteria, description, and requirements
-3. Incorporates ticket context into the review analysis
-4. Validates that implementation meets ticket requirements
-5. Checks if all acceptance criteria are addressed
+**Performance**
+- Potential bottlenecks or inefficient algorithms
+- Database query optimization and N+1 problems
+- Resource usage (memory, CPU)
+- Caching opportunities
 
-### Context-Aware Review
-With Jira ticket information, the review includes:
-- **Requirements Validation**: Ensures code changes align with ticket requirements
-- **Acceptance Criteria Check**: Verifies all criteria are met
-- **Scope Analysis**: Identifies if changes exceed or miss ticket scope
-- **Related Issues**: Considers linked tickets and dependencies
+**Architecture & Design**
+- Appropriate use of design patterns
+- Separation of concerns and modularity
+- Dependency management
+- API design principles
 
-## Review Analysis Areas
+**Requirements Validation** (if Jira ticket found)
+- All acceptance criteria addressed
+- Implementation aligns with ticket requirements
+- Scope is appropriate (not missing or exceeding requirements)
+- Related dependencies or linked issues considered
 
-The command performs comprehensive analysis in these areas:
+### 3. Generate Review Summary
 
-### 1. Code Quality Review
-- **Style consistency**: Checks for consistent formatting and naming conventions
-- **Best practices**: Identifies deviations from language/framework best practices  
-- **Code complexity**: Flags overly complex functions or classes
-- **Documentation**: Ensures adequate comments and documentation
-
-### 2. Security Analysis
-- **Vulnerability patterns**: Scans for common security issues
-- **Input validation**: Checks for proper input sanitization
-- **Authentication/Authorization**: Reviews access control implementations
-- **Secrets exposure**: Identifies hardcoded secrets or sensitive data
-
-### 3. Performance Review
-- **Efficiency concerns**: Identifies potential performance bottlenecks
-- **Resource usage**: Reviews memory and CPU intensive operations
-- **Database queries**: Analyzes query efficiency and N+1 problems
-- **Caching opportunities**: Suggests where caching could improve performance
-
-### 4. Architecture & Design
-- **Design patterns**: Ensures appropriate pattern usage
-- **Separation of concerns**: Reviews code organization and modularity
-- **Dependency management**: Checks for proper dependency injection
-- **API design**: Reviews endpoint structure and RESTful principles
-
-## Review Structure
-
-When submitting a review with `gh api`, the command uses this structure:
+Create a comprehensive review in markdown format:
 
 ```markdown
 ## 🔍 Code Review Summary
 
-### 🎫 Jira Context (if available)
+### 🎫 Jira Context
+[Only include if Jira ticket was found]
 - **Ticket**: [PROJ-123: Ticket Title]
-- **Requirements Met**: [✅/⚠️ Status of requirements]
-- **Acceptance Criteria**: [Status of each criterion]
+- **Requirements Met**: [✅ All met / ⚠️ Partially met / ❌ Not met]
+- **Acceptance Criteria**: [List each criterion with status]
 
 ### ✅ Strengths
-- [Positive aspects of the PR]
+[Highlight positive aspects - good patterns, clean code, etc.]
 
-### ⚠️ Areas for Improvement
-- [Issues found with suggestions]
+### ⚠️ Issues Found
+[List issues with specific file paths and line references]
 
-### 🚀 Suggestions
-- [Enhancement recommendations]
+### 💡 Suggestions
+[Provide improvement recommendations with examples]
 
 ### 🛡️ Security Considerations
-- [Security-related feedback if applicable]
+[Include only if security concerns were identified]
 
 ---
-*Generated with [Claude Code](https://claude.ai/code)*
+*Review generated with [Claude Code](https://claude.ai/code)*
 ```
 
-## GitHub API Implementation
+### 4. Ask About Submitting Review
 
-The command uses the GitHub CLI API to submit reviews with precise line-level comments:
+After presenting your analysis, ask the user:
+
+**Question**: "Would you like me to submit this review to GitHub?"
+
+**Options**:
+- **APPROVE**: Approve the PR (use when code looks good with only minor suggestions)
+- **REQUEST_CHANGES**: Request changes before merging (use when issues need to be fixed)
+- **COMMENT**: Add comments without approval/rejection (use for informational feedback)
+- **Don't submit**: Just show the review summary without posting to GitHub
+
+### 5. Submit Review (if approved)
+
+If the user wants to submit the review, use the GitHub API:
 
 ```bash
 gh api \
   --method POST \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  /repos/OWNER/REPO/pulls/PULL_NUMBER/reviews \
+  /repos/OWNER/REPO/pulls/PR_NUMBER/reviews \
   --input - <<< '{
-  "commit_id": "latest_commit_sha",
-  "body": "Comprehensive review summary with overall feedback",
-  "event": "REQUEST_CHANGES",
+  "commit_id": "LATEST_COMMIT_SHA",
+  "body": "Your comprehensive review summary",
+  "event": "APPROVE|REQUEST_CHANGES|COMMENT",
   "comments": [
     {
-      "path": "src/file.js",
+      "path": "path/to/file.js",
       "position": 15,
-      "body": "Consider using const instead of let for this variable since it''s never reassigned."
-    },
-    {
-      "path": "src/file.js", 
-      "position": 23,
-      "body": "This function could benefit from error handling for edge cases."
+      "body": "Specific comment about this line"
     }
   ]
 }'
 ```
 
-### API Parameters
+**Important**:
+- Extract OWNER, REPO, and PR_NUMBER from the PR metadata
+- Use the latest commit SHA from the commits list
+- The `position` field is the line position in the diff (not file line number)
+- Only include `comments` array if you have specific line-level feedback
+- Calculate diff positions by parsing `gh pr diff` output
 
-- **commit_id**: The SHA of the commit to review (uses latest commit from PR)
-- **body**: Overall review summary and feedback
-- **event**: Review action - `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`
-- **comments**: Array of line-specific comments with:
-  - **path**: File path relative to repository root
-  - **position**: Line position in the diff (not file line number)
-  - **body**: Comment text with specific feedback
+## Guidelines
 
-### Position Calculation
+- **Be constructive**: Focus on improvements, not just problems
+- **Be specific**: Provide concrete examples and alternative approaches
+- **Be contextual**: Consider the PR's purpose and scope
+- **Avoid duplication**: Don't repeat feedback from existing reviews
+- **Prioritize issues**: Security and correctness over style preferences
+- **Use examples**: Show better alternatives when suggesting changes
 
-The `position` field represents the line's position in the unified diff, not the line number in the file:
-- Position 1 = first line of the diff
-- Only counts lines that appear in the diff (changed lines + context)
-- The command calculates positions by parsing `gh pr diff` output
+## Examples of Good Review Comments
 
-### User Interaction Flow
-
-After analyzing the PR, the command explains what it plans to do and asks for confirmation:
-
-```
-Review Analysis Complete
-   Found 3 issues requiring attention and 2 suggestions for improvement across 5 files.
-   
-   [DETAILED_FINDINGS_LIST]
-   
-   Based on the issues found, I recommend requesting changes before this can be merged.
-   
-   I'll submit a review with:
-   - Overall feedback about the code quality and concerns
-   - 5 specific line comments pointing out the issues and suggestions
-   - Review action: REQUEST_CHANGES
-   
-   Proceed with submitting this review? (y/n)
-```
-
-This gives the user a clear understanding of what will happen and simple approval control.
-
-## Common Scenarios and Error Handling
-
-```mermaid
-flowchart TD
-    A[Command Execution] --> B{Scenario Type?}
-    B -->|PR found| C[Perform review analysis]
-    B -->|No PR for branch| D[Search error]
-    B -->|Invalid PR number| E[PR not found error]
-    B -->|No GitHub CLI| F[CLI setup error]
-    
-    C --> G[Generate review analysis]
-    G --> H{Submit review?}
-    H -->|Yes| I[Submit review with gh api]
-    H -->|No| J[Display summary only]
-    D --> K[Error: Suggest creating PR first]
-    E --> L[Error: Invalid PR reference]
-    F --> M[Error: Install and configure gh CLI]
-    
-    style C fill:#90EE90
-    style I fill:#87CEEB
-    style J fill:#90EE90
-    style K fill:#FFB6C1
-    style L fill:#FFB6C1
-    style M fill:#FFB6C1
-```
-
-### Scenario 1: Successful PR Review
-- Command finds PR and analyzes all changes
-- Generates comprehensive review with actionable feedback
-- Optionally submits formal review using `gh api` with line-specific comments
-
-### Scenario 2: No PR Found for Branch
-- **Issue**: Current branch has no associated open PR
-- **Solution**: Command suggests creating a PR first or specifying a PR number
-
-### Scenario 3: Invalid PR Reference
-- **Issue**: Specified PR number doesn't exist or isn't accessible
-- **Solution**: Command provides clear error message with suggestions
-
-### Scenario 4: GitHub CLI Not Configured
-- **Issue**: `gh` command not installed or not authenticated
-- **Solution**: Command provides setup instructions
-
-## Review Quality Guidelines
-
-- **Constructive feedback**: Focus on improvements rather than just identifying problems
-- **Specific suggestions**: Provide concrete examples and alternative approaches
-- **Context awareness**: Consider the PR's purpose and scope when reviewing
-- **Security focus**: Always check for security implications
-- **Performance mindset**: Look for optimization opportunities
-- **Maintainability**: Ensure code will be easy to maintain long-term
-
-## Examples
-
-Good review comments:
 - "Consider extracting this complex logic into a separate utility function for better testability"
 - "This database query could benefit from an index on the `user_id` column to improve performance"
-- "The input validation here should include sanitization to prevent XSS attacks"
+- "The input validation should include sanitization to prevent XSS attacks"
 - "Great use of the strategy pattern here - makes the code very extensible"
 
-Review focus areas by file type:
-- **JavaScript/TypeScript**: Type safety, async handling, React patterns
-- **Python**: PEP 8 compliance, error handling, performance patterns
-- **Go**: Error handling, goroutine safety, interface usage
-- **SQL**: Query optimization, injection prevention, indexing
-- **CSS**: Responsive design, accessibility, performance
+## File Type Specific Focus
 
-## Implementation Details
-
-- Uses `gh pr view --json` to get structured PR data including files, commits, metadata, and existing reviews
-- **Jira MCP Integration**: Automatically detects Jira ticket IDs and fetches ticket details via MCP server
-- Analyzes `gh pr diff` output to understand specific code changes
-- Performs static analysis on changed files based on file extensions
-- **Context-aware analysis**: Incorporates Jira ticket requirements into code review
-- Generates contextual comments based on the type of changes and project patterns
-- **Avoids duplication**: Reviews existing comments and reviews to avoid repeating already identified issues
-- **Submit reviews**: Uses `gh api` with GitHub's Reviews API to submit reviews with precise line comments
-- **Interactive review submission**: Prompts user to choose between `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` before submitting
-- **Line-specific comments**: Places comments at exact file positions using the `position` field
-- **Requirements validation**: Checks if implementation meets Jira ticket acceptance criteria
-- Provides both summary view and detailed line-by-line analysis
-- Supports reviewing PRs from forks and cross-repository contributions
+- **JavaScript/TypeScript**: Type safety, async handling, React patterns, bundle size
+- **Python**: PEP 8 compliance, error handling, type hints, performance patterns
+- **Go**: Error handling, goroutine safety, interface usage, defer patterns
+- **SQL**: Query optimization, injection prevention, indexing strategies
+- **CSS**: Responsive design, accessibility, performance, browser compatibility
+- **Markdown**: Formatting, link validity, code block syntax

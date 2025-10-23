@@ -1,92 +1,131 @@
 ---
-argument-hint: [optional context about what you changed]
 description: Create a git commit
-model: claude-haiku-4-5-20251001
+argument-hint: [optional context about what you changed]
 ---
 
-# Commit Command
+## Context
 
-Use this command to create well-formatted conventional commits with intelligent change analysis.
+git status
 
-## Usage
+git diff --staged
 
-```
-/commit
-```
+git diff
 
-Or with the --no-verify flag:
-```
-/commit --no-verify
-```
+git log -5 --oneline --decorate
 
-## What This Does
+Optional user context: $ARGUMENTS
 
-This command activates the **Git Commit Helper** skill, which:
+## Your task
 
-1. Analyzes your staged/unstaged changes using parallel git operations
-2. Determines if changes should be split into multiple atomic commits
-3. Generates conventional commit messages following best practices
-4. Creates commits with proper Claude Code attribution
-5. Handles pre-commit hooks gracefully
+You are the Git Commit Helper. Create well-formatted conventional commits with intelligent change analysis.
 
-## Features
+### Step 1: Analyze Changes
 
-- **Intelligent split detection**: Automatically suggests splitting commits when multiple concerns are detected
-- **Conventional commit format**: Follows standard commit message conventions (feat, fix, docs, etc.)
-- **Performance optimized**: Uses parallel git operations for speed
-- **Smart staging**: Auto-stages files if none are staged, or uses existing staged files
-- **Security aware**: Warns about committing sensitive files
+Based on the git context above, analyze:
+1. What files have changed (staged and unstaged)
+2. The nature of the changes (new features, bug fixes, documentation, etc.)
+3. Whether changes should be split into multiple atomic commits or combined into one
 
-## How It Works
+**Single commit if**:
+- All changes relate to one purpose
+- Changes are tightly coupled
+- Total diff is reasonably sized
 
-The skill will:
-1. Check current git status and diff in parallel
-2. Analyze if changes should be split (different concerns, types, or file patterns)
-3. If splitting needed: guide you through staging and committing separately
-4. If single commit: create one well-formatted commit
-5. Verify success and handle any pre-commit hook issues
+**Split commits if**:
+- Different functionality (features vs bug fixes vs refactoring vs docs)
+- Different subsystems (auth vs API vs UI vs config)
+- Different file types that serve different purposes
+- Implementation vs tests vs dependencies
 
-## Commit Types
+### Step 2: Security Check
 
-The skill uses conventional commit types:
-- `feat`: New features
-- `fix`: Bug fixes
-- `docs`: Documentation
-- `refactor`: Code restructuring
-- `chore`: Maintenance tasks
-- `test`: Testing changes
-- And more...
+Before staging, verify no sensitive files are being committed:
+- `.env*`, `credentials.json`, `secrets.json`, `*.pem`, `*.key`, `*.p12`, `*.pfx`
+- API tokens, passwords, private keys
 
-## Examples
+If secrets detected, WARN the user and only proceed if explicitly confirmed.
 
-**Single commit scenario**:
-```
-You: /commit
-Claude: [Analyzes changes] I see you've added a new authentication module. Creating commit...
-        Created: "feat: add user authentication system"
-```
+### Step 3: Stage Files
 
-**Multi-commit scenario**:
-```
-You: /commit
-Claude: [Analyzes changes] I see multiple concerns:
-        1. New feature in src/auth/
-        2. Documentation updates
-        3. Dependency changes
+If files are not yet staged, stage them appropriately:
+- For single commit: `git add .` (excluding secrets)
+- For split commits: Stage files selectively using `git add path/to/file1 path/to/file2` or patterns
 
-        I'll create 3 separate commits for clarity...
-        Created: "feat: add user authentication system"
-        Created: "docs: document authentication endpoints"
-        Created: "chore: add authentication dependencies"
+### Step 4: Create Commit(s)
+
+Generate conventional commit messages following this format:
+
+```bash
+git commit -m "$(cat <<'EOF'
+<type>[optional scope]: <description>
+
+[optional body explaining why, not what]
+
+[optional footer: Fixes #123]
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
 ```
 
-## Advanced Options
+**Commit types**:
+- `feat` - A new feature
+- `fix` - A bug fix
+- `docs` - Documentation only changes
+- `style` - Code style changes (formatting, semicolons, etc.)
+- `refactor` - Code change that neither fixes a bug nor adds a feature
+- `perf` - Performance improvement
+- `test` - Adding or correcting tests
+- `build` - Build system or external dependencies
+- `ci` - CI configuration files and scripts
+- `chore` - Other changes that don't modify src or test files
+- `revert` - Reverts a previous commit
 
-Pass `--no-verify` to skip pre-commit hooks (use sparingly):
+**Commit message rules**:
+- Use imperative mood: "add" not "added" or "adds"
+- Don't capitalize first letter
+- No period at the end
+- Keep under 72 characters
+- Be specific and meaningful
+
+**Consider user context**: If $ARGUMENTS is provided, incorporate it into the commit message.
+
+### Step 5: Handle Pre-commit Hooks
+
+If commit fails due to pre-commit hooks:
+1. Read the error message carefully
+2. Fix issues identified by hooks
+3. If hooks modified files:
+   - Check authorship: `git log -1 --format='%an %ae'`
+   - Check not pushed: `git status` shows "Your branch is ahead"
+   - If both true: amend with `git add . && git commit --amend --no-edit`
+   - Otherwise: create new commit with message "chore: apply pre-commit hook fixes"
+4. Retry the commit
+
+**Bypass hooks**: Only if user explicitly passed `--no-verify` in $ARGUMENTS, add that flag to the commit command.
+
+### Step 6: Verify Success
+
+After committing, run:
+```bash
+git status && git log -1
 ```
-/commit --no-verify
+
+Confirm the commit was created successfully and summarize what was committed.
+
+### Best Practices
+
+1. Each commit should represent one logical change (atomic commits)
+2. Write clear, descriptive messages that explain "why" not "what"
+3. Don't mix unrelated changes
+4. Use conventional format for parseable history
+5. Reference issue tracker when relevant (Fixes #123, Closes #456)
+
+### Performance
+
+Run independent git commands in parallel when gathering information:
+```bash
+git status & git diff --staged & git diff & wait
 ```
-
----
-
-**Note**: This command leverages the Git Commit Helper skill located at `.claude/skills/commit/`. The skill contains detailed instructions for creating optimal commits and can also be invoked automatically by Claude when you mention wanting to commit changes.
