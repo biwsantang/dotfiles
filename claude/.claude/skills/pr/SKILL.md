@@ -36,112 +36,12 @@ Helps create comprehensive, well-formatted pull requests following best practice
 
 ## Installation Check
 
-Before using this skill, verify GitHub CLI is installed and authenticated:
+Verify GitHub CLI is installed and authenticated:
 
 ```bash
-# Check if gh CLI is available
-which gh || echo "gh CLI not installed"
-
-# Check authentication status
-gh auth status
-```
-
-If not installed, guide the user to install it:
-```bash
-# Install via homebrew (macOS)
-brew install gh
-
-# Install via apt (Ubuntu/Debian)
-sudo apt install gh
-
-# Install via winget (Windows)
-winget install --id GitHub.cli
-
-# Authenticate with GitHub
-gh auth login
-```
-
-## Basic Usage Patterns
-
-### Pattern 1: Simple PR Creation
-
-Create a basic PR for current branch:
-
-```bash
-# Create PR with auto-detected base branch
-gh pr create --title "Add user authentication" --body "Implements JWT-based auth"
-
-# Create PR as draft
-gh pr create --draft --title "WIP: Refactor database layer" --body "..."
-```
-
-### Pattern 2: PR with Auto-Analysis
-
-Let the skill analyze all commits and generate comprehensive PR:
-
-```bash
-# Analyze commits since branch diverged
-git log --oneline main...HEAD
-
-# Generate PR description from commit analysis
-gh pr create --title "..." --body "$(cat <<'EOF'
-## Summary
-- Added feature X
-- Fixed bug Y
-- Updated documentation
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
-```
-
-### Pattern 3: Update Existing PR
-
-Update an existing PR instead of creating a new one:
-
-```bash
-# Check if PR exists for current branch
-gh pr view
-
-# Update existing PR with new content
-gh pr edit --title "Updated title" --body "Updated description"
-```
-
-### Pattern 4: PR with Reviewers and Labels
-
-Create PR with team assignment:
-
-```bash
-# Create PR with reviewers and labels
-gh pr create \
-  --title "Fix memory leak" \
-  --body "..." \
-  --reviewer @alice,@bob \
-  --assignee @me \
-  --label bug,priority-high
-```
-
-### Pattern 5: Complex PR with Template
-
-Use repository PR template and fill it automatically:
-
-```bash
-# Check if template exists
-cat .github/pull_request_template.md
-
-# Create PR using template structure
-gh pr create --title "..." --body "$(cat <<'EOF'
-## Description
-[Auto-filled from commit analysis]
-
-## Type of Change
-- [x] Bug fix
-- [ ] New feature
-
-## Testing
-[Auto-generated test plan]
-EOF
-)"
+gh auth status  # Check authentication
+# If not installed: brew install gh (macOS) or sudo apt install gh (Linux)
+# Then authenticate: gh auth login
 ```
 
 ## Workflow Steps
@@ -306,815 +206,128 @@ Other                   → main
 
 ## Common Use Cases
 
-### Use Case 1: Feature Branch to Develop
-
+### Feature Branch → Develop/Main
 ```bash
-# Current branch: feature/user-auth
-# Target: develop
-
-# 1. Analyze commits
+# Analyze commits and create PR
 git log --oneline develop...HEAD
-
-# 2. Create PR targeting develop
-gh pr create \
-  --base develop \
-  --title "feat: implement user authentication system" \
-  --body "..."
+gh pr create --base develop --title "feat: implement user authentication" --body "..."
 ```
 
-### Use Case 2: Hotfix to Main
-
+### Hotfix → Main (Urgent)
 ```bash
-# Current branch: hotfix/critical-security-fix
-# Target: main (urgent fix)
-
-# 1. Verify fix is committed
-git status
-
-# 2. Create PR with priority label
-gh pr create \
-  --base main \
-  --title "fix: patch critical security vulnerability" \
-  --body "..." \
+gh pr create --base main \
+  --title "fix: critical security vulnerability" \
   --label security,priority-critical \
   --reviewer @security-team
 ```
 
-### Use Case 3: Update Existing PR After Review
-
+### Update Existing PR
 ```bash
-# Made changes based on review feedback
-
-# 1. Check existing PR
-gh pr view
-
-# 2. Update PR description to reflect changes
+gh pr view  # Check existing PR
 gh pr edit --body "$(cat <<'EOF'
 ## Summary
-- Implemented user authentication
-- Added password hashing with bcrypt
-- Created session management
+[Updated content]
 
 ## Changes from Review
-- Fixed race condition in session store
-- Added input validation
-- Improved error handling
+- Fixed issues mentioned in review
 
 🤖 Updated with [Claude Code](https://claude.com/claude-code)
 EOF
 )"
 ```
 
-### Use Case 4: Draft PR for Early Feedback
-
+### Draft PR for Early Feedback
 ```bash
-# Work in progress, want early feedback
-
-# Create draft PR
-gh pr create --draft \
-  --title "WIP: Refactor database layer" \
-  --body "$(cat <<'EOF'
-## Work in Progress
-
-Currently refactoring the database layer to use connection pooling.
-
-### Completed
-- [x] Setup connection pool
-- [x] Migrate user queries
-
-### In Progress
-- [ ] Migrate product queries
-- [ ] Add transaction support
-
-### Feedback Needed
-- Is the connection pool size appropriate?
-- Should we use prepared statements everywhere?
-EOF
-)"
-
-# Mark as ready when done
-gh pr ready
+gh pr create --draft --title "WIP: Refactor database layer" --body "..."
+gh pr ready  # Mark as ready when done
 ```
 
-### Use Case 5: Multi-Commit Feature PR
-
+### Cross-Repository PR (Fork)
 ```bash
-# Branch has multiple related commits
-
-# 1. Analyze all commits in branch
-git log --oneline --graph main...HEAD
-
-# Example output:
-# * a1b2c3d Add user registration endpoint
-# * d4e5f6g Implement password hashing
-# * h7i8j9k Add user model and migrations
-# * k0l1m2n Setup authentication middleware
-
-# 2. Create comprehensive PR summarizing all changes
-gh pr create \
-  --title "feat: complete user authentication system" \
-  --body "$(cat <<'EOF'
-## Summary
-Complete implementation of user authentication system including:
-- User registration with email validation
-- Secure password hashing using bcrypt
-- JWT-based session management
-- Authentication middleware for protected routes
-
-## Database Changes
-- Added users table with migrations
-- Added sessions table for token management
-
-## Security Considerations
-- Passwords hashed with bcrypt (cost factor: 12)
-- JWT tokens expire after 24 hours
-- Input validation on all user-submitted data
-
-## Testing
-- Unit tests for auth middleware
-- Integration tests for registration/login flows
-- Manual testing with Postman
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
-```
-
-## Example Workflows
-
-### Workflow 1: Standard Feature PR
-
-Complete workflow from development to PR creation:
-
-```bash
-# 1. Ensure all work is committed
-git status
-
-# 2. Push branch to remote
-git push -u origin feature/new-dashboard
-
-# 3. Analyze what changed
-git log --oneline main...HEAD
-git diff --stat main...HEAD
-
-# 4. Check for PR template
-ls .github/pull_request_template.md
-
-# 5. Create PR
-gh pr create \
-  --title "feat: add analytics dashboard" \
-  --body "..." \
-  --reviewer @team/frontend \
-  --label enhancement
-
-# 6. Get PR URL
-gh pr view --web
-```
-
-### Workflow 2: Fix Existing PR
-
-Update PR after making requested changes:
-
-```bash
-# 1. View existing PR and comments
-gh pr view
-gh pr checks
-
-# 2. Made changes based on feedback, now update PR
-
-# 3. Add new commits
-git add .
-git commit -m "Address review feedback"
-git push
-
-# 4. Update PR description to document changes
-gh pr edit --body "$(cat <<'EOF'
-## Summary
-[Original summary]
-
-## Review Changes (Round 1)
-- Refactored error handling per @reviewer suggestion
-- Added missing test cases
-- Fixed TypeScript type errors
-
-## Status
-- All tests passing ✅
-- No merge conflicts ✅
-- Ready for re-review ✅
-EOF
-)"
-
-# 5. Request re-review
-gh pr comment --body "@reviewer Changes addressed, ready for re-review"
-```
-
-### Workflow 3: Emergency Hotfix
-
-Fast-track critical fix:
-
-```bash
-# 1. Create hotfix branch from main
-git checkout main
-git pull
-git checkout -b hotfix/security-patch
-
-# 2. Make fix
-# [make changes]
-git add .
-git commit -m "fix: patch XSS vulnerability in user input"
-
-# 3. Push and create urgent PR
-git push -u origin hotfix/security-patch
-
-gh pr create \
-  --base main \
-  --title "fix: critical security patch for XSS vulnerability" \
-  --body "$(cat <<'EOF'
-## Critical Security Fix
-
-Patches XSS vulnerability in user input handling.
-
-## Impact
-- Severity: Critical
-- Affected versions: All production releases
-- CVE: TBD
-
-## Changes
-- Sanitize all user input before rendering
-- Add Content Security Policy headers
-- Escape HTML in user-generated content
-
-## Testing
-- Manual testing with XSS payloads
-- Automated security scan passed
-- No regressions in functionality
-
-## Deployment
-Requires immediate deployment to production.
-EOF
-)" \
-  --label security,priority-critical \
-  --reviewer @security-team,@tech-leads
-
-# 4. Auto-merge when approved (if configured)
-gh pr merge --auto --squash
-```
-
-### Workflow 4: Cross-Repository PR
-
-Create PR in a different repository:
-
-```bash
-# Working in forked repository
-
-# 1. Add upstream remote
 git remote add upstream https://github.com/original/repo.git
-git fetch upstream
-
-# 2. Create branch from upstream main
-git checkout -b fix/typo upstream/main
-
-# 3. Make changes
-# [make changes]
-git add .
-git commit -m "docs: fix typo in README"
-
-# 4. Push to your fork
 git push -u origin fix/typo
-
-# 5. Create PR to upstream repository
-gh pr create \
-  --repo original/repo \
-  --base main \
-  --head your-username:fix/typo \
-  --title "docs: fix typo in README" \
-  --body "Small typo fix in the installation instructions"
+gh pr create --repo original/repo --base main --head username:fix/typo
 ```
 
-### Workflow 5: Stacked PRs
+## Error Handling
 
-Create dependent PRs (advanced):
-
+### PR Already Exists
 ```bash
-# Base: main → feature/base-refactor → feature/dependent-feature
-
-# 1. Create base PR
-git checkout -b feature/base-refactor main
-# [make changes]
-git push -u origin feature/base-refactor
-
-gh pr create \
-  --base main \
-  --title "refactor: extract shared utilities" \
-  --body "..."
-
-# 2. Create dependent PR
-git checkout -b feature/dependent-feature feature/base-refactor
-# [make changes]
-git push -u origin feature/dependent-feature
-
-gh pr create \
-  --base feature/base-refactor \
-  --title "feat: implement new feature using refactored utilities" \
-  --body "$(cat <<'EOF'
-## Summary
-New feature built on top of refactored utilities.
-
-## Dependencies
-⚠️ This PR depends on #123 (base refactor) being merged first.
-
-After #123 is merged, the base of this PR will be changed to main.
-EOF
-)"
-
-# 3. After base PR merges, update dependent PR base
-gh pr edit --base main
-```
-
-## Common Scenarios and Error Handling
-
-### Scenario 1: First Time Creating PR
-- **Action**: Create new PR using `gh pr create`
-- **Output**: Return new PR URL
-
-### Scenario 2: PR Already Exists
-- **Issue**: `GraphQL: A pull request already exists for <branch>`
-- **Solution**:
-  1. Read existing PR with `gh pr view`
-  2. Update PR with `gh pr edit --title "<title>" --body "<body>"`
-  3. Inform user that PR was updated
-
-### Scenario 3: Uncommitted Changes
-- **Issue**: Working directory has uncommitted changes
-- **Solution**: Stop and prompt user to commit changes first
-
-### Scenario 4: Branch Not Pushed
-- **Issue**: Current branch doesn't exist on remote
-- **Solution**: Push branch with `git push -u origin <branch>`
-
-### Scenario 5: No Commits to PR
-- **Issue**: Branch has no commits ahead of base
-- **Solution**: Inform user there are no changes to create PR for
-
-## Best Practices for Pull Requests
-
-**Clear titles**:
-- Use descriptive titles that summarize main change
-- Follow conventional commit style when appropriate
-- Examples:
-  - `feat: add user authentication system`
-  - `fix: resolve memory leak in rendering process`
-  - `docs: update API documentation with new endpoints`
-
-**Comprehensive summaries**:
-- Include 1-3 bullet points explaining what was changed
-- Explain WHY changes were made, not just WHAT
-- Link to related issues or discussions
-
-**Test plans**:
-- Provide clear steps for reviewers to test changes
-- Include both happy path and edge cases
-- Mention any special testing considerations
-
-**Atomic PRs**:
-- Keep PRs focused on single feature or fix when possible
-- Split large changes into multiple PRs for easier review
-- Group related changes together logically
-
-## Performance Optimizations
-
-1. **Parallel operations**: Run independent git commands concurrently
-2. **Efficient diff analysis**: Use `git diff --stat` for quick overview before detailed analysis
-3. **Stream PR body**: Pass content directly to `gh` commands using HEREDOC (no temp files)
-4. **Reduce log verbosity**: Use `--oneline` or `--format` for commit analysis
-5. **Smart caching**: Remember branch and status info to avoid repeated checks
-
-## Integration with GitHub Features
-
-**PR Templates**:
-- Automatically detect and use `.github/pull_request_template.md`
-- Fill in template sections based on commit analysis
-
-**Draft PRs**:
-- Support `--draft` flag for work-in-progress PRs
-- Useful for early feedback or CI testing
-
-**Reviewers and Assignees**:
-- Support `--reviewer` and `--assignee` flags
-- Can auto-suggest reviewers based on CODEOWNERS file
-
-**Labels**:
-- Support `--label` flag for categorizing PRs
-- Can auto-detect labels based on commit types
-
-## Integration with Other Tools
-
-### With Git Hooks
-
-Integrate PR creation into git workflow:
-
-```bash
-# In .git/hooks/post-push
-#!/bin/bash
-BRANCH=$(git symbolic-ref --short HEAD)
-
-if [[ $BRANCH == feature/* ]]; then
-  read -p "Create PR for $BRANCH? (y/n) " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    gh pr create --draft
-  fi
-fi
-```
-
-### With CI/CD
-
-Trigger PR creation from CI pipeline:
-
-```yaml
-# .github/workflows/auto-pr.yml
-name: Auto PR Creation
-on:
-  push:
-    branches:
-      - 'feature/**'
-
-jobs:
-  create-pr:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create Pull Request
-        run: |
-          gh pr create \
-            --title "Auto: $(git log -1 --pretty=%s)" \
-            --body "Automated PR from CI" \
-            --draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-### With Code Review Tools
-
-Integrate with code quality tools:
-
-```bash
-# Run checks before creating PR
-npm run lint
-npm run test
-npm run build
-
-# If all pass, create PR
-if [ $? -eq 0 ]; then
-  gh pr create --title "..." --body "..."
-else
-  echo "❌ Checks failed. Fix issues before creating PR."
-  exit 1
-fi
-```
-
-## Troubleshooting
-
-### Problem: PR Already Exists Error
-
-**Error message**:
-```
-GraphQL: A pull request already exists for username:branch-name
-```
-
-**Solution**:
-```bash
-# View existing PR
-gh pr view
-
-# Update existing PR instead
+# Error: GraphQL: A pull request already exists
+gh pr view  # Check existing PR
 gh pr edit --title "New title" --body "Updated description"
 ```
 
-### Problem: Authentication Failed
-
-**Error message**:
-```
-error: authentication required
-```
-
-**Solution**:
+### Uncommitted Changes / Branch Not Pushed
 ```bash
-# Re-authenticate with GitHub
-gh auth login
-
-# Check authentication status
-gh auth status
-
-# Use different account if needed
-gh auth login --hostname github.com
+git status  # Check for uncommitted changes
+git push -u origin <branch>  # Push if needed
 ```
 
-### Problem: Branch Not Found on Remote
-
-**Error message**:
-```
-error: branch 'feature/new-feature' not found on remote
-```
-
-**Solution**:
+### Authentication Failed
 ```bash
-# Push branch to remote first
-git push -u origin feature/new-feature
-
-# Then create PR
-gh pr create
+gh auth login  # Re-authenticate
+gh auth status  # Check status
 ```
 
-### Problem: No Commits to Create PR
-
-**Error message**:
-```
-error: no commits between base and head
-```
-
-**Solution**:
+### Merge Conflicts
 ```bash
-# Verify you have commits
-git log main...HEAD
-
-# If empty, make changes and commit first
-git add .
-git commit -m "Add changes"
-git push
-```
-
-### Problem: Merge Conflicts
-
-**Warning**:
-```
-⚠️ This branch has conflicts with the base branch
-```
-
-**Solution**:
-```bash
-# Update your branch with latest base
 git fetch origin
-git merge origin/main  # or origin/develop
-
-# Resolve conflicts
-git status
-# [resolve conflicts in files]
-git add .
-git commit -m "Resolve merge conflicts"
-git push
-
-# PR will auto-update
+git merge origin/main  # Resolve conflicts
+git push  # PR auto-updates
 ```
 
-### Problem: Failed CI Checks
+## Best Practices
 
-**Issue**: PR created but CI checks are failing
+- **Clear titles**: Use conventional commit style (feat:, fix:, docs:)
+- **Comprehensive summaries**: Explain WHY, not just WHAT; link to issues
+- **Test plans**: Include steps for reviewers to verify changes
+- **Atomic PRs**: Keep focused; split large changes into multiple PRs
 
-**Solution**:
-```bash
-# View check results
-gh pr checks
+## Security Checks
 
-# View detailed logs
-gh pr checks --watch
-
-# Fix issues locally
-# [make fixes]
-git add .
-git commit -m "Fix CI issues"
-git push
-
-# Checks will re-run automatically
-```
-
-### Problem: Template Not Found
-
-**Issue**: PR template exists but not being used
-
-**Solution**:
-```bash
-# Check template location (must be in one of these paths)
-ls .github/pull_request_template.md
-ls .github/PULL_REQUEST_TEMPLATE.md
-ls docs/pull_request_template.md
-
-# Read template and use it manually
-cat .github/pull_request_template.md
-
-# Create PR with template content
-gh pr create --body "$(cat .github/pull_request_template.md)"
-```
-
-### Problem: Permission Denied
-
-**Error message**:
-```
-error: permission denied to create pull request
-```
-
-**Solution**:
-```bash
-# For forked repositories, ensure you're creating PR correctly
-gh pr create \
-  --repo upstream-owner/repo-name \
-  --head your-username:branch-name \
-  --base main
-
-# Check repository permissions
-gh repo view --web
-```
-
-## Performance Considerations
-
-1. **Parallel operations**: Run git status, branch checks, and fetch concurrently
-2. **Efficient commit analysis**: Use `--oneline` and `--stat` for faster analysis
-3. **Stream content**: Use HEREDOC to pass PR body directly (no temp files)
-4. **Cache branch info**: Remember detected base branch to avoid re-detection
-5. **Lazy template loading**: Only read PR template if it exists
-
-## Security Considerations
-
-**Never include in PRs**:
-- API keys, tokens, passwords
-- Private keys or certificates
-- Database credentials
-- Internal URLs or endpoints
-
-**Pre-PR security checks**:
-```bash
-# Check for secrets before creating PR
-git secrets --scan
-
-# Or use gitleaks
-gitleaks detect --source .
-
-# Verify no sensitive files are included
-git diff --name-only main...HEAD | grep -E '\.(env|pem|key)$'
-```
-
-**Security-sensitive file warnings**:
-- `.env` files
-- `credentials.json`
-- `*.pem`, `*.key` files
-- `secrets.yml`
-
-## GitHub CLI Command Reference
-
-### PR Creation Commands
+Never include in PRs:
+- API keys, tokens, passwords, certificates
+- Database credentials, `.env` files
+- `credentials.json`, `*.pem`, `*.key` files
 
 ```bash
-# Create PR (interactive mode)
-gh pr create
-
-# Create PR with title and body
-gh pr create --title "Title" --body "Description"
-
-# Create PR with HEREDOC body
-gh pr create --title "Title" --body "$(cat <<'EOF'
-Multi-line
-description
-EOF
-)"
-
-# Create draft PR
-gh pr create --draft
-
-# Create PR with specific base
-gh pr create --base develop
-
-# Create PR with reviewers
-gh pr create --reviewer @alice,@bob
-
-# Create PR with assignees
-gh pr create --assignee @me
-
-# Create PR with labels
-gh pr create --label bug,priority-high
-
-# Create PR in different repo (for forks)
-gh pr create --repo owner/repo --head user:branch
-```
-
-### PR Management Commands
-
-```bash
-# View current branch's PR
-gh pr view
-
-# View PR in browser
-gh pr view --web
-
-# View specific PR
-gh pr view 123
-
-# Edit PR title and description
-gh pr edit --title "New title" --body "New description"
-
-# Edit PR to add reviewers
-gh pr edit --add-reviewer @alice
-
-# Edit PR to add labels
-gh pr edit --add-label bug
-
-# Mark draft as ready
-gh pr ready
-
-# Convert to draft
-gh pr ready --undo
-
-# Add comment to PR
-gh pr comment --body "Comment text"
-
-# View PR checks
-gh pr checks
-
-# Watch PR checks
-gh pr checks --watch
-
-# Merge PR
-gh pr merge
-
-# Merge with squash
-gh pr merge --squash
-
-# Merge with rebase
-gh pr merge --rebase
-
-# Auto-merge when checks pass
-gh pr merge --auto --squash
-
-# Close PR
-gh pr close
-
-# Reopen PR
-gh pr reopen
-
-# List all PRs
-gh pr list
-
-# List PRs with specific label
-gh pr list --label bug
-
-# List PRs by author
-gh pr list --author @me
+# Pre-PR security scan
+git secrets --scan || gitleaks detect --source .
 ```
 
 ## Quick Reference
 
 ```bash
-# === Basic PR Creation ===
-# Create PR (interactive)
-gh pr create
+# Create PR
+gh pr create --title "feat: feature" --body "Description"
+gh pr create --draft  # Draft PR
+gh pr create --base develop --reviewer @alice --label bug
 
-# Create PR with details
-gh pr create --title "feat: add feature" --body "Description"
-
-# Create draft PR
-gh pr create --draft
-
-# === PR with Options ===
-# PR with base branch
-gh pr create --base develop
-
-# PR with reviewers and labels
-gh pr create --reviewer @alice --label bug,priority-high
-
-# === Update Existing PR ===
-# View PR
-gh pr view
-
-# Update PR description
+# Manage PR
+gh pr view  # View current PR
+gh pr view --web  # Open in browser
 gh pr edit --title "New title" --body "New description"
+gh pr comment --body "Comment"
+gh pr ready  # Mark draft as ready
 
-# === PR Checks and Status ===
-# View checks
-gh pr checks
+# Checks & Merge
+gh pr checks  # View CI checks
+gh pr checks --watch  # Watch checks
+gh pr merge --squash  # Merge with squash
+gh pr merge --auto --squash  # Auto-merge when ready
 
-# Watch checks
-gh pr checks --watch
+# Analysis
+git status  # Check for uncommitted changes
+git log --oneline main...HEAD  # View commits
+git diff --stat main...HEAD  # View file changes
 
-# === Merge PR ===
-# Merge with squash
-gh pr merge --squash
-
-# Auto-merge when ready
-gh pr merge --auto --squash
-
-# === Analyze Before Creating ===
-# Check status
-git status
-
-# View commits
-git log --oneline main...HEAD
-
-# View changes
-git diff --stat main...HEAD
+# List PRs
+gh pr list  # All PRs
+gh pr list --label bug --author @me  # Filtered
 ```
 
 ## Resources
 
-- GitHub CLI docs: https://cli.github.com/manual/
-- PR best practices: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests
+- GitHub CLI: https://cli.github.com/manual/
 - Conventional commits: https://www.conventionalcommits.org/
-- Git Flow: https://nvie.com/posts/a-successful-git-branching-model/

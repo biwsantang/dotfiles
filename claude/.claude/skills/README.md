@@ -23,158 +23,103 @@ One-paragraph overview of what this skill helps accomplish and its primary use c
 1. **Responsibility 1** - Brief description
 2. **Responsibility 2** - Brief description
 3. **Responsibility 3** - Brief description
-4. **Responsibility 4** - Brief description
-5. **Responsibility 5** - Brief description
 
-## When to Use This Skill
+## When to Use [Tool/Skill] vs Alternatives
 
-**Use this skill when**:
-- Scenario 1
-- Scenario 2
-- Scenario 3
+**Use [Tool/Skill] when**:
+- Scenario 1 requiring this tool
+- Scenario 2 where it excels
 
-**Don't use this skill when**:
-- Alternative scenario 1
-- Alternative scenario 2
+**Use [Alternative] when**:
+- Scenario where alternative is better
+- Simpler approach suffices
 
-## Installation/Prerequisites (if applicable)
+## Installation Check
 
-Before using this skill, verify dependencies:
 ```bash
-# Check if tool is available
+# Verify installation
 which <tool-name> || echo "<tool-name> not installed"
+
+# Install if needed
+brew install <tool-name>  # or npm/cargo/etc
 ```
 
-Installation instructions if needed:
+## Basic Usage
+
 ```bash
-# Installation commands for various platforms
+# Common pattern 1 with inline comment
+command --flag 'pattern' --option value
+
+# Common pattern 2
+command --different-flags
+
+# Advanced pattern with config
+command --config file.yml
 ```
 
-## Basic Usage Patterns
+## Key Syntax/Concepts (if applicable)
 
-### Pattern 1: Common Use Case Name
+- `syntax1` - What it does | Example: `example1`
+- `syntax2` - What it does | Example: `example2`
 
-Brief description of what this pattern does:
-
-```bash
-# Example command or code
-<example>
-```
-
-### Pattern 2: Another Use Case
-
-Description:
+## Common Patterns
 
 ```bash
-# Example
-<example>
-```
-
-### Pattern 3: More Complex Pattern
-
-Description:
-
-```bash
-# Example with multiple steps
-<example>
-```
-
-## Common Use Cases
-
-### Use Case 1: Specific Scenario
-
-```bash
-# Detailed example
-<example>
-```
-
-### Use Case 2: Another Scenario
-
-```bash
-# Detailed example
-<example>
+# Pattern 1 name: command for use case 1
+# Pattern 2 name: command for use case 2
+# Pattern 3 name: command for use case 3
 ```
 
 ## Workflow for Complex Tasks
 
-### Step 1: First Action
+1. **Step 1**: `command` - What it does
+2. **Step 2**: Add `--flag` - Preview changes
+3. **Step 3**: Use `--apply` - Execute changes
+4. **Verify**: `verification-command`
 
-Description and example:
-
-```bash
-# Command or code example
-```
-
-### Step 2: Second Action
-
-Description and example:
-
-```bash
-# Command or code example
-```
-
-### Step 3: Verification
-
-How to verify the results:
-
-```bash
-# Verification commands
-```
-
-## Configuration (if applicable)
-
-Show how to configure the tool/skill for advanced usage:
+## Advanced Configuration (if needed)
 
 ```yaml
-# Example configuration file
-key: value
+# config-file.yml
+rule:
+  pattern: example
+  constraints:
+    field: value
 ```
 
 ## Best Practices
 
-1. **Practice 1**: Description
-2. **Practice 2**: Description
-3. **Practice 3**: Description
-4. **Practice 4**: Description
+- Practice 1 with brief explanation
+- Practice 2 with brief explanation
+- Practice 3 with brief explanation
 
-## Integration with Other Tools
-
-### With Tool X
+## Integration Examples
 
 ```bash
-# Example of integration
-```
-
-### With Tool Y
-
-```bash
-# Another integration example
+# With Tool X: integration command
+# With Tool Y: integration command
 ```
 
 ## Troubleshooting
 
-**Problem 1**:
-- Solution 1
-- Solution 2
+- **Problem 1**: Solution steps, link to docs
+- **Problem 2**: Solution steps
+- **Problem 3**: Solution steps
 
-**Problem 2**:
-- Solution 1
-- Solution 2
+## Example Workflows
+
+```bash
+# Workflow 1: Description
+command --pattern 'example' --action
+
+# Workflow 2: Description (multi-step)
+command --pattern '$VAR' --rewrite '$VAR.new'
+```
 
 ## Resources
 
-- Official docs: <url>
+- Docs: <url> | Playground: <url> (if applicable)
 - GitHub: <url>
-- Additional resources
-
-## Quick Reference
-
-```bash
-# Most common commands
-command1
-command2
-command3
-```
 ```
 
 ## Existing Skills
@@ -209,9 +154,12 @@ description: Performs structural code search and refactoring using AST-based pat
 ## Tips for Writing Skills
 
 1. **Be specific about triggers**: Include exact phrases users might say to invoke the skill
-2. **Provide concrete examples**: Real commands and code snippets are more helpful than abstract descriptions
-3. **Include workflows**: Step-by-step processes for complex tasks
-4. **Add troubleshooting**: Anticipate common problems and provide solutions
-5. **Link to resources**: Official documentation and helpful external links
-6. **Keep it practical**: Focus on real-world use cases over theoretical coverage
-7. **Use clear formatting**: Leverage markdown headings, code blocks, and lists for readability
+2. **Be concise**: Use compact formatting with inline examples - aim for clarity over verbosity
+3. **Provide concrete examples**: Real commands and code snippets trump abstract descriptions
+4. **Use inline comments**: Put examples and explanations on the same line when possible
+5. **Consolidate sections**: Merge related patterns instead of creating separate subsections
+6. **Include workflows**: Numbered steps for complex tasks, not verbose subsections
+7. **Add troubleshooting**: Anticipate common problems with brief, actionable solutions
+8. **Link to resources**: Official documentation - keep resource lists minimal
+9. **Keep it practical**: Focus on real-world use cases over theoretical coverage
+10. **Avoid redundancy**: Don't repeat information across sections or create "Quick Reference" if content is already concise
