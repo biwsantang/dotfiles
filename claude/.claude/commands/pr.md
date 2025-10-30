@@ -2,16 +2,16 @@
 description: Create or update a pull request
 argument-hint: [optional: describe what this PR does or specify draft/base branch]
 model: claude-haiku-4-5-20251001
+allowed-tools: Bash(git *), Bash(gh *)
 ---
 
 ## Context
 
-git status
-git branch -vv
-git log --oneline -10
-git remote -v
-
-The user wants to create or update a pull request. Arguments provided: $ARGUMENTS
+- Current git status: !`git status`
+- Branch status with tracking info: !`git branch -vv`
+- Recent commits: !`git log --oneline -10`
+- Remote repositories: !`git remote -v`
+- The user wants to create or update a pull request. Arguments provided: $ARGUMENTS
 
 ## Your task
 

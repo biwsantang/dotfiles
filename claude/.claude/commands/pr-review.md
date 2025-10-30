@@ -1,16 +1,17 @@
 ---
 description: Review pull requests with intelligent analysis and line-level commenting
 argument-hint: "[PR number/URL]"
+allowed-tools: Bash(gh *), Bash(git *)
 ---
 
 # PR Review Command
 
-gh pr view $ARGUMENTS --json number,title,body,headRefName,baseRefName,state,isDraft,author,url,files,commits,reviews 2>/dev/null || echo "PR_NOT_FOUND"
-gh pr diff $ARGUMENTS 2>/dev/null || echo "DIFF_FAILED"
-git rev-parse --show-toplevel 2>/dev/null
-git branch --show-current 2>/dev/null
-
 ## Context
+
+- PR metadata: !`gh pr view ${ARGUMENTS:-} --json number,title,body,headRefName,baseRefName,state,isDraft,author,url,files,commits,reviews 2>/dev/null || echo "PR_NOT_FOUND"`
+- PR diff: !`gh pr diff ${ARGUMENTS:-} 2>/dev/null || echo "DIFF_FAILED"`
+- Repository root: !`git rev-parse --show-toplevel 2>/dev/null`
+- Current branch: !`git branch --show-current 2>/dev/null`
 
 You are performing a comprehensive code review of a GitHub pull request. The bash commands above have gathered:
 

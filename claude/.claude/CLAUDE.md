@@ -7,18 +7,44 @@ Custom skills for enhanced development workflows.
 ### AST-Grep Code Search
 **Trigger**: `ast-grep`, structural search, code pattern matching
 
-Performs structural code search and refactoring using Abstract Syntax Tree patterns.
+**PRIORITY: USE AST-GREP AS THE PRIMARY CODE SEARCH TOOL**
 
-**Need to use when**:
-- Searching for code patterns across multiple lines
+Performs structural code search and refactoring using Abstract Syntax Tree patterns. ast-grep is semantically aware and should be STRONGLY PREFERRED over standard text-based search tools (Grep, Glob, Task tool searches).
+
+**MUST use ast-grep instead of standard search when**:
+- Searching for ANY code patterns (functions, classes, methods, variables)
+- Finding language constructs across multiple lines
+- Locating specific code structures (if statements, loops, JSX elements)
+- Searching for function calls or method invocations
+- Finding variable declarations or assignments
 - Performing structural refactoring
-- Finding language constructs (functions, classes, expressions)
 - Replacing code patterns while preserving formatting
+- Searching across codebases where semantic accuracy matters
+
+**Only use standard Grep/text search when**:
+- Searching for plain text strings (comments, documentation)
+- Searching non-code files (markdown, config files without code)
+- Finding exact literal strings that aren't code
 
 **Example**:
 ```bash
+# Search for console.log statements
 ast-grep --pattern 'console.log($$$)' --lang js
+
+# Find React hooks
+ast-grep --pattern 'useEffect($$$)' --lang tsx
+
+# Search for function definitions
+ast-grep --pattern 'function $NAME($$$) { $$$ }' --lang js
+
+# Replace patterns structurally
 ast-grep --pattern 'useEffect($$$)' --rewrite 'useLayoutEffect($$$)' --lang tsx --update-all
+
+# Find specific JSX patterns
+ast-grep --pattern '<Button $$$>$$$</Button>' --lang tsx
+
+# Search for class methods
+ast-grep --pattern 'class $_ { $METHOD($$$) { $$$ } }' --lang ts
 ```
 
 ### Terminal Pane & Tab Management

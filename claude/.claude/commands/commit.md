@@ -1,19 +1,16 @@
 ---
 description: Create a git commit
 argument-hint: [optional context about what you changed]
+allowed-tools: Bash(git *)
 ---
 
 ## Context
 
-git status
-
-git diff --staged
-
-git diff
-
-git log -5 --oneline --decorate
-
-Optional user context: $ARGUMENTS
+- Current git status: !`git status`
+- Staged changes: !`git diff --staged`
+- Unstaged changes: !`git diff`
+- Recent commits: !`git log -5 --oneline --decorate`
+- Optional user context: $ARGUMENTS
 
 ## Your task
 

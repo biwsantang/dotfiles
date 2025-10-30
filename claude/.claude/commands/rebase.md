@@ -2,15 +2,16 @@
 description: Rebase current branch with conflict resolution
 argument-hint: [optional: specify target branch, interactive mode, or continue/abort]
 model: claude-haiku-4-5-20251001
+allowed-tools: Bash(git *)
 ---
 
 # Git Rebase Assistant
 
-git status
-git branch -vv | grep '^\*'
-git fetch origin --quiet && echo "Fetched latest from origin"
-
 ## Context
+
+- Current git status: !`git status`
+- Current branch with tracking: !`git branch -vv | grep '^\*'`
+- Fetch latest changes: !`git fetch origin --quiet && echo "Fetched latest from origin"`
 
 You have access to the Git Rebase Assistant skill that helps perform safe, effective rebases with intelligent conflict detection and resolution.
 
