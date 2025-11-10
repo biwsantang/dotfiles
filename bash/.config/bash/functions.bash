@@ -12,9 +12,9 @@ function ccc() {
 # Claude PR function - commits then creates PR
 function ccpr() {
     if [ -n "$ZELLIJ" ]; then
-        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit /pr $*"
+        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
     else
-        claude --dangerously-skip-permissions "/commit /pr $*"
+        claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
     fi
 }
 

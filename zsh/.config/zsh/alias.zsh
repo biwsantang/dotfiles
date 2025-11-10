@@ -32,7 +32,7 @@ function ccc() {
 	claude --dangerously-skip-permissions "/commit $*"
 }
 function ccpr() {
-	claude --dangerously-skip-permissions "/commit /pr $*"
+	claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
 }
 
 function hs() {

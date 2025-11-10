@@ -53,7 +53,7 @@ if status is-interactive
             claude --dangerously-skip-permissions "/commit $argv"
         end
     end
-    
+
     # Jira alias for current user's issues in open sprints
     function jira\ cu
         if test "$argv[1]" = "-h" -o "$argv[1]" = "--help"
@@ -65,16 +65,16 @@ if status is-interactive
 
     # SSH with compatible terminal when needed
     alias sshc="TERM=xterm-256color command ssh"
-    
+
     # Claude PR function - commits then creates PR
     function ccpr
         if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit /pr $argv"
+            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "run /commit if have any and then run /pr $argv"
         else
-            claude --dangerously-skip-permissions "/commit /pr $argv"
+            claude --dangerously-skip-permissions "run /commit if have any and then run /pr $argv"
         end
     end
-    
+
     # Install Ghostty terminfo on remote server
     # Usage: install-ghostty-on user@hostname
     function install-ghostty-on
