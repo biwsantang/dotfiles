@@ -117,6 +117,26 @@ if status is-interactive
         rm -f $tmpfile
     end
 
+    # Navigate to git repositories in ~/developer
+    function dev
+        set -l dir (fd -H -t d '^\.git$' ~/developer | sed 's|/.git$||' | \
+            fzf --preview '
+                echo "󰘬 $(git -C {} branch --show-current)"
+                echo ""
+                echo "Recent commits:"
+                git -C {} log --oneline -5
+                echo ""
+                echo "Status:"
+                git -C {} status -s
+                echo ""
+                echo "Remotes:"
+                git -C {} remote -v | head -2
+            ' --preview-window=right:60%)
+        if test -n "$dir"
+            cd "$dir"
+        end
+    end
+
     # Key bindings
     bind \ce edit_command_line
 

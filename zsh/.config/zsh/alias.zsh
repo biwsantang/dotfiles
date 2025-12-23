@@ -55,3 +55,22 @@ function t() {
 
 export EDITOR="/opt/homebrew/bin/nvim"
 export VISUAL="/opt/homebrew/bin/nvim"
+
+# Navigate to git repositories in ~/developer
+dev() {
+  local dir
+  dir=$(fd -H -t d '^\.git$' ~/developer | sed 's|/.git$||' | \
+    fzf --preview '
+      echo "󰘬 $(git -C {} branch --show-current)"
+      echo ""
+      echo "Recent commits:"
+      git -C {} log --oneline -5
+      echo ""
+      echo "Status:"
+      git -C {} status -s
+      echo ""
+      echo "Remotes:"
+      git -C {} remote -v | head -2
+    ' --preview-window=right:60%)
+  [[ -n "$dir" ]] && cd "$dir"
+}
