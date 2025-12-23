@@ -1,5 +1,5 @@
 format = """
-$os$username$hostname$all
+$os$username$hostname$directory$git_branch${custom.repo}$git_status$git_state$docker_context$package$nodejs$python$rust$golang$java$kotlin$php$ruby$swift$terraform$aws$gcloud$azure$kubernetes$helm$conda$bun$deno$elixir$elm$erlang$haskell$julia$lua$nim$ocaml$perl$pulumi$rlang$scala$zig$nix_shell$memory_usage$env_var$cmd_duration$jobs$sudo$shell
 - $time
 
 $character
@@ -31,6 +31,12 @@ format = "[$time]($style)"
 #style = "italic"
 #command = "date +'%a %d %b'"
 #when = true
+
+[custom.repo]
+command = "git remote get-url origin 2>/dev/null | awk -F'[:/]' '{gsub(/\\.git$/,\"\"); print $(NF-1)\"/\"$NF}'"
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+format = "from [$output]($style) "
+style = "bold purple"
 
 [character]
 success_symbol = "👉 "
