@@ -16,5 +16,14 @@
     "command": "bunx ccusage statusline",
     "padding": 0
   },
-  "alwaysThinkingEnabled": false
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true,
+    "dev-browser@dev-browser-marketplace": true,
+    "abacus-aws-account-login@abacus-awesome-agent-skills": true,
+    "abacus-mongosh-login@abacus-awesome-agent-skills": true,
+    "abacus-git-conventions@abacus-awesome-agent-skills": true,
+    "abacus-jira-check-requirement-gap@abacus-awesome-agent-skills": true,
+    "aws-cloudwatch-logs@abacus-awesome-agent-skills": true
+  },
+  "alwaysThinkingEnabled": true
 }
