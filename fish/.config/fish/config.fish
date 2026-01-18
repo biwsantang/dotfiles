@@ -119,7 +119,7 @@ if status is-interactive
 
     # Navigate to git repositories in ~/developer
     function dev
-        set -l dir (fd -H -t d '^\.git$' ~/developer | sed 's|/.git$||' | \
+        set -l dir (fd -H -t d '^\.git$' ~/developer --exec dirname | \
             fzf --preview '
                 echo "󰘬 $(git -C {} branch --show-current)"
                 echo ""

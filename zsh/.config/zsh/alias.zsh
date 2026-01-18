@@ -59,7 +59,7 @@ export VISUAL="/opt/homebrew/bin/nvim"
 # Navigate to git repositories in ~/developer
 dev() {
   local dir
-  dir=$(fd -H -t d '^\.git$' ~/developer | sed 's|/.git$||' | \
+  dir=$(fd -H -t d '^\.git$' ~/developer --exec dirname | \
     fzf --preview '
       echo "󰘬 $(git -C {} branch --show-current)"
       echo ""

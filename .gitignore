@@ -8,3 +8,5 @@ zsh/.config/linearmouse
 zsh/.config/yarn
 
 nvim/.config/nvim/plugin/
+
+claude/.claude/settings.json
