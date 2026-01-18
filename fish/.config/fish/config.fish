@@ -147,19 +147,23 @@ if status is-interactive
 
     # Navigate to git repositories in ~/developer and open dev environment
     function dev
-        set -l dir (fd -H -t d '^\.git$' ~/developer --exec dirname | \
-            fzf --preview '
-                echo "󰘬 $(git -C {} branch --show-current)"
+        set -l dir (fd -H '^\.git$' ~/developer --exec dirname | \
+            while read p
+                printf "%s\t%s\n" (string replace "$HOME/developer/" "" $p) $p
+            end | \
+            fzf --delimiter='\t' --with-nth=1 --preview '
+                path=$(echo {} | cut -f2)
+                echo "󰘬 $(git -C "$path" branch --show-current)"
                 echo ""
                 echo "Recent commits:"
-                git -C {} log --oneline -5
+                git -C "$path" log --oneline -5
                 echo ""
                 echo "Status:"
-                git -C {} status -s
+                git -C "$path" status -s
                 echo ""
                 echo "Remotes:"
-                git -C {} remote -v | head -2
-            ' --preview-window=right:60%)
+                git -C "$path" remote -v | head -2
+            ' --preview-window=right:60% | cut -f2)
         if test -n "$dir"
             cd "$dir" && zellij --layout dev
         end

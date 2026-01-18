@@ -1,8 +1,11 @@
 layout {
     pane split_direction="vertical" {
         pane size="33%" command="lazygit"
-        pane size="67%" focus=true command="claude" {
-            args "--dangerously-skip-permissions"
+        pane size="67%" split_direction="horizontal" {
+            pane size="67%" focus=true command="claude" {
+                args "--dangerously-skip-permissions"
+            }
+            pane size="33%"
         }
     }
 }
