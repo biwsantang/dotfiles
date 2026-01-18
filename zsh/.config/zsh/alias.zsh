@@ -77,7 +77,7 @@ __update_repo_name() {
 chpwd() { __update_repo_name; }
 __update_repo_name  # Initialize on shell start
 
-# Navigate to git repositories in ~/developer
+# Navigate to git repositories in ~/developer and open dev environment
 dev() {
   local dir
   dir=$(fd -H -t d '^\.git$' ~/developer --exec dirname | \
@@ -93,5 +93,5 @@ dev() {
       echo "Remotes:"
       git -C {} remote -v | head -2
     ' --preview-window=right:60%)
-  [[ -n "$dir" ]] && cd "$dir"
+  [[ -n "$dir" ]] && cd "$dir" && zellij --layout dev
 }

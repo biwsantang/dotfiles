@@ -1,0 +1,8 @@
+layout {
+    pane split_direction="vertical" {
+        pane size="33%" command="lazygit"
+        pane size="67%" focus=true command="claude" {
+            args "--dangerously-skip-permissions"
+        }
+    }
+}

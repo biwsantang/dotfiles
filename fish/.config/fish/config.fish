@@ -145,7 +145,7 @@ if status is-interactive
         rm -f $tmpfile
     end
 
-    # Navigate to git repositories in ~/developer
+    # Navigate to git repositories in ~/developer and open dev environment
     function dev
         set -l dir (fd -H -t d '^\.git$' ~/developer --exec dirname | \
             fzf --preview '
@@ -161,7 +161,7 @@ if status is-interactive
                 git -C {} remote -v | head -2
             ' --preview-window=right:60%)
         if test -n "$dir"
-            cd "$dir"
+            cd "$dir" && zellij --layout dev
         end
     end
 

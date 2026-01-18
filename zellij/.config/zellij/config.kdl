@@ -15,6 +15,9 @@ ui {
     }
 }
 
+// Disable startup tips
+show_startup_tips false
+
 keybinds {
     shared {
         bind "Alt 1" { NewTab; }
