@@ -65,6 +65,18 @@ function t() {
 export EDITOR="/opt/homebrew/bin/nvim"
 export VISUAL="/opt/homebrew/bin/nvim"
 
+# Update repo name for starship prompt on directory change
+__update_repo_name() {
+  if [ -e .git ]; then
+    local d=$([ -f .git ] && awk '{print $2}' .git || echo .git)
+    export __REPO_NAME=$(awk -F'[:/]' '/url = /{gsub(/\.git$/,""); print $(NF-1)"/"$NF; exit}' "${d%/worktrees/*}/config" 2>/dev/null)
+  else
+    export __REPO_NAME=""
+  fi
+}
+chpwd() { __update_repo_name; }
+__update_repo_name  # Initialize on shell start
+
 # Navigate to git repositories in ~/developer
 dev() {
   local dir

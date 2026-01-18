@@ -9,6 +9,20 @@ claude() {
   command claude "$@"
 }
 
+# Update repo name for starship prompt (only on directory change)
+__update_repo_name() {
+  [ "$__LAST_PWD" = "$PWD" ] && return
+  __LAST_PWD="$PWD"
+  if [ -e .git ]; then
+    local d=$([ -f .git ] && awk '{print $2}' .git || echo .git)
+    export __REPO_NAME=$(awk -F'[:/]' '/url = /{gsub(/\.git$/,""); print $(NF-1)"/"$NF; exit}' "${d%/worktrees/*}/config" 2>/dev/null)
+  else
+    export __REPO_NAME=""
+  fi
+}
+PROMPT_COMMAND="__update_repo_name${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+__update_repo_name  # Initialize on shell start
+
 # Use floating pane in zellij, regular command otherwise
 function ccc() {
     if [ -n "$ZELLIJ" ]; then

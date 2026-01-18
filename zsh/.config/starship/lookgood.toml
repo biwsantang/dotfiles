@@ -33,8 +33,9 @@ format = "[$time]($style)"
 #when = true
 
 [custom.repo]
-command = "git remote get-url origin 2>/dev/null | awk -F'[:/]' '{gsub(/\\.git$/,\"\"); print $(NF-1)\"/\"$NF}'"
-when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+command = "echo $__REPO_NAME"
+detect_folders = [".git"]
+detect_files = [".git"]
 format = "from [$output]($style) "
 style = "bold purple"
 

@@ -22,6 +22,25 @@ if type -q starship
     starship init fish | source
 end
 
+# wtp (git worktree) shell integration
+if type -q wtp
+    wtp shell-init fish | source
+end
+
+# Update repo name for starship prompt on directory change
+function __update_repo_name --on-variable PWD
+    if test -e .git
+        set -l gitdir .git
+        if test -f .git
+            set gitdir (awk '{print $2}' .git)
+        end
+        set -gx __REPO_NAME (awk -F'[:/]' '/url = /{gsub(/\.git$/,""); print $(NF-1)"/"$NF; exit}' (string replace -r '/worktrees/.*' '' $gitdir)/config 2>/dev/null)
+    else
+        set -gx __REPO_NAME ""
+    end
+end
+__update_repo_name  # Initialize on shell start
+
 # CodeEdit shell integration
 if test "$TERM_PROGRAM" = "CodeEditApp_Terminal"
     source "/Applications/CodeEdit.app/Contents/Resources/codeedit_shell_integration.fish" 2>/dev/null
