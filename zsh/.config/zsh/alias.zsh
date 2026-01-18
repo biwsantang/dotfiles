@@ -26,6 +26,15 @@ jira_cu() {
 }
 alias jira\ cu="jira_cu"
 
+# Unlock keychain when running claude over SSH
+claude() {
+  if [ -n "$SSH_CONNECTION" ] && [ -z "$KEYCHAIN_UNLOCKED" ]; then
+    security unlock-keychain ~/Library/Keychains/login.keychain-db
+    export KEYCHAIN_UNLOCKED=true
+  fi
+  command claude "$@"
+}
+
 alias cc="claude"
 alias ccb="claude --dangerously-skip-permissions"
 function ccc() {

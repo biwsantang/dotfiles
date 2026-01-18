@@ -1,5 +1,14 @@
 # Bash functions
 
+# Unlock keychain when running claude over SSH
+claude() {
+  if [ -n "$SSH_CONNECTION" ] && [ -z "$KEYCHAIN_UNLOCKED" ]; then
+    security unlock-keychain ~/Library/Keychains/login.keychain-db
+    export KEYCHAIN_UNLOCKED=true
+  fi
+  command claude "$@"
+}
+
 # Use floating pane in zellij, regular command otherwise
 function ccc() {
     if [ -n "$ZELLIJ" ]; then

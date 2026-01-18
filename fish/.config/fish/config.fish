@@ -84,6 +84,15 @@ if status is-interactive
     # Keychain management
     alias unlock-keychain="security unlock-keychain ~/Library/Keychains/login.keychain-db"
 
+    # Unlock keychain when running claude over SSH
+    function claude
+        if set -q SSH_CONNECTION; and not set -q KEYCHAIN_UNLOCKED
+            security unlock-keychain ~/Library/Keychains/login.keychain-db
+            set -gx KEYCHAIN_UNLOCKED true
+        end
+        command claude $argv
+    end
+
     # Functions (converted from Zsh)
 
     # History search function
