@@ -1,11 +1,64 @@
 layout {
-    pane split_direction="vertical" {
-        pane size="33%" command="lazygit"
-        pane size="67%" split_direction="horizontal" {
-            pane size="67%" focus=true command="claude" {
-                args "--dangerously-skip-permissions"
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
+                format_left   "{mode} {command_username} on 🌏 {command_hostname} with #[fg=black]{tabs}"
+                format_center ""
+                format_right  "#[fg=#6867AF,bold]  {datetime}#[fg=cyan]↖ "
+                format_space  "#[fg=yellow] "
+                hide_frame_for_single_pane "false"
+                border_enabled  "false"
+
+                // Hostname command
+                command_hostname_command "hostname -s"
+                command_hostname_format "#[fg=cyan]{stdout}"
+                command_hostname_interval "0"
+                command_hostname_rendermode "static"
+
+                // Username command
+                command_username_command "whoami"
+                command_username_format "#[fg=green]{stdout}"
+                command_username_interval "0"
+                command_username_rendermode "static"
+
+                mode_normal  "#[fg=yellow]"
+                mode_locked  "#[fg=red]"
+                mode_tmux    "#[bg=cyan]"
+
+                // formatting for inactive tabs
+                tab_normal              "#[fg=#6C7086]{index}"
+                tab_normal_fullscreen   "#[fg=#6C7086]{index}"
+                tab_normal_sync         "#[fg=#6C7086]{index}"
+
+                // formatting for the current active tab
+                tab_active              "#[fg=#9399B2,bold]{index}"
+                tab_active_fullscreen   "#[fg=#9399B2,bold]{index}"
+                tab_active_sync         "#[fg=#9399B2,bold]{index}"
+
+                // separator between the tabs
+                tab_separator           "#[fg=cyan,bold] ⋮ "
+
+                // indicators
+                tab_sync_indicator       " "
+                tab_fullscreen_indicator " "
+                tab_floating_indicator   ""
+
+                datetime        "#[fg=#6C7086,bold] {format} "
+                datetime_format "%A, %d %b %Y %H:%M"
+                datetime_timezone "Asia/Bangkok"
             }
-            pane size="33%"
+        }
+    }
+    tab focus=true borderless=true {
+        pane split_direction="vertical" {
+            pane size="33%" command="lazygit"
+            pane size="67%" split_direction="horizontal" {
+                pane size="67%" focus=true command="claude" {
+                    args "--dangerously-skip-permissions"
+                }
+                pane size="33%"
+            }
         }
     }
 }
