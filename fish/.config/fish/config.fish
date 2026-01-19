@@ -148,7 +148,11 @@ if status is-interactive
     # Navigate to git repositories in ~/developer and open dev environment
     function dev
         if test "$argv[1]" = "."
-            zellij --layout dev
+            if set -q ZELLIJ
+                zellij action new-tab --layout dev
+            else
+                zellij --layout dev
+            end
             return
         end
         set -l dir (fd -H '^\.git$' ~/developer --exec dirname | \
@@ -169,7 +173,12 @@ if status is-interactive
                 git -C "$path" remote -v | head -2
             ' --preview-window=right:60% | cut -f2)
         if test -n "$dir"
-            cd "$dir" && zellij --layout dev
+            cd "$dir"
+            if set -q ZELLIJ
+                zellij action new-tab --layout dev
+            else
+                zellij --layout dev
+            end
         end
     end
 

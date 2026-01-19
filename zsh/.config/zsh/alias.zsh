@@ -80,7 +80,11 @@ __update_repo_name  # Initialize on shell start
 # Navigate to git repositories in ~/developer and open dev environment
 dev() {
   if [[ "$1" == "." ]]; then
-    zellij --layout dev
+    if [[ -n "$ZELLIJ" ]]; then
+      zellij action new-tab --layout dev
+    else
+      zellij --layout dev
+    fi
     return
   fi
   local dir
@@ -99,5 +103,12 @@ dev() {
       echo "Remotes:"
       git -C "$path" remote -v | head -2
     ' --preview-window=right:60% | cut -f2)
-  [[ -n "$dir" ]] && cd "$dir" && zellij --layout dev
+  if [[ -n "$dir" ]]; then
+    cd "$dir"
+    if [[ -n "$ZELLIJ" ]]; then
+      zellij action new-tab --layout dev
+    else
+      zellij --layout dev
+    fi
+  fi
 }
