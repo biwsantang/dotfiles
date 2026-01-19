@@ -3,3 +3,4 @@ theme = dark:catppuccin-mocha,light:github_light
 font-size = 14
 keybind = shift+enter=text:\n
 auto-update-channel = tip
+shell-integration-features = ssh-terminfo,ssh-env
