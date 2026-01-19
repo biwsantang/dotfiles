@@ -79,6 +79,10 @@ __update_repo_name  # Initialize on shell start
 
 # Navigate to git repositories in ~/developer and open dev environment
 dev() {
+  if [[ "$1" == "." ]]; then
+    zellij --layout dev
+    return
+  fi
   local dir
   dir=$(fd -H '^\.git$' ~/developer --exec dirname | \
     while read p; do echo "${p#$HOME/developer/}	$p"; done | \

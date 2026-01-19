@@ -147,6 +147,10 @@ if status is-interactive
 
     # Navigate to git repositories in ~/developer and open dev environment
     function dev
+        if test "$argv[1]" = "."
+            zellij --layout dev
+            return
+        end
         set -l dir (fd -H '^\.git$' ~/developer --exec dirname | \
             while read p
                 printf "%s\t%s\n" (string replace "$HOME/developer/" "" $p) $p
