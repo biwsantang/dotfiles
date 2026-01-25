@@ -87,10 +87,10 @@ dev() {
     fi
     return
   fi
-  local dir
-  dir=$(fd -H '^\.git$' ~/developer --exec dirname | \
+  local dirs
+  dirs=$(fd -H '^\.git$' ~/developer --exec dirname | \
     while read p; do echo "${p#$HOME/developer/}	$p"; done | \
-    fzf --delimiter='\t' --with-nth=1 --preview '
+    fzf -m --delimiter='\t' --with-nth=1 --preview '
       path=$(echo {} | cut -f2)
       echo "󰘬 $(git -C "$path" branch --show-current)"
       echo ""
@@ -103,12 +103,37 @@ dev() {
       echo "Remotes:"
       git -C "$path" remote -v | head -2
     ' --preview-window=right:60% | cut -f2)
-  if [[ -n "$dir" ]]; then
-    cd "$dir"
-    if [[ -n "$ZELLIJ" ]]; then
-      zellij action new-tab --layout dev
-    else
-      zellij --layout dev
-    fi
+  [[ -z "$dirs" ]] && return
+  local first_dir panes_kdl add_dirs
+  first_dir=$(echo "$dirs" | head -1)
+  panes_kdl=""
+  add_dirs=""
+  while IFS= read -r d; do
+    panes_kdl+="                    pane cwd=\"$d\""$'\n'
+    [[ "$d" != "$first_dir" ]] && add_dirs+=" \"--add-dir\" \"$d\""
+  done <<< "$dirs"
+  local layout_file="/tmp/zellij-dev-$$.kdl"
+  cat > "$layout_file" <<EOF
+layout {
+    tab focus=true {
+        pane split_direction="vertical" {
+            pane size="33%" cwd="$first_dir" command="lazygit"
+            pane size="67%" split_direction="horizontal" {
+                pane size="67%" focus=true cwd="$first_dir" command="claude" {
+                    args "--dangerously-skip-permissions"$add_dirs
+                }
+                pane size="33%" stacked=true expanded=false {
+$panes_kdl                }
+            }
+        }
+    }
+}
+EOF
+  cd "$first_dir"
+  if [[ -n "$ZELLIJ" ]]; then
+    zellij action new-tab --layout "$layout_file"
+  else
+    zellij --layout "$layout_file"
   fi
+  rm -f "$layout_file"
 }

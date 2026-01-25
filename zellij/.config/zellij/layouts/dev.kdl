@@ -57,7 +57,9 @@ layout {
                 pane size="67%" focus=true command="claude" {
                     args "--dangerously-skip-permissions"
                 }
-                pane size="33%"
+                pane size="33%" stacked=true expanded=false {
+                    pane
+                }
             }
         }
     }
