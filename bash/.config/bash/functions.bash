@@ -23,22 +23,13 @@ __update_repo_name() {
 PROMPT_COMMAND="__update_repo_name${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 __update_repo_name  # Initialize on shell start
 
-# Use floating pane in zellij, regular command otherwise
 function ccc() {
-    if [ -n "$ZELLIJ" ]; then
-        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit $*"
-    else
-        claude --dangerously-skip-permissions "/commit $*"
-    fi
+    claude --dangerously-skip-permissions "use commit skill to commit $*"
 }
 
 # Claude PR function - commits then creates PR
 function ccpr() {
-    if [ -n "$ZELLIJ" ]; then
-        zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
-    else
-        claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
-    fi
+    claude --dangerously-skip-permissions "use commit and pr skills to run commit if have any and then run pr $*"
 }
 
 # Install Ghostty terminfo on remote server

@@ -38,10 +38,10 @@ claude() {
 alias cc="claude"
 alias ccb="claude --dangerously-skip-permissions"
 function ccc() {
-	claude --dangerously-skip-permissions "/commit $*"
+	claude --dangerously-skip-permissions "use commit skill to commit $*"
 }
 function ccpr() {
-	claude --dangerously-skip-permissions "run /commit if have any and then run /pr $*"
+	claude --dangerously-skip-permissions "use commit and pr skills to run commit if have any and then run pr $*"
 }
 
 function hs() {

@@ -64,13 +64,8 @@ if status is-interactive
 		alias cg='cd (git rev-parse --show-toplevel 2>/dev/null || echo ".")'
     alias cc="claude"
     alias ccb="claude --dangerously-skip-permissions"
-    # Use floating pane in zellij, regular command otherwise
     function ccc
-        if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "/commit $argv"
-        else
-            claude --dangerously-skip-permissions "/commit $argv"
-        end
+        claude --dangerously-skip-permissions "use commit skill to commit $argv"
     end
 
     # Jira alias for current user's issues in open sprints
@@ -87,11 +82,7 @@ if status is-interactive
 
     # Claude PR function - commits then creates PR
     function ccpr
-        if set -q ZELLIJ
-            zellij action new-pane --floating --close-on-exit -- claude --dangerously-skip-permissions "run /commit if have any and then run /pr $argv"
-        else
-            claude --dangerously-skip-permissions "run /commit if have any and then run /pr $argv"
-        end
+        claude --dangerously-skip-permissions "use commit and pr skills to run commit if have any and then run pr $argv"
     end
 
     # Install Ghostty terminfo on remote server
