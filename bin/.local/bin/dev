@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+# dev - Navigate to git repositories and open Zellij dev environment
+
+set -euo pipefail
+
+# Ensure PATH includes common locations for git, fd, fzf, etc.
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+show_help() {
+  cat <<'EOF'
+dev - Navigate to git repositories and open Zellij dev environment
+
+Usage:
+  dev           Select project(s) with fzf and open in Zellij
+  dev .         Open current directory in Zellij dev layout
+  dev -h        Show this help message
+
+Features:
+  - Multi-select projects with Tab in fzf
+  - Lazygit pane (33% left)
+  - Claude pane (top-right)
+  - Shell panes for each selected project (bottom-right, stacked)
+EOF
+}
+
+# Handle help flag
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  show_help
+  exit 0
+fi
+
+# Handle "dev ." - open current directory
+if [[ "${1:-}" == "." ]]; then
+  if [[ -n "${ZELLIJ:-}" ]]; then
+    zellij action new-tab --layout dev
+  else
+    zellij --layout dev
+  fi
+  exit 0
+fi
+
+# Find git repos and select with fzf
+dirs=$(fd -H '^\.git$' ~/developer --exec dirname | \
+  while read -r p; do echo "${p#$HOME/developer/}	$p"; done | \
+  fzf -m --delimiter=$'\t' --with-nth=1 --preview '
+    dir=$(echo {} | cut -f2)
+    echo "󰘬 $(git -C "$dir" branch --show-current)"
+    echo ""
+    echo "Recent commits:"
+    git -C "$dir" log --oneline -5
+    echo ""
+    echo "Status:"
+    git -C "$dir" status -s
+    echo ""
+    echo "Remotes:"
+    git -C "$dir" remote -v | head -2
+  ' --preview-window=right:60% | cut -f2)
+
+[[ -z "$dirs" ]] && exit 0
+
+first_dir=$(echo "$dirs" | head -1)
+panes_kdl=""
+add_dirs=""
+
+while IFS= read -r d; do
+  panes_kdl+="                    pane cwd=\"$d\""$'\n'
+  [[ "$d" != "$first_dir" ]] && add_dirs+=" \"--add-dir\" \"$d\""
+done <<< "$dirs"
+
+layout_file="/tmp/zellij-dev-$$.kdl"
+cat > "$layout_file" <<EOF
+layout {
+    tab focus=true {
+        pane split_direction="vertical" {
+            pane size="33%" cwd="$first_dir" command="lazygit"
+            pane size="67%" split_direction="horizontal" {
+                pane size="67%" focus=true cwd="$first_dir" command="claude" {
+                    args "--dangerously-skip-permissions"$add_dirs
+                }
+                pane size="33%" stacked=true expanded=false {
+$panes_kdl                }
+            }
+        }
+    }
+}
+EOF
+
+if [[ -t 1 ]]; then
+  # Interactive terminal: launch zellij
+  if [[ -n "${ZELLIJ:-}" ]]; then
+    zellij action new-tab --layout "$layout_file"
+  else
+    zellij --layout "$layout_file"
+  fi
+  rm -f "$layout_file"
+else
+  # Piped/captured: just output path (useful for: cd "$(dev)")
+  rm -f "$layout_file"
+  echo "$first_dir"
+fi

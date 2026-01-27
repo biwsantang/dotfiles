@@ -5,7 +5,7 @@
 Always use these Claude Code tools proactively:
 - **EnterPlanMode** - Use before non-trivial implementations
 - **Task** - Use for complex multi-step tasks and codebase exploration
-- **TodoWrite** - Use to track and plan all tasks
+- **TodoWrite** - Track tasks (3+ steps). Mark ONE in_progress before work, completed immediately after
 - **AskUserQuestion** - Use when clarification needed
 
 ## Available CLI Tools

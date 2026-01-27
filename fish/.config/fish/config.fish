@@ -137,66 +137,7 @@ if status is-interactive
     end
 
     # Navigate to git repositories in ~/developer and open dev environment
-    function dev
-        if test "$argv[1]" = "."
-            if set -q ZELLIJ
-                zellij action new-tab --layout dev
-            else
-                zellij --layout dev
-            end
-            return
-        end
-        set -l dirs (fd -H '^\.git$' ~/developer --exec dirname | \
-            while read p
-                printf "%s\t%s\n" (string replace "$HOME/developer/" "" $p) $p
-            end | \
-            fzf -m --delimiter='\t' --with-nth=1 --preview '
-                path=$(echo {} | cut -f2)
-                echo "󰘬 $(git -C "$path" branch --show-current)"
-                echo ""
-                echo "Recent commits:"
-                git -C "$path" log --oneline -5
-                echo ""
-                echo "Status:"
-                git -C "$path" status -s
-                echo ""
-                echo "Remotes:"
-                git -C "$path" remote -v | head -2
-            ' --preview-window=right:60% | cut -f2)
-        test -z "$dirs"; and return
-        set -l first_dir $dirs[1]
-        set -l panes_kdl ""
-        set -l add_dirs ""
-        for d in $dirs
-            set panes_kdl $panes_kdl"                    pane cwd=\"$d\"
-"
-            if test "$d" != "$first_dir"
-                set add_dirs $add_dirs" \"--add-dir\" \"$d\""
-            end
-        end
-        set -l layout_file /tmp/zellij-dev-$fish_pid.kdl
-        echo "layout {
-    tab focus=true {
-        pane split_direction=\"vertical\" {
-            pane size=\"33%\" cwd=\"$first_dir\" command=\"lazygit\"
-            pane size=\"67%\" split_direction=\"horizontal\" {
-                pane size=\"67%\" focus=true cwd=\"$first_dir\" command=\"claude\" {
-                    args \"--dangerously-skip-permissions\"$add_dirs
-                }
-                pane size=\"33%\" stacked=true expanded=false {
-$panes_kdl                }
-            }
-        }
-    }
-}" > $layout_file
-        cd $first_dir
-        if set -q ZELLIJ
-            zellij action new-tab --layout $layout_file
-        else
-            zellij --layout $layout_file
-        end
-        rm -f $layout_file
-    end
+    # No wrapper needed - ~/.local/bin/dev is in PATH
 
     # Key bindings
     bind \ce edit_command_line
