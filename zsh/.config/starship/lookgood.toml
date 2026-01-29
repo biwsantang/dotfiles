@@ -1,6 +1,5 @@
 format = """
-$os$username$hostname$directory$git_branch${custom.repo}$git_status$git_state$docker_context$package$nodejs$python$rust$golang$java$kotlin$php$ruby$swift$terraform$aws$gcloud$azure$kubernetes$helm$conda$bun$deno$elixir$elm$erlang$haskell$julia$lua$nim$ocaml$perl$pulumi$rlang$scala$zig$nix_shell$memory_usage$env_var$cmd_duration$jobs$sudo$shell
-- $time
+$os$username$hostname$directory$git_branch$git_status$git_state$docker_context$package$nodejs$python$rust$golang$java$kotlin$php$ruby$swift$terraform$conda$bun$deno$elixir$elm$erlang$haskell$julia$lua$nim$ocaml$perl$pulumi$rlang$scala$zig$nix_shell$memory_usage$env_var$cmd_duration$jobs$sudo$shell - $time
 
 $character
 """
@@ -16,6 +15,7 @@ disabled = true
 
 [directory]
 truncation_length = 0
+truncate_to_repo = false
 style = "bold #3B00A8 bg:#DBC7FF"
 
 [battery]
@@ -32,12 +32,12 @@ format = "[$time]($style)"
 #command = "date +'%a %d %b'"
 #when = true
 
-[custom.repo]
-command = "echo $__REPO_NAME"
-detect_folders = [".git"]
-detect_files = [".git"]
-format = "from [$output]($style) "
-style = "bold purple"
+# [custom.repo]
+# command = "echo $__REPO_NAME"
+# detect_folders = [".git"]
+# detect_files = [".git"]
+# format = "from [$output]($style) "
+# style = "bold purple"
 
 [character]
 success_symbol = "👉 "
