@@ -11,9 +11,18 @@ show_help() {
 dev - Navigate to git repositories and open Zellij dev environment
 
 Usage:
-  dev           Select project(s) with fzf and open in Zellij
-  dev .         Open current directory in Zellij dev layout
-  dev -h        Show this help message
+  dev              Select project(s) with fzf and open in Zellij
+  dev <path>       Open specified directory in Zellij dev layout
+  dev -ls          List all projects under ~/developer
+  dev -p "msg"     Pass a prompt to Claude CLI
+  dev -h           Show this help message
+
+Examples:
+  dev                        # Interactive project selection
+  dev .                      # Open current directory
+  dev ~/developer/my-app     # Open specific project
+  dev -p "fix the tests"     # Launch with prompt for Claude
+  dev -ls                    # List all available projects
 
 Features:
   - Multi-select projects with Tab in fzf
@@ -23,19 +32,85 @@ Features:
 EOF
 }
 
-# Handle help flag
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  show_help
+# Parse options
+prompt=""
+list_projects=false
+positional_args=()
+
+# Handle special flags before getopts
+for arg in "$@"; do
+  case "$arg" in
+    -ls)
+      list_projects=true
+      ;;
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+    *)
+      positional_args+=("$arg")
+      ;;
+  esac
+done
+
+# Reset positional parameters to non-flag arguments
+set -- "${positional_args[@]+"${positional_args[@]}"}"
+
+# Parse remaining options with getopts
+while getopts ":p:" opt; do
+  case $opt in
+    p) prompt="$OPTARG" ;;
+    \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+    :) echo "Option -$OPTARG requires an argument" >&2; exit 1 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# Handle "dev -ls" - list all projects
+if [[ "$list_projects" == true ]]; then
+  fd -H '^\.git$' ~/developer --exec dirname
   exit 0
 fi
 
-# Handle "dev ." - open current directory
-if [[ "${1:-}" == "." ]]; then
-  if [[ -n "${ZELLIJ:-}" ]]; then
-    zellij action new-tab --layout dev
-  else
-    zellij --layout dev
+# Read zjstatus template from default layout (single source of truth)
+ZELLIJ_LAYOUT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zellij/layouts"
+DEFAULT_TAB_TEMPLATE=$(sed -n '/default_tab_template {/,/^    }$/p' "$ZELLIJ_LAYOUT_DIR/default.kdl")
+
+# Handle "dev <path>" - open specific directory
+if [[ -n "${1:-}" && -d "$1" ]]; then
+  target_dir="$(cd "$1" && pwd)"  # Resolve to absolute path
+
+  # Build claude args
+  claude_args='"--dangerously-skip-permissions"'
+  if [[ -n "$prompt" ]]; then
+    escaped_prompt="${prompt//\"/\\\"}"
+    claude_args+=" \"$escaped_prompt\""
   fi
+
+  layout_file="/tmp/zellij-dev-$$.kdl"
+  cat > "$layout_file" <<EOF
+layout {
+$DEFAULT_TAB_TEMPLATE
+    tab focus=true {
+        pane split_direction="vertical" {
+            pane size="33%" cwd="$target_dir" command="lazygit"
+            pane size="67%" split_direction="horizontal" {
+                pane size="67%" focus=true cwd="$target_dir" command="claude" {
+                    args $claude_args
+                }
+                pane size="33%" cwd="$target_dir"
+            }
+        }
+    }
+}
+EOF
+
+  if [[ -n "${ZELLIJ:-}" ]]; then
+    zellij action new-tab --layout "$layout_file"
+  else
+    zellij --layout "$layout_file"
+  fi
+  rm -f "$layout_file"
   exit 0
 fi
 
@@ -67,15 +142,24 @@ while IFS= read -r d; do
   [[ "$d" != "$first_dir" ]] && add_dirs+=" \"--add-dir\" \"$d\""
 done <<< "$dirs"
 
+# Build claude args
+claude_args='"--dangerously-skip-permissions"'
+claude_args+="$add_dirs"
+if [[ -n "$prompt" ]]; then
+  escaped_prompt="${prompt//\"/\\\"}"
+  claude_args+=" \"$escaped_prompt\""
+fi
+
 layout_file="/tmp/zellij-dev-$$.kdl"
 cat > "$layout_file" <<EOF
 layout {
+$DEFAULT_TAB_TEMPLATE
     tab focus=true {
         pane split_direction="vertical" {
             pane size="33%" cwd="$first_dir" command="lazygit"
             pane size="67%" split_direction="horizontal" {
                 pane size="67%" focus=true cwd="$first_dir" command="claude" {
-                    args "--dangerously-skip-permissions"$add_dirs
+                    args $claude_args
                 }
                 pane size="33%" stacked=true expanded=false {
 $panes_kdl                }
