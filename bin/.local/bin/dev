@@ -37,34 +37,38 @@ prompt=""
 list_projects=false
 positional_args=()
 
-# Handle special flags before getopts
-for arg in "$@"; do
-  case "$arg" in
+# Parse options manually (getopts doesn't work well when options come after positional args)
+while [[ $# -gt 0 ]]; do
+  case "$1" in
     -ls)
       list_projects=true
+      shift
       ;;
     -h|--help)
       show_help
       exit 0
       ;;
+    -p)
+      if [[ -z "${2:-}" ]]; then
+        echo "Option -p requires an argument" >&2
+        exit 1
+      fi
+      prompt="$2"
+      shift 2
+      ;;
+    -*)
+      echo "Invalid option: $1" >&2
+      exit 1
+      ;;
     *)
-      positional_args+=("$arg")
+      positional_args+=("$1")
+      shift
       ;;
   esac
 done
 
 # Reset positional parameters to non-flag arguments
 set -- "${positional_args[@]+"${positional_args[@]}"}"
-
-# Parse remaining options with getopts
-while getopts ":p:" opt; do
-  case $opt in
-    p) prompt="$OPTARG" ;;
-    \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
-    :) echo "Option -$OPTARG requires an argument" >&2; exit 1 ;;
-  esac
-done
-shift $((OPTIND - 1))
 
 # Handle "dev -ls" - list all projects
 if [[ "$list_projects" == true ]]; then
