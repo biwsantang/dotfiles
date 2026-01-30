@@ -67,11 +67,18 @@ cd project && npm install && npm test
 
 ## Workspace Structure
 
-Projects are stored in `$HOME/developer/` using git worktrees:
+All source code lives in `~/Developer/`. To list all repositories:
+```bash
+fd -H '^\.git$' ~/Developer --exec dirname
+```
 
+**Structure with git worktrees:**
 ```
-{project}/
-├── main/          # main branch
-└── worktree/
-    └── {branch}/  # feature branches
+~/Developer/{org}/{repo}/
+├── main/                  # main branch
+└── worktree/{branch}/     # feature branches
 ```
+
+**Standalone repos:** `~/Developer/{repo}/` (no worktree subdirectories)
+
+When working on a feature branch, the cwd is typically `~/Developer/{org}/{repo}/worktree/{branch}/`.
