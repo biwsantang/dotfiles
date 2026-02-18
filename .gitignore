@@ -10,3 +10,6 @@ zsh/.config/yarn
 nvim/.config/nvim/plugin/
 
 claude/.claude/settings.json
+
+# Machine-specific dev command config
+*/.config/dev/

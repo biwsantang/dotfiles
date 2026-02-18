@@ -1,49 +1,34 @@
 #!/usr/bin/env bash
-# dev - Navigate to git repositories and open Zellij dev environment
+# dev - Open Zellij dev environment at workspace root
 
 set -euo pipefail
 
-# Ensure PATH includes common locations for git, fd, fzf, etc.
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+WORKSPACE_ROOT="$HOME/Developer"
 
 show_help() {
   cat <<'EOF'
-dev - Navigate to git repositories and open Zellij dev environment
+dev - Open Zellij dev environment at workspace root
 
 Usage:
-  dev              Select project(s) with fzf and open in Zellij
-  dev <path>       Open specified directory in Zellij dev layout
-  dev -ls          List all projects under ~/developer
-  dev -p "msg"     Pass a prompt to Claude CLI
+  dev              Open workspace in Zellij
+  dev -p "msg"     Open with initial prompt for Claude
   dev -h           Show this help message
 
-Examples:
-  dev                        # Interactive project selection
-  dev .                      # Open current directory
-  dev ~/developer/my-app     # Open specific project
-  dev -p "fix the tests"     # Launch with prompt for Claude
-  dev -ls                    # List all available projects
+Layout:
+  Shell (33% left) + Claude (67% right)
+  Both at ~/Developer
 
-Features:
-  - Multi-select projects with Tab in fzf
-  - Lazygit pane (33% left)
-  - Claude pane (top-right)
-  - Shell panes for each selected project (bottom-right, stacked)
+Claude reads CLAUDE.md at workspace root for context.
 EOF
 }
 
 # Parse options
 prompt=""
-list_projects=false
-positional_args=()
 
-# Parse options manually (getopts doesn't work well when options come after positional args)
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -ls)
-      list_projects=true
-      shift
-      ;;
     -h|--help)
       show_help
       exit 0
@@ -56,133 +41,45 @@ while [[ $# -gt 0 ]]; do
       prompt="$2"
       shift 2
       ;;
-    -*)
-      echo "Invalid option: $1" >&2
-      exit 1
-      ;;
     *)
-      positional_args+=("$1")
-      shift
+      echo "Unknown option: $1" >&2
+      exit 1
       ;;
   esac
 done
 
-# Reset positional parameters to non-flag arguments
-set -- "${positional_args[@]+"${positional_args[@]}"}"
-
-# Handle "dev -ls" - list all projects
-if [[ "$list_projects" == true ]]; then
-  fd -H '^\.git$' ~/developer --exec dirname
-  exit 0
-fi
-
-# Read zjstatus template from default layout (single source of truth)
+# Read zjstatus template from default layout
 ZELLIJ_LAYOUT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zellij/layouts"
 DEFAULT_TAB_TEMPLATE=$(sed -n '/default_tab_template {/,/^    }$/p' "$ZELLIJ_LAYOUT_DIR/default.kdl")
 
-# Handle "dev <path>" - open specific directory
-if [[ -n "${1:-}" && -d "$1" ]]; then
-  target_dir="$(cd "$1" && pwd)"  # Resolve to absolute path
-
-  # Build claude args
-  claude_args='"--dangerously-skip-permissions"'
-  if [[ -n "$prompt" ]]; then
-    escaped_prompt="${prompt//\"/\\\"}"
-    claude_args+=" \"$escaped_prompt\""
-  fi
-
-  layout_file="/tmp/zellij-dev-$$.kdl"
-  cat > "$layout_file" <<EOF
-layout {
-$DEFAULT_TAB_TEMPLATE
-    tab focus=true {
-        pane split_direction="vertical" {
-            pane size="33%" cwd="$target_dir" command="lazygit"
-            pane size="67%" split_direction="horizontal" {
-                pane size="67%" focus=true cwd="$target_dir" command="claude" {
-                    args $claude_args
-                }
-                pane size="33%" cwd="$target_dir"
-            }
-        }
-    }
-}
-EOF
-
-  if [[ -n "${ZELLIJ:-}" ]]; then
-    zellij action new-tab --layout "$layout_file"
-  else
-    zellij --layout "$layout_file"
-  fi
-  rm -f "$layout_file"
-  exit 0
-fi
-
-# Find git repos and select with fzf
-dirs=$(fd -H '^\.git$' ~/developer --exec dirname | \
-  while read -r p; do echo "${p#$HOME/developer/}	$p"; done | \
-  fzf -m --delimiter=$'\t' --with-nth=1 --preview '
-    dir=$(echo {} | cut -f2)
-    echo "󰘬 $(git -C "$dir" branch --show-current)"
-    echo ""
-    echo "Recent commits:"
-    git -C "$dir" log --oneline -5
-    echo ""
-    echo "Status:"
-    git -C "$dir" status -s
-    echo ""
-    echo "Remotes:"
-    git -C "$dir" remote -v | head -2
-  ' --preview-window=right:60% | cut -f2)
-
-[[ -z "$dirs" ]] && exit 0
-
-first_dir=$(echo "$dirs" | head -1)
-panes_kdl=""
-add_dirs=""
-
-while IFS= read -r d; do
-  panes_kdl+="                    pane cwd=\"$d\""$'\n'
-  [[ "$d" != "$first_dir" ]] && add_dirs+=" \"--add-dir\" \"$d\""
-done <<< "$dirs"
-
-# Build claude args
-claude_args='"--dangerously-skip-permissions"'
-claude_args+="$add_dirs"
+# Build claude command string
+claude_cmd="CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 exec claude --dangerously-skip-permissions"
 if [[ -n "$prompt" ]]; then
   escaped_prompt="${prompt//\"/\\\"}"
-  claude_args+=" \"$escaped_prompt\""
+  claude_cmd+=" \"$escaped_prompt\""
 fi
 
+# Create layout with Claude environment variables
 layout_file="/tmp/zellij-dev-$$.kdl"
 cat > "$layout_file" <<EOF
 layout {
 $DEFAULT_TAB_TEMPLATE
-    tab focus=true {
+    tab focus=true name="dev" {
         pane split_direction="vertical" {
-            pane size="33%" cwd="$first_dir" command="lazygit"
-            pane size="67%" split_direction="horizontal" {
-                pane size="67%" focus=true cwd="$first_dir" command="claude" {
-                    args $claude_args
-                }
-                pane size="33%" stacked=true expanded=false {
-$panes_kdl                }
+            pane size="33%" cwd="$WORKSPACE_ROOT"
+            pane size="67%" focus=true cwd="$WORKSPACE_ROOT" command="bash" {
+                args "-c" "$claude_cmd"
             }
         }
     }
 }
 EOF
 
-if [[ -t 1 ]]; then
-  # Interactive terminal: launch zellij
-  if [[ -n "${ZELLIJ:-}" ]]; then
-    zellij action new-tab --layout "$layout_file"
-  else
-    zellij --layout "$layout_file"
-  fi
-  rm -f "$layout_file"
+# Launch zellij
+if [[ -n "${ZELLIJ:-}" ]]; then
+  zellij action new-tab --layout "$layout_file"
 else
-  # Piped/captured: just output path (useful for: cd "$(dev)")
-  rm -f "$layout_file"
-  echo "$first_dir"
+  zellij --layout "$layout_file"
 fi
+
+rm -f "$layout_file"
