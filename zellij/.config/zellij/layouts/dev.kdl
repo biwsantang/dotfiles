@@ -27,17 +27,17 @@ layout {
                 mode_tmux    "#[bg=cyan]"
 
                 // formatting for inactive tabs
-                tab_normal              "#[fg=#6C7086]{index}"
-                tab_normal_fullscreen   "#[fg=#6C7086]{index}"
-                tab_normal_sync         "#[fg=#6C7086]{index}"
+                tab_normal              "#[fg=#6C7086] {index} "
+                tab_normal_fullscreen   "#[fg=#6C7086] {index} "
+                tab_normal_sync         "#[fg=#6C7086] {index} "
 
                 // formatting for the current active tab
-                tab_active              "#[fg=#9399B2,bold]{index}"
-                tab_active_fullscreen   "#[fg=#9399B2,bold]{index}"
-                tab_active_sync         "#[fg=#9399B2,bold]{index}"
+                tab_active              "#[fg=#DBC7FF,bold] {index} "
+                tab_active_fullscreen   "#[fg=#DBC7FF,bold] {index} "
+                tab_active_sync         "#[fg=#DBC7FF,bold] {index} "
 
                 // separator between the tabs
-                tab_separator           "#[fg=cyan,bold] ⋮ "
+                tab_separator           "#[fg=#44475A]⋮"
 
                 // indicators
                 tab_sync_indicator       " "

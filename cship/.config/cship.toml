@@ -1,0 +1,130 @@
+# cship — Mission Control, Starship Style
+# 4 lines, minimal flat style, bg pills on important stuff only
+# Full config reference: https://cship.dev
+
+[cship]
+lines = [
+  "[🌳 ](fg:#6272A4)$directory $git_branch$git_status[⋮ ](fg:#44475A)$cship.cost.total_lines_added $cship.cost.total_lines_removed",
+  "[📊 ](fg:#6272A4)$cship.context_bar $cship.context_window.used_percentage[⋮ ](fg:#44475A)$cship.context_window.remaining_percentage[⋮ ](fg:#44475A)$cship.context_window.size[⋮ ](fg:#44475A)$cship.context_window.total_input_tokens[⋮ ](fg:#44475A)$cship.context_window.total_output_tokens",
+  "[⚡ ](fg:#6272A4)$cship.model $cship.vim$cship.agent$cship.output_style$cship.version",
+  "[💰 ](fg:#6272A4)$cship.cost $cship.cost.total_api_duration_ms[⋮ ](fg:#44475A)$cship.usage_limits",
+]
+
+# ── Line 1: Git ──────────────────────────────────────
+
+[directory]
+truncation_length = 0
+truncate_to_repo = false
+style = "bold fg:#3B00A8 bg:#DBC7FF"
+
+[git_branch]
+symbol = ""
+style = "fg:#BD93F9"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "fg:#FF5555"
+
+[cship.cost.total_lines_added]
+style = "fg:#50FA7B"
+symbol = "+"
+format = "[$symbol$value]($style) "
+
+[cship.cost.total_lines_removed]
+style = "fg:#FF5555"
+symbol = "-"
+format = "[$symbol$value]($style)"
+
+# ── Line 2: Context ──────────────────────────────────
+
+[cship.context_bar]
+width = 12
+style = "fg:#8BE9FD"
+warn_threshold = 60.0
+warn_style = "fg:#F1FA8C"
+critical_threshold = 80.0
+critical_style = "bold fg:#FF5555"
+
+[cship.context_window.used_percentage]
+style = "fg:#8BE9FD"
+symbol = ""
+format = "[$value% used]($style) "
+warn_threshold = 60.0
+warn_style = "fg:#F1FA8C"
+critical_threshold = 80.0
+critical_style = "bold fg:#FF5555"
+
+[cship.context_window.remaining_percentage]
+style = "fg:#6272A4"
+symbol = ""
+format = "[$value% left]($style) "
+invert_threshold = true
+warn_threshold = 40.0
+warn_style = "fg:#F1FA8C"
+critical_threshold = 20.0
+critical_style = "bold fg:#FF5555"
+
+[cship.context_window.size]
+style = "fg:#6272A4"
+symbol = ""
+format = "[$value ctx]($style) "
+
+[cship.context_window.total_input_tokens]
+style = "fg:#6272A4"
+symbol = "↓"
+format = "[$symbol$value in]($style) "
+
+[cship.context_window.total_output_tokens]
+style = "fg:#6272A4"
+symbol = "↑"
+format = "[$symbol$value out]($style)"
+
+# ── Line 3: Model + Meta ─────────────────────────────
+
+[cship.model]
+style = "bold fg:#282A36 bg:#8BE9FD"
+symbol = ""
+format = "[$symbol$value]($style) "
+
+[cship.vim]
+style = "fg:#BD93F9"
+format = "[vim:$value ⋮ ]($style)"
+
+[cship.agent]
+style = "fg:#50FA7B"
+format = "[⚙ $value ⋮ ]($style)"
+
+[cship.output_style]
+style = "fg:#6272A4"
+format = "[$value ⋮ ]($style)"
+
+[cship.version]
+style = "fg:#44475A"
+symbol = "v"
+format = "[$symbol$value]($style)"
+
+# ── Line 4: Cost + Usage ─────────────────────────────
+
+[cship.cost]
+style = "bold fg:#282A36 bg:#F1FA8C"
+symbol = ""
+format = "[$symbol$value]($style) "
+warn_threshold = 5.0
+warn_style = "bold fg:#282A36 bg:#FFB86C"
+critical_threshold = 10.0
+critical_style = "bold fg:#F8F8F2 bg:#FF5555"
+
+[cship.cost.total_api_duration_ms]
+style = "fg:#6272A4"
+symbol = ""
+format = "[$value api]($style) "
+
+[cship.usage_limits]
+five_hour_format = "5h {pct}% ({reset})"
+seven_day_format = "7d {pct}% ({reset})"
+separator = " ⋮ "
+style = "fg:#6272A4"
+warn_threshold = 60.0
+warn_style = "fg:#F1FA8C"
+critical_threshold = 80.0
+critical_style = "bold fg:#FF5555"

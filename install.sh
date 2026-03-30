@@ -185,6 +185,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Stowing macOS-specific configurations..."
     stow -v -t $HOME ghostty || { echo "Failed to stow ghostty. Exiting."; exit 1; }
     stow -v -t $HOME claude || { echo "Failed to stow claude. Exiting."; exit 1; }
+    stow -v -t $HOME cship || { echo "Failed to stow cship. Exiting."; exit 1; }
     echo "macOS configurations stowed successfully."
 fi
 
