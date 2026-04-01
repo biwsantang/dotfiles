@@ -24,4 +24,44 @@ keybinds {
         bind "Alt 2" { GoToNextTab; }
         bind "Alt 3" { CloseTab; }
     }
+
+    // Colemak navigation: h=left, n=down, e=up, i=right
+    // Just override — binding a key replaces its default action
+    pane {
+        bind "n" { MoveFocus "Down"; }
+        bind "e" { MoveFocus "Up"; }
+        bind "i" { MoveFocus "Right"; }
+        bind "k" { NewPane; SwitchToMode "Normal"; }
+        bind "j" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+        bind "l" { TogglePanePinned; SwitchToMode "Normal"; }
+    }
+    tab {
+        bind "n" { GoToNextTab; }
+        bind "e" { GoToPreviousTab; }
+        bind "k" { NewTab; SwitchToMode "Normal"; }
+    }
+    resize {
+        bind "n" { Resize "Increase Down"; }
+        bind "e" { Resize "Increase Up"; }
+        bind "i" { Resize "Increase Right"; }
+    }
+    move {
+        bind "n" { MovePane "Down"; }
+        bind "e" { MovePane "Up"; }
+        bind "i" { MovePane "Right"; }
+        bind "k" { MovePane; }
+    }
+    scroll {
+        bind "n" { ScrollDown; }
+        bind "e" { ScrollUp; }
+        bind "i" { PageScrollDown; }
+        bind "j" { EditScrollback; SwitchToMode "Normal"; }
+    }
+    search {
+        bind "n" { ScrollDown; }
+        bind "e" { ScrollUp; }
+        bind "i" { PageScrollDown; }
+        bind "k" { Search "down"; }
+        bind "K" { Search "up"; }
+    }
 }
