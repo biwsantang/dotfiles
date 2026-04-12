@@ -53,7 +53,7 @@ ZELLIJ_LAYOUT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zellij/layouts"
 DEFAULT_TAB_TEMPLATE=$(sed -n '/default_tab_template {/,/^    }$/p' "$ZELLIJ_LAYOUT_DIR/default.kdl")
 
 # Build claude command string
-claude_cmd="CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 exec claude --dangerously-skip-permissions"
+claude_cmd="exec claude --dangerously-skip-permissions"
 if [[ -n "$prompt" ]]; then
   escaped_prompt="${prompt//\"/\\\"}"
   claude_cmd+=" \"$escaped_prompt\""
